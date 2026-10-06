@@ -118,7 +118,7 @@ URL options:
 - `?ch=4` opens at a chapter;
 - `?debug` exposes `window.__sadan.info()` (draw calls, triangles, programs, textures).
 
-**Theme.** The theme is Lok Navy, in light and dark, following the system setting. The colours are CSS variables in `globals.css`, exposed to Tailwind through `@theme` (`bg-bg`, `text-ink`, `text-muted`, `bg-accent` and so on). The engine reads `--accent` and `--accent-ink` for the seat glow and the screens, and redraws when the colour scheme changes.
+**Theme.** The theme is Lok Navy, light by default, with a dark mode switched by the moon and sun button in the header. The choice is saved in `localStorage` (`setuk-theme`) and applied by an inline script in `<head>` before first paint (`components/site/site-document.tsx`), so there is no flash and the pages stay static. The system setting is not followed. Theme helpers are in `lib/theme.ts`. The colours are CSS variables in `globals.css`, exposed to Tailwind through `@theme` (`bg-bg`, `text-ink`, `text-muted`, `bg-accent` and so on). The engine reads `--accent` and `--accent-ink` for the seat glow and the screens, and redraws when the theme changes (it watches `data-theme` on `<html>`).
 
 **Type.** The fonts are self-hosted with `next/font`; there are no requests to Google:
 - **Geist** for display and body text;

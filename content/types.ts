@@ -113,7 +113,7 @@ export interface Dictionary {
   brand: { name: string; line: string };
   skip: string;
   chapters: string[];
-  nav: { labels: Record<NavKey, string>; demo: string; menu: string; close: string; language: string; chapters: string };
+  nav: { labels: Record<NavKey, string>; demo: string; menu: string; close: string; language: string; chapters: string; toDark: string; toLight: string };
   hero: { eyebrow: string; titleA: string; titleB: string; sub: string; primary: string; secondary: string };
   proof: { label: string; note: string; items: string[] };
   serve: {

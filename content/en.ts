@@ -15,7 +15,9 @@ export const en: Dictionary = {
     menu: "Menu",
     close: "Close menu",
     language: "Language",
-    chapters: "Chapters"
+    chapters: "Chapters",
+    toDark: "Switch to dark theme",
+    toLight: "Switch to light theme"
   },
   hero: {
     eyebrow: "For MPs, MLAs, local body representatives, party teams and aspirants",

@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 /* ---------- Lok Navy ----------
-   One palette, light and dark, following the system setting. Every pair used for text passes
+   One palette, light by default, dark when <html data-theme="dark"> (the header toggle, saved in
+   localStorage and applied before paint by the script in site-document.tsx). Every pair used for text passes
    WCAG AA (body ink AAA). Raw values live here; Tailwind reads them through @theme below,
    and the 3D engine reads --accent and --accent-ink for the screens and seat glow. */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --bg: #f5f6f8;
   --surface: #fdfdfe;
   --surface-2: #ebeef3;
@@ -20,20 +21,19 @@
   --mark-dot-side: #2e8b4e;
   --mark-dot-mid: #1f6fd6;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0a0f18;
-    --surface: #111827;
-    --surface-2: #172034;
-    --ink: #eef2f8;
-    --muted: #9aa6b8;
-    --line: #233047;
-    --accent: #7aa3ff;
-    --accent-ink: #06101f;
-    --accent-soft: #16264a;
-    --mark-arch: #eef2f8;
-    --mark-dot-mid: #5b9bff;
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0f18;
+  --surface: #111827;
+  --surface-2: #172034;
+  --ink: #eef2f8;
+  --muted: #9aa6b8;
+  --line: #233047;
+  --accent: #7aa3ff;
+  --accent-ink: #06101f;
+  --accent-soft: #16264a;
+  --mark-arch: #eef2f8;
+  --mark-dot-mid: #5b9bff;
 }
 
 @theme inline {

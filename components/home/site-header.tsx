@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Dictionary, Locale } from "@/content";
 import { localePath, site } from "@/content/site";
-import { ArrowUpRight, List, X } from "@/components/icons";
+import { ArrowUpRight, List, Moon, Sun, X } from "@/components/icons";
+import { currentTheme, onThemeChange, setTheme } from "@/lib/theme";
 import { SetukMark } from "@/components/site/setuk-mark";
 
 /**
  * Header with every site menu. Transparent over the hero, solid once the page scrolls.
  * Below xl the menu collapses into a sheet; Escape and link clicks close it.
  * Language links go to the other locale's URL (a full load, since each locale has its own root layout).
+ * The theme button switches light and dark (light is the default) and remembers the choice.
  */
 export function SiteHeader({ t, locale }: { t: Dictionary; locale: Locale }) {
   const [solid, setSolid] = useState(false);
@@ -31,6 +33,10 @@ export function SiteHeader({ t, locale }: { t: Dictionary; locale: Locale }) {
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
   }, [open]);
+
+  /* The theme lives on <html data-theme>; the server snapshot is the light default */
+  const theme = useSyncExternalStore(onThemeChange, currentTheme, () => "light" as const);
+  const dark = theme === "dark";
 
   const links = site.nav.map((l) => ({ ...l, label: t.nav.labels[l.key] }));
   const langs: { l: Locale; short: string; long: string }[] = [
@@ -63,6 +69,15 @@ export function SiteHeader({ t, locale }: { t: Dictionary; locale: Locale }) {
               </a>
             ))}
           </div>
+          <button
+            type="button"
+            onClick={() => setTheme(dark ? "light" : "dark")}
+            aria-label={dark ? t.nav.toLight : t.nav.toDark}
+            title={dark ? t.nav.toLight : t.nav.toDark}
+            className="press grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-ink transition-colors hover:border-ink"
+          >
+            {dark ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
+          </button>
           <a href="#contact" className="press inline-flex h-9 items-center whitespace-nowrap rounded-full bg-accent px-4 text-[13px] font-semibold text-accent-ink hover:brightness-110">
             {t.nav.demo}
           </a>

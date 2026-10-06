@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { getDictionary, type Locale } from "@/content";
 import { localePath, site } from "@/content/site";
+import { THEME_BG } from "./theme";
 
 export function buildMetadata(locale: Locale): Metadata {
   const t = getDictionary(locale);
@@ -26,9 +27,7 @@ export function buildMetadata(locale: Locale): Metadata {
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f6f8" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0f18" }
-  ],
-  colorScheme: "light dark"
+  /* Light by default; the theme toggle updates this meta when the user switches */
+  themeColor: THEME_BG.light,
+  colorScheme: "light"
 };

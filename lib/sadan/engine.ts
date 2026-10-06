@@ -29,6 +29,7 @@ import { pickTier, probeGpu, type Tier } from "./quality";
 import { DESK, WALL, createScreen, drawChaos, drawDashboard, drawDesk, drawReport, type Paint } from "./screens";
 import { TAG, drawTag } from "./set-screens";
 import { createOfficeSet } from "./office-set";
+import { onThemeChange } from "../theme";
 
 export interface SadanOptions {
   /** Element the engine adds its own <canvas> to. Each instance owns its canvas (and WebGL context),
@@ -965,7 +966,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   io.observe(stage);
   let last = performance.now();
   const onVisibility = () => { if (!document.hidden) { last = performance.now(); dirty = 2; } };
-  const scheme = matchMedia("(prefers-color-scheme: dark)");
+
   const refreshTheme = () => {
     syncAccent();
     beamMat.color.copy(glowColor); ringMat.color.copy(glowColor); heroLight.color.copy(glowColor);
@@ -974,7 +975,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   addEventListener("resize", resize);
   if (fine) addEventListener("pointermove", onPointer, { passive: true });
   document.addEventListener("visibilitychange", onVisibility);
-  scheme.addEventListener("change", refreshTheme);
+  const stopThemeWatch = onThemeChange(refreshTheme);
 
   const handle: SadanHandle = {
     tier: T.tier,
@@ -987,7 +988,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
       removeEventListener("resize", resize);
       removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", onVisibility);
-      scheme.removeEventListener("change", refreshTheme);
+      stopThemeWatch();
       canvas.removeEventListener("webglcontextlost", onLost);
       disposeAll();
     }
