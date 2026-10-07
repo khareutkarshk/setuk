@@ -171,7 +171,17 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   ]);
   if (aborted()) { disposeAll(); return null; }
   o.onProgress?.(0.75);
-  const woodImg = woodD?.image as HTMLImageElement | undefined;
+  /* Calm the teak: the raw veneer is a saturated orange that fights the teal carpet and seats.
+     Pulled toward a soft honey-walnut (lower chroma, a touch darker), wood stays warm but recedes. */
+  if (woodD) {
+    const img = woodD.image as HTMLImageElement, c = document.createElement("canvas");
+    c.width = img.width; c.height = img.height;
+    const g = c.getContext("2d")!;
+    g.filter = "saturate(0.52) brightness(0.94) contrast(0.96)";
+    g.drawImage(img, 0, 0);
+    woodD.image = c; woodD.needsUpdate = true;
+  }
+  const woodImg = woodD?.image as HTMLCanvasElement | undefined;
 
   /* A texture copy with its own tiling. UVs in this scene are in metres, so repeat = 1 / tile size. */
   const tiled = (t: THREE.Texture | null, metres: number, rot = 0) => {
@@ -227,7 +237,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
       g.translate(i * cell + cell / 2, j * cell + cell / 2);
       if ((i + j) % 2) g.rotate(Math.PI / 2);
       if (woodImg) g.drawImage(woodImg, (((i * 331 + j * 517) / 2048) * woodImg.width) % (woodImg.width - src), (((j * 241 + i * 97) / 2048) * woodImg.width) % (woodImg.height - src), src, src, -cell / 2, -cell / 2, cell, cell);
-      else { g.fillStyle = (i + j) % 2 ? "#a8683a" : "#b9784a"; g.fillRect(-cell / 2, -cell / 2, cell, cell); }
+      else { g.fillStyle = (i + j) % 2 ? "#8f735c" : "#9c8068"; g.fillRect(-cell / 2, -cell / 2, cell, cell); }
       g.restore();
     }
     g.strokeStyle = "rgba(40,20,8,.55)"; g.lineWidth = 3;
@@ -382,16 +392,16 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     if (clearcoat) rest.roughness = (rest.roughness ?? 1) * 0.7;
     return new THREE.MeshStandardMaterial(rest);
   };
-  const wood = (metres: number, rot: number, tint = "#d2a77c", extra: PhysParams = {}) => P({
+  const wood = (metres: number, rot: number, tint = "#cdb59a", extra: PhysParams = {}) => P({
     map: tiled(woodD, metres, rot), normalMap: tiled(woodN, metres, rot), roughnessMap: tiled(woodR, metres, rot),
     color: tint, roughness: 0.85, normalScale: new THREE.Vector2(0.6, 0.6), clearcoat: 0.55, clearcoatRoughness: 0.22, ...extra
   });
   const alcoveTex = canvasTex(64, 256, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#ffd9a0"); gr.addColorStop(0.25, "#b3713c"); gr.addColorStop(1, "#3a200f"); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
   const M = {
     desk: wood(1.6, Math.PI / 2),
-    deskDark: wood(1.6, Math.PI / 2, "#8f6a4c"),
-    panel: wood(2.2, 0, "#c99c72", { clearcoat: 0.3 }),
-    wall: P({ map: marquetry, normalMap: tiled(woodN, 2.4), roughnessMap: tiled(woodR, 2.4), color: "#dcb48e", roughness: 0.9, clearcoat: 0.25, clearcoatRoughness: 0.35 }),
+    deskDark: wood(1.6, Math.PI / 2, "#7f6a5a"),
+    panel: wood(2.2, 0, "#c2aa90", { clearcoat: 0.3 }),
+    wall: P({ map: marquetry, normalMap: tiled(woodN, 2.4), roughnessMap: tiled(woodR, 2.4), color: "#d2c0aa", roughness: 0.9, clearcoat: 0.25, clearcoatRoughness: 0.35 }),
     inlay: P({ map: inlayMap, roughness: 0.45, clearcoat: 0.5, clearcoatRoughness: 0.2 }),
     carpet: new THREE.MeshStandardMaterial({ map: carpetMap, normalMap: tiled(carpetN, 0.9), roughnessMap: tiled(carpetR, 0.9), normalScale: new THREE.Vector2(1.2, 1.2), roughness: 1 }),
     stone: new THREE.MeshStandardMaterial({ map: tiled(stoneD, 3), normalMap: tiled(stoneN, 3), roughnessMap: tiled(stoneR, 3), color: "#f2e2c6", roughness: 0.9 }),

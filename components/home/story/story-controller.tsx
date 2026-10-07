@@ -156,7 +156,10 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
   return (
     <section ref={rootRef} className={styles.story} aria-label={ariaLabel}>
       <div ref={stageRef} className={styles.stage} data-ready={ready ? "" : undefined} data-boot={boot} aria-hidden="true">
-        <Image src={poster} alt="" fill preload sizes="100vw" placeholder="blur" className={styles.poster} />
+        {/* next/image "fill" needs a positioned (not sticky) parent */}
+        <div className={styles.posterBox}>
+          <Image src={poster} alt="" fill preload sizes="100vw" placeholder="blur" className={styles.poster} />
+        </div>
         <div ref={canvasSlotRef} className={styles.canvasSlot} />
         <div className={styles.vignette} />
         <div ref={scrimRef} className={styles.scrim} />
@@ -168,8 +171,8 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       </div>
 
       <div className={styles.splash} data-hidden={boot === "loading" ? undefined : ""} role="status" aria-live="polite">
-        <CornerPattern kind="jaali" fx={0} fy={0} radius={420} className="inset-0 text-accent opacity-[0.07]" />
-        <CornerPattern kind="jaali" fx={100} fy={100} radius={420} className="inset-0 text-accent opacity-[0.07]" />
+        <CornerPattern kind="sadan" fx={0} fy={0} radius={460} cell={36} className="inset-0 text-accent opacity-[0.09]" />
+        <CornerPattern kind="sadan" fx={100} fy={100} radius={460} cell={36} className="inset-0 text-accent opacity-[0.09]" />
         <div className={styles.splashEmblem}>
           <Mandala className={`${styles.splashLotus} text-accent`} />
           <span className={styles.splashHalo} />

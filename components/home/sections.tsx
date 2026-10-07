@@ -11,6 +11,7 @@ import { AshokaChakra, CornerPattern, Pattern } from "@/components/site/pattern"
    the jaali with सेतु on the closing call to action. */
 
 const bigJaali = { "--s": "64px", "--r": "45px", "--w": "1.6px" } as CSSProperties;
+const sadanWall = { "--s": "56px" } as CSSProperties;
 
 function Kicker({ children, className = "text-accent" }: { children: ReactNode; className?: string }) {
   return (
@@ -88,7 +89,7 @@ const TRUST_ICONS = [I.MapPin, I.IdentificationBadge, I.Prohibit, I.BellRinging,
 export function Trust({ t }: { t: Dictionary }) {
   return (
     <section id="trust" aria-labelledby="trust-title" className="relative z-10 overflow-hidden bg-ink text-bg">
-      <Pattern kind="jaali" className="absolute inset-0 opacity-[.06]" style={bigJaali} />
+      <Pattern kind="sadan" className="absolute inset-0 opacity-[.07]" style={sadanWall} />
       <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent-soft opacity-50" />
       <Pattern kind="temple" className="absolute inset-x-0 bottom-0 text-accent-soft opacity-50" />
       <div className="relative mx-auto grid max-w-page gap-12 px-5 py-20 md:px-8 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">

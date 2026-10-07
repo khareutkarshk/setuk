@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
  * Decorative Indian patterns (see the pattern classes in app/globals.css). They are masks over
  * currentColor, so set the colour and strength with text-* and opacity-* classes. Always aria-hidden.
  */
-export type PatternKind = "jaali" | "temple" | "kolam" | "lehar" | "buti" | "toran";
+export type PatternKind = "jaali" | "temple" | "kolam" | "lehar" | "buti" | "toran" | "sadan";
 
 export function Pattern({ kind, className = "", style }: { kind: PatternKind; className?: string; style?: CSSProperties }) {
   return <span aria-hidden="true" className={`pat pat-${kind} ${className}`} style={style} />;

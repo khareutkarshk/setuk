@@ -420,7 +420,7 @@ export function createOfficeSet(k: SetKit): OfficeSet {
     const jacket = k.mat({ color: "#5b4636", roughness: 0.86, sheen: 0.35, sheenColor: "#8a7260", sheenRoughness: 0.7 });
     swapIn({
       url: k.peopleBase + "consultant.glb", height: 1.74, face, dress: leader, accessories: (a) => leaderExtras(a, k.mat),
-      overlays: [{ from: /Shirt/, material: jacket, drop: /Upperarm|Forearm|Elbow|_Hand|Thumb|Index|Mid\d|Ring\d|Pinky|Neck|Head/, limit: 0.75, below: { bone: /NeckTwist01/, by: -0.01, dip: 0.3, width: 0.075 }, seam: { bone: /^[LR]_Upperarm_\d+$/, margin: 0.015 }, inflate: 0.007 }]
+      overlays: [{ from: /Shirt/, material: jacket, drop: /Upperarm|Forearm|Elbow|_Hand|Thumb|Index|Mid\d|Ring\d|Pinky|Neck|Head/, limit: 0.75, below: { bone: /NeckTwist01/, by: -0.01, dip: 0.3, width: 0.075 }, seam: { bone: /^[LR]_Upperarm_\d+$/, margin: 0.015 }, inflate: 0.009 }]
     }, "politician");
   }
   extras.push({ dispose: () => { gone = true; avatars.forEach((a) => a.dispose()); } });

@@ -400,6 +400,18 @@ function addOverlay(model: THREE.Object3D, root: THREE.Object3D, o: Overlay) {
     const i0 = at(t * 3), i1 = at(t * 3 + 1), i2 = at(t * 3 + 2);
     if (Math.max(cover[i0], cover[i1], cover[i2]) > 0.02) idx.push(i0, i1, i2);
   }
+  /* Drop the source triangles the garment fully covers, so the source can't poke through where
+     skinning squeezes the offset (shoulders and upper back, with the arms forward) */
+  const under: number[] = [];
+  for (let t = 0; t < tri; t++) {
+    const i0 = at(t * 3), i1 = at(t * 3 + 1), i2 = at(t * 3 + 2);
+    if (Math.min(cover[i0], cover[i1], cover[i2]) < 0.98) under.push(i0, i1, i2);
+  }
+  const shown = g.clone();
+  shown.setIndex(under);
+  m.geometry = shown;
+  g.dispose();
+
   const og = new THREE.BufferGeometry();
   og.setAttribute("position", new THREE.BufferAttribute(P, 3));
   og.setAttribute("normal", new THREE.BufferAttribute(N, 3));
