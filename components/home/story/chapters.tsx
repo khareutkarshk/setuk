@@ -36,9 +36,9 @@ const devanagari = (n: number) => String(n).padStart(2, "0").replace(/\d/g, (d) 
 
 /** A chapter card: a temple-border top edge, a corner ornament (a pattern, or the lotus) and the
     chapter number as a Devanagari numeral watermark */
-function Card({ n, ornament, wide, numeral, children }: { n: number; ornament: PatternKind | "lotus"; wide?: boolean; numeral?: ReactNode; children: ReactNode }) {
+function Card({ n, ornament, wide, numeral, className, children }: { n: number; ornament: PatternKind | "lotus"; wide?: boolean; numeral?: ReactNode; className?: string; children: ReactNode }) {
   return (
-    <div className={styles.inner}>
+    <div className={`${styles.inner} ${className ?? ""}`}>
       <div className={`${styles.card} ${wide ? styles.wide : ""}`}>
         <Pattern kind="temple" className={styles.band} />
         {ornament === "lotus" ? <Lotus className={styles.lotus} /> : <CornerPattern kind={ornament} className={styles.corner} radius={230} />}
@@ -61,13 +61,13 @@ function Eyebrow({ n, children }: { n: number; children: ReactNode }) {
 export function HeroChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
   return (
     <Chapter step={0} side="left" className={styles.hero}>
-      <div className={`${styles.inner} flex-col justify-end pt-24 pb-8 md:justify-center md:pb-[168px]`}>
+      <div className={`${styles.inner} ${styles.heroInner}`}>
         <div className="max-w-[640px]">
           <p className="rise flex max-w-[46ch] items-start gap-2 text-[13px] text-muted" style={stagger(0)}>
             <I.UsersThree className="mt-px shrink-0 text-accent" size={16} aria-hidden />
             <span>{t.hero.eyebrow}</span>
           </p>
-          <h1 className="font-display-tight mt-4 text-[40px] leading-[0.98] sm:text-[56px] md:mt-5 lg:text-[68px]">
+          <h1 className={`${styles.heroTitle} font-display-tight mt-4 text-[40px] leading-[0.98] sm:text-[56px] md:mt-5 lg:text-[68px]`}>
             <span className="rise block" style={stagger(1)}>{t.hero.titleA}</span>
             <span className="rise block text-accent" style={stagger(2)}>{t.hero.titleB}</span>
           </h1>
@@ -84,7 +84,7 @@ export function HeroChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
           </div>
         </div>
         {/* Proof strip [placeholder figures, see content/site.ts] */}
-        <div className="rise mt-8 max-w-[880px] md:absolute md:right-20 md:bottom-8 md:left-8 md:mt-0 lg:left-[max(32px,calc((100vw-1280px)/2+32px))]" style={stagger(5)}>
+        <div className={`${styles.heroProof} rise mt-8 max-w-[880px] md:absolute md:right-20 md:bottom-8 md:left-8 md:mt-0 lg:left-[max(32px,calc((100vw-1280px)/2+32px))]`} style={stagger(5)}>
           <div className="mb-2 flex items-center gap-3">
             <p className="shrink-0 text-[12px] font-semibold uppercase tracking-[.08em] text-muted">{t.proof.label}</p>
             <Pattern kind="temple" className="h-[10px] flex-1 text-accent opacity-40 [mask-size:17px_10px]" />
@@ -119,7 +119,7 @@ export function ServeChapter({ t }: { t: Dictionary }) {
       <Card n={2} ornament="jaali">
         <Eyebrow n={2}>{t.serve.eyebrow}</Eyebrow>
         <h2 className={styles.h2}>{t.serve.title}</h2>
-        <p className={`${styles.body} ${styles.hideSm}`}>{t.serve.body}</p>
+        <p className={styles.body}>{t.serve.body}</p>
         <div className={styles.group}>
           <p className={styles.groupLabel}>{t.serve.reps}</p>
           <div className={`${styles.list} mt-1`}>{t.serve.tiers.slice(0, 3).map((x, i) => tier(x, i))}</div>
@@ -148,7 +148,7 @@ export function ProblemChapter({ t }: { t: Dictionary }) {
                 <Ico className="mt-0.5 shrink-0 text-muted" size={18} aria-hidden />
                 <span>
                   <span className={`${styles.strike} font-semibold`} style={stagger(i)}>{m.t}</span>
-                  <span className={`${styles.hideSm} mt-0.5 block text-[14px] leading-snug text-muted`}>{m.d}</span>
+                  <span className="mt-0.5 block text-[14px] leading-snug text-muted">{m.d}</span>
                 </span>
               </li>
             );
@@ -165,7 +165,7 @@ export function SolutionChapter({ t }: { t: Dictionary }) {
       <Card n={4} ornament="kolam">
         <Eyebrow n={4}><span className="font-semibold text-accent">{t.solution.eyebrow}</span></Eyebrow>
         <h2 className={`${styles.h2} ${styles.h2sm}`}>{t.solution.title}</h2>
-        <p className={`${styles.body} ${styles.hideSm}`}>{t.solution.body}</p>
+        <p className={styles.body}>{t.solution.body}</p>
         <ul className={`${styles.list} mt-5 space-y-3`}>
           {t.solution.items.map((m, i) => {
             const Ico = ICONS.solution[i];
@@ -224,16 +224,41 @@ export function ProductsChapter({ t }: { t: Dictionary }) {
   );
 }
 
+/* One step of "How we work": title, time, what we do and what you get */
+function HowStepBody({ t, i }: { t: Dictionary; i: number }) {
+  const s = t.how.steps[i];
+  const Ico = ICONS.steps[i];
+  return (
+    <>
+      <h2 className={`${styles.h2} flex items-center gap-3`}>
+        <Ico className="shrink-0 text-accent" size="0.8em" aria-hidden />
+        <span>{s.t}</span>
+      </h2>
+      <p className={styles.time}><I.Clock aria-hidden />{s.time}</p>
+      <p className={styles.body}>{s.d}</p>
+      <div className={styles.get}>
+        <span className={styles.getSeal} aria-hidden><I.SealCheck weight="fill" /></span>
+        <p>
+          <span className={styles.getLabel}>{t.how.get}</span>
+          <span className={styles.getText}>{s.get}</span>
+        </p>
+      </div>
+    </>
+  );
+}
+
 /* The four steps of "How we work" as one story card. The card is pinned over the whole group and
-   swaps its slide as you scroll; each step keeps an empty chapter of its own as the scroll spacer,
-   so camera stops (the table in the well, the plan view, the Speaker's view, the whole House) stay
-   paired by index. The controller sets data-active on the group, data-on on the current slide and
-   --f (0 to 1) on each progress segment. */
+   swaps its slide as you scroll; each step keeps a chapter of its own as the scroll spacer, so camera
+   stops (the table in the well, the plan view, the Speaker's view, the whole House) stay paired by
+   index. The controller sets data-active on the group, data-on on the current slide and --f (0 to 1)
+   on each progress segment, all inside [data-pin].
+   Compact layouts (and no-JS) can't fit the tallest step in the reading area, so there the pin shrinks
+   to its progress header and each spacer shows its step as a plain card (.howInline) instead. */
 export function HowChapters({ t }: { t: Dictionary }) {
   const steps = t.how.steps;
   return (
     <div className={styles.howGroup} data-how={5}>
-      <div className={styles.howPin}>
+      <div className={styles.howPin} data-pin>
         <Card
           n={6}
           ornament="lotus"
@@ -243,34 +268,23 @@ export function HowChapters({ t }: { t: Dictionary }) {
             {steps.map((s) => <span key={s.t} data-bar />)}
           </div>
           <div className={styles.slides}>
-            {steps.map((s, i) => {
-              const Ico = ICONS.steps[i];
-              return (
-                <section key={s.t} className={styles.slide} data-k={i} data-on={i === 0 ? "" : undefined} aria-label={`${t.how.eyebrow} ${i + 1}/${steps.length}`}>
-                  <Eyebrow n={6 + i}>{t.how.eyebrow} · {i + 1}/{steps.length}</Eyebrow>
-                  <p className="mt-2 text-[15px] font-medium">{t.how.title}</p>
-                  <h2 className={`${styles.h2} flex items-center gap-3`}>
-                    <Ico className="shrink-0 text-accent" size="0.8em" aria-hidden />
-                    <span>{s.t}</span>
-                  </h2>
-                  <p className={styles.time}><I.Clock aria-hidden />{s.time}</p>
-                  <p className={styles.body}>{s.d}</p>
-                  <div className={styles.get}>
-                    <span className={styles.getSeal} aria-hidden><I.SealCheck weight="fill" /></span>
-                    <p>
-                      <span className={styles.getLabel}>{t.how.get}</span>
-                      <span className={styles.getText}>{s.get}</span>
-                    </p>
-                  </div>
-                </section>
-              );
-            })}
+            {steps.map((s, i) => (
+              <section key={s.t} className={styles.slide} data-k={i} data-on={i === 0 ? "" : undefined} aria-label={`${t.how.eyebrow} ${i + 1}/${steps.length}`}>
+                <Eyebrow n={6 + i}>{t.how.eyebrow} · {i + 1}/{steps.length}</Eyebrow>
+                <p className="mt-2 text-[15px] font-medium">{t.how.title}</p>
+                <HowStepBody t={t} i={i} />
+              </section>
+            ))}
           </div>
         </Card>
       </div>
       {steps.map((s, i) => (
         <Chapter key={s.t} step={5 + i} side="right" id={i === 0 ? "how" : undefined} className={styles.how}>
-          {null}
+          <Card n={6 + i} ornament="lotus" className={styles.howInline}>
+            <Eyebrow n={6 + i}>{t.how.eyebrow} · {i + 1}/{steps.length}</Eyebrow>
+            {i === 0 && <p className="mt-2 text-[15px] font-medium">{t.how.title}</p>}
+            <HowStepBody t={t} i={i} />
+          </Card>
         </Chapter>
       ))}
     </div>

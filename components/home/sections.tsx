@@ -29,7 +29,7 @@ export function Engagements({ t }: { t: Dictionary }) {
   return (
     <section id="engagements" aria-labelledby="engagements-title" className="relative z-10 overflow-hidden border-t border-line bg-bg">
       <Pattern kind="toran" className="absolute inset-x-0 top-0 text-accent opacity-60" />
-      <AshokaChakra className="absolute -top-40 -right-48 w-[640px] animate-[spin_120s_linear_infinite] text-accent opacity-[.08] motion-reduce:animate-none" />
+      <AshokaChakra className="absolute -top-40 -right-48 w-[380px] md:w-[640px] animate-[spin_120s_linear_infinite] text-accent opacity-[.08] motion-reduce:animate-none" />
       <div className="relative mx-auto max-w-page px-5 py-20 md:px-8 md:py-28">
         <div className="grid items-end gap-6 md:grid-cols-2 md:gap-16">
           <div>
@@ -38,15 +38,15 @@ export function Engagements({ t }: { t: Dictionary }) {
           </div>
           <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted">{t.engage.body}</p>
         </div>
-        <div className="mt-12 grid gap-4 lg:grid-cols-3">
+        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {t.engage.pkgs.map((p, i) => {
             const pick = i === 1;
             return (
-              <article key={p.t} className={`relative flex flex-col overflow-hidden rounded-3xl border p-7 pt-9 ${pick ? "border-ink bg-ink text-bg shadow-[0_30px_70px_-35px_rgb(0_0_0/.6)]" : "border-line bg-surface"}`}>
+              <article key={p.t} className={`relative flex flex-col overflow-hidden rounded-3xl border p-6 pt-9 sm:p-7 sm:pt-9 md:last:odd:col-span-2 lg:last:odd:col-span-1 ${pick ? "border-ink bg-ink text-bg shadow-[0_30px_70px_-35px_rgb(0_0_0/.6)]" : "border-line bg-surface"}`}>
                 <Pattern kind="temple" className={`absolute inset-x-0 top-0 -scale-y-100 ${pick ? "text-accent-soft" : "text-accent"}`} />
                 {pick ? <Pattern kind="jaali" className="absolute inset-0 text-bg opacity-[.07]" /> : <CornerPattern kind="kolam" className="top-0 right-0 h-[200px] w-[200px] text-accent opacity-[.12]" radius={200} />}
                 <p className="relative min-h-[26px]">
-                  {pick && <span className="inline-block rounded-full bg-accent px-3 py-1 text-[12px] font-semibold text-accent-ink">{t.engage.pick}</span>}
+                  {pick && <span className="inline-block rounded-2xl bg-accent px-3 py-1 text-[12px] leading-snug font-semibold text-balance text-accent-ink">{t.engage.pick}</span>}
                 </p>
                 <h3 className="font-display-tight relative mt-3 text-[26px]">{p.t}</h3>
                 <p className={`relative mt-3 text-[14px] ${pick ? "text-bg/70" : "text-muted"}`}>
@@ -60,11 +60,11 @@ export function Engagements({ t }: { t: Dictionary }) {
                     </li>
                   ))}
                 </ul>
-                <div className={`relative mt-8 flex items-center justify-between gap-3 border-t pt-5 ${pick ? "border-bg/20" : "border-line"}`}>
+                <div className={`relative mt-8 flex flex-wrap items-center justify-between gap-3 border-t pt-5 ${pick ? "border-bg/20" : "border-line"}`}>
                   <span className={`text-[14px] ${pick ? "text-bg/70" : "text-muted"}`}>{t.engage.price}</span>
                   <a
                     href="#contact"
-                    className={`press inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full px-4 text-[14px] font-semibold ${pick ? "bg-accent text-accent-ink" : "border border-line hover:border-ink"}`}
+                    className={`press inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full px-4 text-[14px] font-semibold ${pick ? "bg-accent text-accent-ink" : "border border-line hover:border-ink"}`}
                   >
                     {t.engage.cta}
                     <I.ArrowRight aria-hidden />
@@ -97,14 +97,14 @@ export function Trust({ t }: { t: Dictionary }) {
           <Kicker className="text-accent-soft">{t.trust.eyebrow}</Kicker>
           <Title><span id="trust-title">{t.trust.title}</span></Title>
           <p className="mt-5 max-w-[44ch] text-[17px] leading-relaxed text-bg/70">{t.trust.body}</p>
-          <a href={site.legalHref} className="mt-7 inline-flex items-center gap-2 font-semibold underline-offset-4 hover:underline">
+          <a href={site.legalHref} className="mt-7 inline-flex min-h-11 items-center gap-2 font-semibold underline-offset-4 hover:underline focus-visible:outline-accent-soft">
             <I.Scales aria-hidden />
             {t.trust.legal}
             <I.ArrowUpRight aria-hidden />
           </a>
           <p className="mt-3 max-w-[40ch] text-[14px] text-bg/60">{t.trust.dpa}</p>
         </div>
-        <ul className="grid gap-x-10 gap-y-8 self-center sm:grid-cols-2">
+        <ul className="grid gap-x-10 gap-y-8 self-center sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
           {t.trust.items.map((x, i) => {
             const Ico = TRUST_ICONS[i];
             return (
@@ -138,8 +138,8 @@ export function Faq({ t }: { t: Dictionary }) {
             <Title><span id="faq-title">{t.faq.title}</span></Title>
             <p className="mt-6 text-muted">{t.faq.more}</p>
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 font-medium">
-              <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 hover:text-accent"><I.EnvelopeSimple aria-hidden />{site.email}</a>
-              <a href={site.whatsapp.href} className="inline-flex items-center gap-2 hover:text-accent"><I.WhatsappLogo aria-hidden />WhatsApp</a>
+              <a href={`mailto:${site.email}`} className="inline-flex min-h-11 items-center gap-2 break-all hover:text-accent"><I.EnvelopeSimple aria-hidden />{site.email}</a>
+              <a href={site.whatsapp.href} className="inline-flex min-h-11 items-center gap-2 hover:text-accent"><I.WhatsappLogo aria-hidden />WhatsApp</a>
             </div>
           </div>
         </div>
@@ -166,7 +166,7 @@ export function Cta({ t }: { t: Dictionary }) {
   return (
     <section id="contact" aria-labelledby="cta-title" className="relative z-10 bg-bg">
       <div className="mx-auto max-w-page px-5 pb-20 md:px-8 md:pb-28">
-        <div className="relative grid items-end gap-10 overflow-hidden rounded-[32px] bg-accent px-6 py-16 text-accent-ink md:grid-cols-[1fr_auto] md:px-16 md:py-24">
+        <div className="relative grid items-end gap-10 overflow-hidden rounded-[32px] bg-accent px-6 py-14 text-accent-ink sm:px-10 sm:py-16 lg:grid-cols-[1fr_auto] lg:px-16 lg:py-24">
           <Pattern kind="jaali" className="absolute inset-0 opacity-[.1]" style={bigJaali} />
           <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 opacity-35" />
           <Pattern kind="temple" className="absolute inset-x-0 bottom-0 opacity-35" />
@@ -177,11 +177,11 @@ export function Cta({ t }: { t: Dictionary }) {
             <p className="mt-5 max-w-[52ch] text-[17px] leading-relaxed opacity-80">{t.cta.body}</p>
           </div>
           <div className="relative flex flex-wrap gap-3">
-            <a href={site.demoHref} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent-ink px-6 font-semibold text-accent hover:brightness-95">
+            <a href={site.demoHref} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent-ink px-6 font-semibold text-accent focus-visible:outline-accent-ink hover:brightness-95">
               {t.cta.primary}
               <I.ArrowRight weight="bold" aria-hidden />
             </a>
-            <a href={site.whatsapp.href} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full border border-accent-ink/40 px-6 font-semibold hover:border-accent-ink">
+            <a href={site.whatsapp.href} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full border border-accent-ink/40 px-6 font-semibold focus-visible:outline-accent-ink hover:border-accent-ink">
               <I.WhatsappLogo size={18} aria-hidden />
               {t.cta.secondary}
             </a>

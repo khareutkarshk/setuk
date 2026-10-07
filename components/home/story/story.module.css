@@ -1,12 +1,18 @@
 /* The homepage story: a sticky WebGL stage behind a column of chapter cards. The controller sets
-   data-active on the chapter whose card is centred, and --hero (1 to 0) on the stage as the hero leaves. */
+   data-active on the chapter whose card is centred, and --hero (1 to 0) on the stage as the hero leaves.
 
-.story { position: relative; }
+   Three layouts, picked here and read by the controller and the engine through --story-mode:
+     classic  landscape, at least 768 wide and 560 tall: full-screen stage, side cards over it
+     band     portrait: the stage is a band at the top, the chapters scroll natively beneath it
+     side     short or narrow landscape: the stage fills the left column, the chapters the right
+   The media queries are repeated in each block below (compact = band or side). */
+
+.story { position: relative; --story-mode: classic; }
 
 .stage {
   position: sticky; top: 0;
-  height: 100vh; height: 100svh;
-  margin-bottom: -100vh; margin-bottom: -100svh;
+  height: 100vh; height: 100lvh;
+  margin-bottom: -100vh; margin-bottom: -100lvh;
   overflow: hidden;
   background: #140e0a;
 }
@@ -15,8 +21,8 @@
 .stage canvas { opacity: 0; transition: opacity 1.2s var(--ease-out); }
 .stage[data-ready] canvas { opacity: 1; }
 .stage[data-ready] .poster { opacity: 0; }
-/* The photo only shows if the 3D chamber could not start */
-.stage[data-boot="loading"] .poster, .stage[data-boot="done"] .poster { opacity: 0; }
+/* The photo shows whenever the chamber isn't on screen: it could not start, or its context was lost */
+.stage[data-boot="loading"] .poster { opacity: 0; }
 
 /* First-load splash: covers the viewport until the chamber is ready */
 .splash {
@@ -26,7 +32,7 @@
   transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), visibility 0s linear 0s;
 }
 .splash[data-hidden] { opacity: 0; transform: scale(1.03); visibility: hidden; pointer-events: none; transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), visibility 0s linear 0.8s; }
-.splashEmblem { position: relative; width: min(300px, 70vw); aspect-ratio: 1; display: grid; place-items: center; }
+.splashEmblem { position: relative; width: min(300px, 70vw, 38vh); aspect-ratio: 1; display: grid; place-items: center; }
 .splashLotus { position: absolute; inset: -18%; width: 136%; height: 136%; opacity: 0.4; animation: lotusIn 1.6s var(--ease-out) both; }
 .splashLotus > g { transform-origin: 200px 200px; }
 .splashLotus [data-ring="1"] { animation: lotusTurn 90s linear infinite; opacity: 0.7; }
@@ -43,6 +49,8 @@
 .splashBar > span { position: absolute; inset: 0; border-radius: inherit; background: var(--accent); transform-origin: left; transform: scaleX(0); }
 .splashBar > span::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.6), transparent); animation: sweep 1.4s ease-in-out infinite; }
 .splashStatus { margin-top: 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; animation: rise 0.8s var(--ease-out) 1.3s both, breathe 2.4s ease-in-out 2s infinite; }
+@supports (height: 1svh) { .splashEmblem { width: min(300px, 70vw, 38svh); } }
+:global(html[lang="hi"]) .splashStatus { letter-spacing: 0; text-transform: none; }
 @keyframes lotusTurn { to { rotate: 360deg; } }
 @keyframes lotusIn { from { opacity: 0; scale: 0.85; } }
 @keyframes bloom { 50% { scale: 1.12; } }
@@ -60,9 +68,6 @@
   position: absolute; inset: 0; pointer-events: none; opacity: var(--hero, 1);
   background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 95%, transparent) 0%, color-mix(in srgb, var(--bg) 75%, transparent) 32%, transparent 64%);
 }
-@media (max-width: 767px) {
-  .scrim { background: linear-gradient(0deg, color-mix(in srgb, var(--bg) 97%, transparent) 0%, color-mix(in srgb, var(--bg) 90%, transparent) 62%, color-mix(in srgb, var(--bg) 40%, transparent) 82%, transparent 94%); }
-}
 .loading { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); color: #f3eee8cc; font-size: 13px; display: flex; gap: 10px; align-items: center; transition: opacity 0.6s; }
 .stage[data-ready] .loading { opacity: 0; }
 .spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #f3eee844; border-top-color: #f3eee8; animation: spin 0.9s linear infinite; }
@@ -76,6 +81,11 @@
 .inner { width: 100%; max-width: var(--container-page); margin: 0 auto; padding: 0 20px; display: flex; }
 @media (min-width: 768px) { .inner { padding: 0 72px 0 32px; } }
 .step[data-side="right"] .inner { justify-content: flex-end; }
+/* The hero: centred beside the proof strip; short screens reserve room under the header and above the strip */
+.heroInner { flex-direction: column; justify-content: center; }
+@media (max-height: 800px) { .heroInner { padding-top: calc(var(--header-h) + 24px); padding-bottom: 168px; } }
+/* How we work as plain cards, for compact layouts and no-JS (classic pins one card instead) */
+.howInline { display: none; }
 
 .card {
   position: relative; overflow: hidden;
@@ -97,15 +107,7 @@
 .step[data-active] .card { opacity: 1; transform: none; }
 @media (prefers-reduced-transparency: reduce) { .card { background: var(--surface); backdrop-filter: none; } }
 
-/* Phones: the card sticks to the bottom of the screen for its whole chapter, the scene sits above it */
 @media (max-width: 767px) {
-  .step:not(.hero) .inner { align-self: stretch; align-items: flex-end; padding-bottom: 28px; }
-  .card {
-    position: sticky; bottom: 28px; padding: 28px 20px 20px; border-radius: 20px;
-    background: color-mix(in srgb, var(--surface) 97%, transparent);
-    max-height: calc(100svh - 190px); overflow-y: auto; overscroll-behavior: contain;
-  }
-  .hideSm { display: none; }
   .numeral { font-size: 44px; top: 18px; }
   .corner { width: 170px; height: 170px; }
 }
@@ -124,6 +126,7 @@
 /* Who we serve */
 .group { margin-top: 18px; }
 .groupLabel { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+:global(html[lang="hi"]) .groupLabel { letter-spacing: 0; text-transform: none; }
 .tier { display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
 .tier:last-child { border-bottom: 0; }
 .ico { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: var(--accent-soft); color: var(--accent); flex: none; }
@@ -163,11 +166,6 @@
 .slide[data-on], .slideFade[data-on] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 .numeral.slideFade[data-on] { opacity: 0.13; }
 @media (prefers-reduced-motion: reduce) { .slide { transform: none; } }
-@media (max-width: 767px) {
-  .howPin { align-items: flex-end; }
-  .howPin .inner { padding-bottom: 28px; }
-  .howPin .card { position: relative; bottom: auto; }
-}
 .time { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; font-size: 13px; font-weight: 500; background: var(--accent-soft); margin-top: 12px; }
 /* "You get": a hairline, a seal, and the outcome set as the card's closing line */
 .get { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; margin-top: 22px; padding-top: 18px; border-top: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--line)); }
@@ -190,5 +188,91 @@
 .dot { width: 6px; height: 6px; border-radius: 99px; background: #f3eee8; opacity: 0.45; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25); transition: all 0.45s var(--ease-out); }
 .rail button[aria-current="step"] .dot { height: 22px; opacity: 1; background: var(--accent); }
 .tip { position: absolute; right: 22px; white-space: nowrap; font-size: 12px; padding: 4px 9px; border-radius: 8px; background: var(--surface); color: var(--ink); opacity: 0; transform: translateX(4px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; }
-.rail button:hover .tip, .rail button:focus-visible .tip { opacity: 1; transform: none; }
-@media (max-width: 767px) { .rail { right: 4px; } .tip { display: none; } .rail button { height: 18px; } }
+.rail button:focus-visible .tip { opacity: 1; transform: none; }
+@media (hover: hover) { .rail button:hover .tip { opacity: 1; transform: none; } }
+@media (pointer: coarse) { .rail button { height: 28px; } .tip { display: none; } }
+
+/* ---------- compact layouts (band and side): the scene beside the text, never under it ---------- */
+@media (orientation: portrait), (max-height: 559.98px), (max-width: 767.98px) {
+  .story { --gap: clamp(20px, 5vh, 48px); }
+  .stage { background: var(--bg); }
+  .scrim { display: none; }
+  .topScrim { height: calc(var(--header-h) + 24px); }
+  .step { min-height: 0; padding-block: var(--gap); }
+  .how { min-height: 0; }
+  .inner, .step[data-side="right"] .inner { justify-content: center; padding: 0 16px; }
+  /* cards sit on the page: opaque, always readable, every line shown */
+  .card, .wide {
+    max-width: 640px; padding: 30px 20px 22px;
+    background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 14px 34px -22px rgb(0 0 0 / 0.35);
+    opacity: 1; transform: none;
+  }
+  .list > * { opacity: 1; transform: none; transition: none; }
+  .proof > div { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--surface); }
+  .hero { padding-block: 0; }
+  .heroInner { justify-content: flex-start; padding: 28px 16px 40px; }
+  .heroProof { position: static; margin-top: 32px; }
+
+  /* How we work: the progress header stays pinned while the four step cards scroll beneath it */
+  .howPin { position: sticky; height: auto; margin-bottom: 0; display: block; z-index: 1; pointer-events: auto; transition: top 0.3s var(--ease-out); }
+  .howPin .inner { padding: 0; max-width: none; }
+  .howPin .card {
+    max-width: none; border-radius: 0; padding: 10px 16px 9px; border-width: 0 0 1px; box-shadow: none;
+    background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  .howPin :is(.band, .lotus, .numeral) { display: none; }
+  .howPin .slides { margin-top: 8px; }
+  .howPin .slide > :not(:first-child) { display: none; }
+  .howInline { display: flex; }
+  /* the pinned header already says which step this is */
+  .howInline .eyebrow { display: none; }
+}
+@supports (height: 1svh) {
+  @media (orientation: portrait), (max-height: 559.98px), (max-width: 767.98px) { .story { --gap: clamp(20px, 5svh, 48px); } }
+}
+
+/* band: the scene is a band across the top; text scrolls under it */
+@media (orientation: portrait) {
+  .story { --story-mode: band; --band: clamp(250px, 44vh, 460px); }
+  .stage {
+    height: var(--band); margin-bottom: 0; z-index: 2;
+    box-shadow: 0 1px 0 var(--line), 0 12px 26px -16px rgb(0 0 0 / 0.45);
+  }
+  .hero { min-height: calc(100vh - var(--band)); }
+  .step[id] { scroll-margin-top: var(--band); }
+  .rail { display: none; }
+  .howPin { top: var(--band); }
+}
+@media (orientation: portrait) and (min-width: 600px) { .story { --band: clamp(380px, 46vh, 620px); } }
+@supports (height: 1svh) {
+  @media (orientation: portrait) {
+    .story { --band: clamp(250px, 44svh, 460px); }
+    .hero { min-height: calc(100svh - var(--band)); }
+  }
+  @media (orientation: portrait) and (min-width: 600px) { .story { --band: clamp(380px, 46svh, 620px); } }
+}
+
+/* side: the scene fills the left column; text scrolls in the right one */
+@media (orientation: landscape) and (max-height: 559.98px), (orientation: landscape) and (max-width: 767.98px) {
+  .story { --story-mode: side; --side-w: 52vw; }
+  .stage { width: var(--side-w); }
+  .step, .howGroup { margin-inline-start: var(--side-w); }
+  .howGroup .step { margin-inline-start: 0; }
+  .hero { min-height: 0; }
+  .heroInner { padding-top: calc(var(--header-h) + 20px); }
+  .heroTitle { font-size: 34px; }
+  .rail { right: auto; left: calc(var(--side-w) - 34px); top: calc(50% + var(--header-h) / 2); }
+  .howPin { top: var(--header-h); }
+  :global(html[data-hide-header]) .howPin { top: 0; }
+}
+
+/* Without JavaScript: no splash or rail, the photo as the scene, every card readable */
+@media (scripting: none) {
+  .splash, .loading, .rail { display: none; }
+  .stage[data-boot] .poster { opacity: 1; }
+  .card, .list > * { opacity: 1; transform: none; }
+  .howPin { display: none; }
+  .howInline { display: flex; }
+  .howInline .eyebrow { display: flex; }
+}

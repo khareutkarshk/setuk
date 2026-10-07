@@ -50,6 +50,8 @@ export interface SadanOptions {
   /** Load progress, 0..1, reported as textures arrive and the scene compiles */
   onProgress?: (p: number) => void;
   onContextLost?: () => void;
+  /** The browser gave the context back; the controller rebuilds the scene */
+  onContextRestored?: () => void;
 }
 
 export interface SadanHandle {
@@ -103,7 +105,9 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     return null;
   }
   const onLost = (e: Event) => { e.preventDefault(); o.onContextLost?.(); };
+  const onRestored = () => o.onContextRestored?.();
   canvas.addEventListener("webglcontextlost", onLost);
+  canvas.addEventListener("webglcontextrestored", onRestored);
   let pixelRatio = Math.min(devicePixelRatio, T.dpr);
   renderer.setPixelRatio(pixelRatio);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -805,6 +809,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   /* ---------- the office set: clutter, the fix, the consultant and the politician ---------- */
   const office = createOfficeSet({
     world, T, mat: P, paint, maxAniso, accent: glowColor, normalFromHeight, peopleBase: o.assetBase + "people/",
+    compile: (ob) => renderer.compileAsync(ob, camera, scene),
     seatPoints: seats.filter((_, j) => j % 7 === 3).map((s) => V(C.x + (s.R + 0.15) * Math.sin(s.a), s.y + 0.9, C.z + (s.R + 0.15) * Math.cos(s.a)))
   });
   extras.push(...office.extras);
@@ -820,7 +825,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     sp.scale.set(7.2, (7.2 * TAG.h) / TAG.w, 1);
     sp.renderOrder = 3;
     world.add(sp);
-    return { s, mat, text };
+    return { s, sp, mat, text };
   });
 
   /* Dust in the downlights, for the wide shots (mid and high) */
@@ -881,6 +886,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   /* ---------- post-processing (high tier only) ---------- */
   let W = 1, Hh = 1;
   let composer: EffectComposer | null = null, gtao: GTAOPass | null = null, usePost = T.post;
+  stage.dataset.quality = `${T.tier}${usePost ? "+post" : ""}@${pixelRatio}`;
   if (T.post) {
     const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: renderer.capabilities.isWebGL2 ? 4 : 0 });
     composer = new EffectComposer(renderer, rt);
@@ -901,11 +907,13 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
 
   /* ---------- camera path: sx shifts the subject away from the card (positive when the card is on the left) ---------- */
   const eye = heroL(0, 1.78, 0.72);
-  const STOPS = [
+  /* c: the framing for compact layouts (the scene is a band above or beside the text, no card over it) */
+  interface Stop { p: THREE.Vector3; t: THREE.Vector3; fov: number; sx: number; par: number; c?: { p?: THREE.Vector3; t?: THREE.Vector3; fov?: number } }
+  const STOPS: Stop[] = [
     { p: V(0, 9.6, 12.4), t: V(0, 4.6, -14), fov: 52, sx: 0.16, par: 1 },                              // 0 Welcome: gallery view
     { p: V(0, 37, 3.5), t: V(0, 0, -3.5), fov: 46, sx: 0.2, par: 0.6 },                                 // 1 Who we serve: above the House
-    { p: V(0.12, 1.72, -8.25), t: V(0, 1.12, -10.8), fov: 46, sx: -0.17, par: 0.2 },                     // 2 The problem: the cluttered table
-    { p: V(2.5, 5.3, -14.7), t: V(-0.5, 1.2, -8.0), tp: V(-0.3, 0.7, -9.6), fov: 52, sx: 0.17, par: 0.3 },                      // 3 With Setuk: from the Speaker's side, the House lights up
+    { p: V(0.12, 1.72, -8.25), t: V(0, 1.12, -10.8), c: { t: V(0, 1.42, -11), fov: 50 }, fov: 46, sx: -0.17, par: 0.2 },                     // 2 The problem: the cluttered table
+    { p: V(2.5, 5.3, -14.7), t: V(-0.5, 1.2, -8.0), c: { t: V(-0.3, 0.7, -9.6) }, fov: 52, sx: 0.17, par: 0.3 },                      // 3 With Setuk: from the Speaker's side, the House lights up
     { p: eye, t: tabletPos.clone().addScaledVector(heroOut, -0.05), fov: 40, sx: 0.17, par: 0.06 },     // 4 Products: your desk
     { p: V(-2.75, 1.86, -9.3), t: V(0.35, 0.98, -10.95), fov: 40, sx: -0.16, par: 0.15 },                  // 5 Discuss: the middle chairs, past the politician
     { p: V(2.05, 1.62, -10.5), t: V(0.55, 0.98, -10.93), fov: 42, sx: -0.18, par: 0.15 },                // 6 Design: over the consultant's shoulder
@@ -914,8 +922,9 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   ];
   const posCurve = new THREE.CatmullRomCurve3(STOPS.map((s) => s.p), false, "centripetal");
   const tgtCurve = new THREE.CatmullRomCurve3(STOPS.map((s) => s.t), false, "centripetal");
-  /* Portrait screens can aim a stop differently (tp), where the card at the bottom would cover the subject */
-  const tgtCurveP = new THREE.CatmullRomCurve3(STOPS.map((s) => ("tp" in s && s.tp ? s.tp : s.t)), false, "centripetal");
+  const posCurveC = new THREE.CatmullRomCurve3(STOPS.map((s) => s.c?.p ?? s.p), false, "centripetal");
+  const tgtCurveC = new THREE.CatmullRomCurve3(STOPS.map((s) => s.c?.t ?? s.t), false, "centripetal");
+  const fovC = STOPS.map((s) => s.c?.fov ?? s.fov);
   const N = STOPS.length;
   /* Hold at each stop, travel in the middle of the gap between two cards */
   const along = (p: number) => {
@@ -926,8 +935,17 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   const cur = { p: STOPS[0].p.clone(), t: STOPS[0].t.clone(), fov: STOPS[0].fov, sx: STOPS[0].sx, par: 1 };
   const goal = { p: V(0, 0, 0), t: V(0, 0, 0) };
 
+  /* Layout mode, set by the story CSS (classic: side cards over a full-screen stage; band/side: the stage is a
+     band above or beside the text). Compact modes frame the subject in the whole canvas, without sx. */
+  let mode: "classic" | "band" | "side" = "classic", snap = true;
+  const readMode = () => {
+    const m = getComputedStyle(stage).getPropertyValue("--story-mode").trim();
+    return m === "band" || m === "side" ? m : "classic";
+  };
   const resize = () => {
-    W = stage.clientWidth; Hh = stage.clientHeight;
+    W = Math.max(1, container.clientWidth || stage.clientWidth); Hh = Math.max(1, container.clientHeight || stage.clientHeight);
+    const m = readMode();
+    if (m !== mode) { mode = m; snap = true; }
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(W, Hh, false);
     if (composer) { composer.setPixelRatio(pixelRatio); composer.setSize(W, Hh); }
@@ -964,6 +982,18 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     () => (pixelRatio > 0.75 ? ((pixelRatio = 0.75), resize(), true) : false)
   ];
   const perf = { samples: [] as number[], lastRender: 0, skip: 20, done: o.quality === "high" };
+  /* The display's own frame cadence, from frames that render nothing: iOS Low Power Mode and some
+     browsers cap rAF at 30 fps, which must not read as a slow GPU */
+  const cadence = { last: 0, samples: [] as number[], base: 1000 / 60 };
+  const noteCadence = (now: number) => {
+    const g = now - cadence.last;
+    cadence.last = now;
+    if (g <= 0 || g > 100) return;
+    cadence.samples.push(g);
+    if (cadence.samples.length > 30) cadence.samples.shift();
+    const sorted = [...cadence.samples].sort((a, b) => a - b);
+    cadence.base = sorted[sorted.length >> 1];
+  };
   const trackPerf = (now: number) => {
     if (perf.done) return;
     const gap = now - perf.lastRender;
@@ -974,7 +1004,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     if (perf.samples.length < 40) return;
     const median = perf.samples.sort((a, b) => a - b)[20];
     perf.samples = [];
-    if (median > 26) {
+    if (median > Math.max(26, cadence.base * 1.35)) {
       while (degrade.length && !degrade.shift()!()) { /* skip steps that no longer apply */ }
       perf.skip = 10;
       if (!degrade.length) perf.done = true;
@@ -994,6 +1024,15 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     drawScreens();
   };
   addEventListener("resize", resize);
+  /* Backup for size changes without a window resize (layout mode, fonts); renders at once so the
+     reallocated canvas never shows blank */
+  let started = false;
+  const ro = new ResizeObserver(() => {
+    if (container.clientWidth === W && container.clientHeight === Hh && readMode() === mode) return;
+    resize();
+    if (started && !disposed) { cancelAnimationFrame(raf); frame(performance.now()); }
+  });
+  ro.observe(container);
   if (fine) addEventListener("pointermove", onPointer, { passive: true });
   document.addEventListener("visibilitychange", onVisibility);
   const stopThemeWatch = onThemeChange(refreshTheme);
@@ -1006,11 +1045,13 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
       disposed = true;
       cancelAnimationFrame(raf);
       io.disconnect();
+      ro.disconnect();
       removeEventListener("resize", resize);
       removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", onVisibility);
       stopThemeWatch();
       canvas.removeEventListener("webglcontextlost", onLost);
+      canvas.removeEventListener("webglcontextrestored", onRestored);
       disposeAll();
     }
   };
@@ -1018,38 +1059,55 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   /* Compile every shader before the first frame, so scrolling never stalls on a new material */
   o.onProgress?.(0.85);
   office.showAll(true);
-  try { await renderer.compileAsync(scene, camera); } catch { /* compile lazily */ }
+  const probe = new Promise<void>((done) => {
+    let n = 0;
+    const step = (now: number) => { if (n++) noteCadence(now); else cadence.last = now; if (n < 14) requestAnimationFrame(step); else done(); };
+    requestAnimationFrame(step);
+    setTimeout(done, 600);
+  });
+  try { await Promise.all([renderer.compileAsync(scene, camera), probe]); } catch { /* compile lazily */ }
   office.showAll(false);
   if (aborted()) { handle.dispose(); return null; }
   o.onProgress?.(0.97);
 
-  const right = V(0, 0, 0), up = V(0, 0, 0), fwd = V(0, 0, 0), worldUp = V(0, 1, 0), lastCam = new THREE.Matrix4();
-  let first = true, deskTimer = 0, lastP = -1, lastAnim = 0;
+  const right = V(0, 0, 0), up = V(0, 0, 0), fwd = V(0, 0, 0), worldUp = V(0, 1, 0), lastCam = new THREE.Matrix4(), lastProj = new THREE.Matrix4();
+  let first = true, deskTimer = 0, lastP = -1, lastAnim = 0, lastPulse = 0, rendered = true, renders = 0;
+  /* Eased values snap to their goal once the rest is below a pixel, so the loop goes idle when scrolling stops */
+  const settle = (a: number, b: number, eps: number) => (Math.abs(a - b) < eps ? b : a);
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    if (!visible || document.hidden) return;
+    if (!visible || document.hidden) { cadence.last = 0; return; }
+    if (rendered) cadence.last = now; else noteCadence(now);
+    rendered = false;
     let p = o.progress();
     if (o.reducedMotion) p = Math.round(p);
+    const compact = mode !== "classic";
 
     /* the office set animates first: the Run close-up feeds the camera goal */
     const t = now / 1000;
-    const set = office.update({ p, t, dt, reduced: o.reducedMotion, camera, viewH: Hh * pixelRatio });
+    const set = office.update({ p, t, dt, reduced: o.reducedMotion, camera, viewH: Hh * pixelRatio, compact, cssH: Hh });
     if (set.changed) dirty = Math.max(dirty, 1);
 
     /* camera goal from scroll, eased toward */
     const { u, i, e } = along(p);
-    posCurve.getPoint(u, goal.p);
-    (camera.aspect < 1 ? tgtCurveP : tgtCurve).getPoint(u, goal.t);
+    (compact ? posCurveC : posCurve).getPoint(u, goal.p);
+    (compact ? tgtCurveC : tgtCurve).getPoint(u, goal.t);
     const sw = office.shot.w;
     if (sw > 0) { goal.p.lerp(office.shot.p, sw); goal.t.lerp(office.shot.t, sw); }
-    const k = o.reducedMotion || first ? 1 : 1 - Math.exp(-dt * (sw > 0 && sw < 1 ? 2.2 : 4.5));
+    const goalFov = lerp(compact ? lerp(fovC[i], fovC[i + 1], e) : lerp(STOPS[i].fov, STOPS[i + 1].fov, e), office.shot.fov, sw);
+    const goalSx = compact ? 0 : lerp(STOPS[i].sx, STOPS[i + 1].sx, e);
+    const goalPar = lerp(STOPS[i].par, STOPS[i + 1].par, e);
+    const k = o.reducedMotion || first || snap ? 1 : 1 - Math.exp(-dt * (sw > 0 && sw < 1 ? 2.2 : 4.5));
+    snap = false;
     cur.p.lerp(goal.p, k); cur.t.lerp(goal.t, k);
-    cur.fov = lerp(cur.fov, lerp(lerp(STOPS[i].fov, STOPS[i + 1].fov, e), office.shot.fov, sw), k);
-    cur.sx = lerp(cur.sx, lerp(STOPS[i].sx, STOPS[i + 1].sx, e), k);
-    cur.par = lerp(cur.par, lerp(STOPS[i].par, STOPS[i + 1].par, e), k);
+    if (cur.p.distanceToSquared(goal.p) < 1e-10) cur.p.copy(goal.p);
+    if (cur.t.distanceToSquared(goal.t) < 1e-10) cur.t.copy(goal.t);
+    cur.fov = settle(lerp(cur.fov, goalFov, k), goalFov, 1e-4);
+    cur.sx = settle(lerp(cur.sx, goalSx, k), goalSx, 1e-5);
+    cur.par = settle(lerp(cur.par, goalPar, k), goalPar, 1e-4);
 
-    mouse.sx = lerp(mouse.sx, mouse.x, 1 - Math.exp(-dt * 3)); mouse.sy = lerp(mouse.sy, mouse.y, 1 - Math.exp(-dt * 3));
+    mouse.sx = settle(lerp(mouse.sx, mouse.x, 1 - Math.exp(-dt * 3)), mouse.x, 1e-4); mouse.sy = settle(lerp(mouse.sy, mouse.y, 1 - Math.exp(-dt * 3)), mouse.y, 1e-4);
     fwd.subVectors(cur.t, cur.p).normalize();
     right.crossVectors(fwd, worldUp).normalize();
     up.crossVectors(right, fwd);
@@ -1060,29 +1118,45 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     const below = camera.position.y < H - 0.2;
     chandelier.forEach((ob) => { ob.visible = below; });
 
-    /* Portrait screens: widen the lens and lift the subject above the card */
-    const portrait = camera.aspect < 1;
-    camera.fov = portrait ? Math.min(82, cur.fov * Math.pow(1.15 / camera.aspect, 0.55)) : cur.fov;
-    if (portrait) camera.setViewOffset(W, Hh, 0, Hh * (p < 0.5 ? 0.06 : 0.2), W, Hh);
-    else camera.setViewOffset(W, Hh, -cur.sx * W, 0, W, Hh);
+    /* Classic: the subject moves away from the card (sx). Compact: the canvas is the band, so the
+       subject sits in its centre; narrower bands widen the lens (continuous, in tangent space) */
+    if (compact) {
+      const s = camera.aspect < 1.6 ? Math.pow(1.6 / camera.aspect, 0.55) : 1;
+      camera.fov = Math.min(82, (2 * Math.atan(Math.tan((cur.fov * DEG) / 2) * s)) / DEG);
+      camera.clearViewOffset();
+    } else {
+      camera.fov = cur.fov;
+      camera.setViewOffset(W, Hh, -cur.sx * W, 0, W, Hh);
+    }
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
 
     /* seats */
     const heroOn = smooth(3.3, 3.85, p) * (1 - smooth(4.45, 4.85, p));
-    if (Math.abs(p - lastP) > 1e-4 || heroOn > 0.001) {
+    /* the pulse on your seat ticks like the idle animation (30 fps below high) and holds still with reduced motion */
+    const moved = Math.abs(p - lastP) > 1e-4;
+    const pulseTick = heroOn > 0.001 && !o.reducedMotion && (T.tier === "high" || now - lastPulse > 31);
+    if (moved || pulseTick) {
+      if (pulseTick) lastPulse = now;
+      const wave = o.reducedMotion ? 0 : Math.sin(t * 3);
       for (let j = 0; j < SEATS; j++) glowArr[j] = seatGlow(j, p);
-      glowArr[HERO] = Math.max(glowArr[HERO], heroOn * (1.1 + 0.35 * Math.sin(t * 3)));
+      glowArr[HERO] = Math.max(glowArr[HERO], heroOn * (1.1 + 0.35 * wave));
       glowCush.needsUpdate = glowBack.needsUpdate = true;
       const beamOn = heroOn * (1 - smooth(3.8, 4.1, p));
       beamMat.opacity = beamOn * 0.16;
-      ringMat.opacity = beamOn * (0.55 + 0.35 * Math.sin(t * 3));
-      ring.scale.setScalar(1 + 0.08 * Math.sin(t * 3));
+      ringMat.opacity = beamOn * (0.55 + 0.35 * wave);
+      ring.scale.setScalar(1 + 0.08 * wave);
       heroLight.intensity = heroOn * 3.5;
       bandLabels.forEach((b, j) => { b.mat.opacity = smooth(0.3 + j * 0.18, 0.45 + j * 0.18, p) * (1 - smooth(1.3, 1.8, p)); });
-      dirty = 2;
+      dirty = moved ? 2 : Math.max(dirty, 1);
     }
     lastP = p;
+    /* compact: the band labels (38 px in a 560 canvas, 7.2 wide) keep about 11 px on screen */
+    if (p < 1.9) {
+      const bl = bandLabels[0].sp, perUnit = Hh / (2 * bl.position.distanceTo(camera.position) * Math.tan((camera.fov * DEG) / 2));
+      const lk = compact ? THREE.MathUtils.clamp(11 / ((38 / TAG.w) * 7.2 * perUnit), 1, 2.4) : 1;
+      if (Math.abs(bl.scale.x - 7.2 * lk) > 1e-3) { bandLabels.forEach((b) => b.sp.scale.set(7.2 * lk, (7.2 * lk * TAG.h) / TAG.w, 1)); dirty = Math.max(dirty, 1); }
+    }
 
     /* idle animation: the office set and the dust; capped at 30 fps below the high tier */
     const dustOn = dust ? 1 - smooth(0.8, 1.4, p) : 0;
@@ -1104,17 +1178,19 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     }
 
     /* render only when something changed */
-    if (!lastCam.equals(camera.matrixWorld)) dirty = 2;
-    lastCam.copy(camera.matrixWorld);
+    if (!lastCam.equals(camera.matrixWorld) || !lastProj.equals(camera.projectionMatrix)) dirty = 2;
+    lastCam.copy(camera.matrixWorld); lastProj.copy(camera.projectionMatrix);
     if (!dirty) { perf.lastRender = 0; return; }
     dirty--;
+    rendered = true; renders++;
     if (usePost && composer) composer.render(); else renderer.render(scene, camera);
     if (first) { first = false; o.onProgress?.(1); o.onReady?.(); return; }
     trackPerf(now);
   };
   raf = requestAnimationFrame(frame);
+  started = true;
   if (new URLSearchParams(location.search).has("debug")) {
-    (window as unknown as { __sadan: unknown }).__sadan = { renderer, gtao, setPost: (on: boolean) => { usePost = on; dirty = 2; }, info: () => ({ calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, programs: renderer.info.programs?.length, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, quality: stage.dataset.quality ?? T.tier }) };
+    (window as unknown as { __sadan: unknown }).__sadan = { renderer, gtao, setPost: (on: boolean) => { usePost = on; dirty = 2; }, info: () => ({ calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, programs: renderer.info.programs?.length, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, quality: stage.dataset.quality ?? T.tier, mode, W, H: Hh, fov: +camera.fov.toFixed(2), pixelRatio, renders, baseline: +cadence.base.toFixed(1) }) };
   }
   return handle;
 }

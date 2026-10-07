@@ -41,24 +41,51 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
   const [percent, setPercent] = useState(0);
   const targetRef = useRef(0.04);
   const [boot, setBoot] = useState<"loading" | "done" | "failed">("loading");
+  /* Bumped to rebuild the chamber after the browser drops the WebGL context (at most twice) */
+  const [epoch, setEpoch] = useState(0);
 
-  /* Scroll chrome: active chapter, scrim, rail visibility */
+  /* Scroll chrome: active chapter, scrim, rail visibility, the How card, the header on compact screens */
   useEffect(() => {
     const root = rootRef.current!;
+    const html = document.documentElement;
     const steps = [...root.querySelectorAll<HTMLElement>("[data-step]")];
-    const progress = createScrollProgress(steps);
+    /* Layout mode from the story CSS: the reading area (and so the focus line) sits below the band in
+       band mode and right of the scene in side mode */
+    let mode = "classic", band = 0, headerH = 64;
+    const readLayout = () => {
+      const m = getComputedStyle(root).getPropertyValue("--story-mode").trim();
+      mode = m === "band" || m === "side" ? m : "classic";
+      band = mode === "band" ? stageRef.current?.offsetHeight ?? 0 : 0;
+      headerH = parseFloat(getComputedStyle(html).getPropertyValue("--header-h")) || 64;
+    };
+    readLayout();
+    const focus = () => (mode === "band" ? band + (innerHeight - band) / 2 : mode === "side" ? headerH + (innerHeight - headerH) / 2 : innerHeight / 2);
+    /* compact: a chapter taller than the reading area arrives with its top in view, not its middle */
+    const anchor = (h: number) => (mode === "classic" ? h / 2 : Math.min(h / 2, (innerHeight - (mode === "band" ? band : headerH)) / 2 - 8));
+    const progress = createScrollProgress(steps, focus, anchor);
+    progressRef.current = progress;
     /* "How we work": a story card over consecutive chapters, from data-how onwards */
     const how = root.querySelector<HTMLElement>("[data-how]");
+    const pin = how?.querySelector<HTMLElement>("[data-pin]");
     const howFirst = Number(how?.dataset.how ?? 0);
-    const howSlides = how ? [...how.querySelectorAll<HTMLElement>("[data-k]")] : [];
-    const howBars = how ? [...how.querySelectorAll<HTMLElement>("[data-bar]")] : [];
-    let lastSlide = -1;
-    progressRef.current = progress;
-    let lastActive = -1, lastRail: boolean | null = null, frame = 0;
+    const howSlides = pin ? [...pin.querySelectorAll<HTMLElement>("[data-k]")] : [];
+    const howBars = pin ? [...pin.querySelectorAll<HTMLElement>("[data-bar]")] : [];
+    let lastSlide = -1, lastActive = -1, lastRail: boolean | null = null, frame = 0;
+    /* where the reader is, to put them back after a rotation or a resize across layouts */
+    let lastP = 0, lastW = innerWidth, inView = false;
+    /* ?ch=N opens at chapter N (reviews and screenshots) and holds it through re-measures until the visitor acts */
+    const chParam = new URLSearchParams(location.search).get("ch");
+    let pinCh: number | null = chParam === null ? null : Number(chParam) || 0;
+    const release = () => { pinCh = null; };
+    const releaseOn = ["pointerdown", "wheel", "keydown", "touchstart"] as const;
+    releaseOn.forEach((e) => addEventListener(e, release, { once: true, passive: true }));
+    let lastY = scrollY, hideHeader = false;
+    const setHideHeader = (on: boolean) => { if (on !== hideHeader) { hideHeader = on; html.toggleAttribute("data-hide-header", on); } };
 
     const update = () => {
       frame = 0;
       const p = progress.get();
+      if (innerWidth === lastW) lastP = p;
       steps.forEach((el, i) => el.toggleAttribute("data-active", Math.abs(p - i) < 0.4));
       scrimRef.current?.style.setProperty("--hero", String(1 - smooth(0.05, 0.45, p)));
       if (how) {
@@ -70,13 +97,30 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       }
       const a = Math.round(p);
       if (a !== lastActive) { lastActive = a; setActive(a); }
-      const r = root.getBoundingClientRect();
-      const rail = r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5;
+      const r = root.getBoundingClientRect(), f = focus();
+      inView = r.top < innerHeight && r.bottom > 0;
+      const rail = r.top < f && r.bottom > f;
       if (rail !== lastRail) { lastRail = rail; setRailVisible(rail); }
+      /* compact screens: the header slides away while reading down through the story, back on any scroll up */
+      const y = scrollY;
+      if (mode === "classic" || p < 0.6 || r.bottom <= innerHeight) { setHideHeader(false); lastY = y; }
+      else if (y - lastY > 8) { setHideHeader(true); lastY = y; }
+      else if (lastY - y > 8) { setHideHeader(false); lastY = y; }
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-    const remeasure = () => { progress.measure(); schedule(); };
+    const remeasure = () => {
+      const prevMode = mode, prevW = lastW;
+      readLayout();
+      lastW = innerWidth;
+      progress.measure();
+      if (pinCh !== null) scrollTo({ top: progress.centre(pinCh), behavior: "instant" });
+      /* the layout changed under the reader (rotation, split view, a resize across modes): keep their place.
+         Height-only changes (mobile toolbars) are left alone so they never fight a fling. */
+      else if (inView && (mode !== prevMode || innerWidth !== prevW)) scrollTo({ top: progress.at(lastP), behavior: "instant" });
+      schedule();
+    };
 
+    if (pinCh !== null) scrollTo({ top: progress.centre(pinCh), behavior: "instant" });
     update();
     addEventListener("scroll", schedule, { passive: true });
     addEventListener("resize", remeasure);
@@ -84,15 +128,21 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
     const ro = new ResizeObserver(remeasure);
     ro.observe(root);
 
-    /* ?ch=N opens at chapter N (reviews and screenshots) */
-    const ch = new URLSearchParams(location.search).get("ch");
-    if (ch !== null) scrollTo({ top: progress.centre(Number(ch) || 0), behavior: "instant" });
+    if (new URLSearchParams(location.search).has("debug")) {
+      (window as unknown as { __story: unknown }).__story = {
+        go: (i: number) => { pinCh = null; scrollTo({ top: progress.centre(i), behavior: "instant" }); },
+        p: () => progress.get(),
+        mode: () => mode
+      };
+    }
 
     return () => {
       cancelAnimationFrame(frame);
       removeEventListener("scroll", schedule);
       removeEventListener("resize", remeasure);
+      releaseOn.forEach((e) => removeEventListener(e, release));
       ro.disconnect();
+      html.removeAttribute("data-hide-header");
     };
   }, []);
 
@@ -113,7 +163,11 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       setPercent(Math.floor(shown * 100));
       if (shown < 1) raf = requestAnimationFrame(animate);
     };
-    raf = requestAnimationFrame(animate);
+    if (epoch === 0) raf = requestAnimationFrame(animate);
+
+    /* A lost context shows the photo; the chamber is rebuilt when the context comes back, or after 3s */
+    let rebuild = 0;
+    const again = () => { clearTimeout(rebuild); if (epoch < 2 && !ac.signal.aborted) setEpoch(epoch + 1); };
 
     import("@/lib/sadan/engine")
       .then(({ createSadan }) => {
@@ -129,7 +183,12 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
           signal: ac.signal,
           onProgress: (p) => { targetRef.current = Math.max(targetRef.current, p); },
           onReady: () => { targetRef.current = 1; setReady(true); },
-          onContextLost: () => setReady(false)
+          onContextLost: () => {
+            setReady(false);
+            clearTimeout(rebuild);
+            rebuild = window.setTimeout(() => { if (!document.hidden) again(); }, 3000);
+          },
+          onContextRestored: again
         });
       })
       .then((h) => {
@@ -143,16 +202,19 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
         if (!ac.signal.aborted) setBoot("failed");
       });
 
-    /* Never trap the visitor behind the splash on a slow or stuck load */
-    const timeout = setTimeout(() => setBoot((b) => (b === "loading" ? "failed" : b)), 15000);
+    /* Never trap the visitor behind the splash on a slow or stuck load; compact screens give up sooner
+       (the photo shows in the band and the chamber still fades in when it is ready) */
+    const compact = matchMedia("(orientation: portrait), (max-height: 559.98px), (max-width: 767.98px)").matches;
+    const timeout = setTimeout(() => setBoot((b) => (b === "loading" ? "failed" : b)), compact ? 6000 : 15000);
 
     return () => {
       clearTimeout(timeout);
+      clearTimeout(rebuild);
       cancelAnimationFrame(raf);
       ac.abort();
       handle?.dispose();
     };
-  }, [labels]);
+  }, [labels, epoch]);
 
   /* Hold the splash a beat at 100 so the count visibly completes */
   useEffect(() => {

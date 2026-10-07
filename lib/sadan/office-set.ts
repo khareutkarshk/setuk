@@ -39,6 +39,8 @@ export interface SetKit {
   seatPoints: THREE.Vector3[];
   /** Public folder holding the rigged people (consultant.glb, politician.glb); mid and high tiers swap them in */
   peopleBase?: string;
+  /** Compile an object's materials against the scene's lights, so late arrivals (the rigged people) never compile mid-scroll */
+  compile?: (o: THREE.Object3D) => Promise<unknown>;
 }
 
 export interface SetFrame {
@@ -51,6 +53,10 @@ export interface SetFrame {
   camera: THREE.PerspectiveCamera;
   /** Drawing buffer height in pixels, for point sizes */
   viewH: number;
+  /** Compact layouts (the scene is a small band): badges regroup and text keeps a minimum size on screen */
+  compact?: boolean;
+  /** Canvas height in CSS pixels, for on-screen text sizes */
+  cssH?: number;
 }
 
 export interface OfficeSet {
@@ -411,8 +417,10 @@ export function createOfficeSet(k: SetKit): OfficeSet {
    */
   let swapped = false, gone = false;
   const avatars: Avatar[] = [];
-  const swapIn = (spec: AvatarSpec, which: "consultant" | "politician") => loadAvatar(spec).then((next) => {
+  const swapIn = (spec: AvatarSpec, which: "consultant" | "politician") => loadAvatar(spec).then(async (next) => {
     avatars.push(next);
+    if (gone) return;
+    await k.compile?.(next.root).catch(() => undefined);
     if (gone) return;
     const old = which === "consultant" ? consultant : politician;
     next.root.position.copy(old.root.position); next.root.quaternion.copy(old.root.quaternion);
@@ -522,7 +530,14 @@ export function createOfficeSet(k: SetKit): OfficeSet {
     if (on) { set.visible = clutter.visible = meeting.visible = true; set.traverse((o) => { o.visible = true; }); }
   };
 
-  const update = ({ p, t, dt, reduced, camera, viewH }: SetFrame) => {
+  /* On-screen size floor for sprite text: the factor that brings text of height `world` (world units) at
+     `pos` up to `px` CSS pixels, between 1 and `cap` */
+  const textFloor = (camera: THREE.PerspectiveCamera, cssH: number, pos: THREE.Vector3, world: number, px: number, cap: number) => {
+    const perUnit = cssH / (2 * pos.distanceTo(camera.position) * Math.tan((camera.fov * Math.PI) / 360));
+    return THREE.MathUtils.clamp(px / (world * perUnit), 1, cap);
+  };
+  const gridHome = V();
+  const update = ({ p, t, dt, reduced, camera, viewH, compact = false, cssH = 0 }: SetFrame) => {
     let changed = false;
     if (showing) return { animating: false, changed };
     const nearTable = p > 1.25 && p < 8.9;
@@ -539,11 +554,16 @@ export function createOfficeSet(k: SetKit): OfficeSet {
       const fail = reduced ? 99 : clock.fail;
       const mg = smooth(2.32, 2.92, p);
       const gather = smooth(0, 0.6, mg), vanish = smooth(0.45, 0.75, mg), arrive = smooth(0.55, 0.92, mg);
+      /* compact: captions (30 px in a 320 canvas, 0.36 wide) keep about 8 px on screen, the four badges in a 2x2 grid */
+      const bk = compact && cssH ? textFloor(camera, cssH, FIX, (30 / BADGE.w) * 0.36, 8, 2.6) : 1;
+      /* grown that large they would dip behind the desks in front, so in compact layouts they draw on top */
+      if (badges[0].b.mat.depthTest === compact) [...badges.flatMap((x) => [x.b.mat, x.tag.mat]), fixed.mat, fixedTag.mat].forEach((m) => { m.depthTest = !compact; });
       badges.forEach((x, i) => {
         const f = smooth(0.85 + i * 0.32, 1.15 + i * 0.32, fail);
         const bob = reduced ? 0 : Math.sin(t * 1.6 + i * 1.3) * 0.012;
-        x.b.sp.position.lerpVectors(x.home, FIX, gather).y += bob - f * 0.05 * (1 - gather);
-        const sc0 = x.b.base * (1 - vanish) * (1 - 0.12 * f);
+        const home = compact ? gridHome.set(((i % 2) - 0.5) * 0.6 * bk, BADGE_Y + 0.12 + (i < 2 ? 0.27 : -0.27) * bk, BADGE_Z) : x.home;
+        x.b.sp.position.lerpVectors(home, FIX, gather).y += bob - f * 0.05 * (1 - gather);
+        const sc0 = x.b.base * bk * (1 - vanish) * (1 - 0.12 * f);
         x.b.sp.scale.set(sc0, (sc0 * BADGE.h) / BADGE.w, 1);
         x.b.mat.rotation = f * (i % 2 ? -0.16 : 0.14) * (1 - gather);
         const grey = 1 - f * 0.45;
@@ -551,14 +571,16 @@ export function createOfficeSet(k: SetKit): OfficeSet {
         x.b.sp.visible = sc0 > 0.002;
         const tg = f * (1 - smooth(0, 0.25, mg)), pop = tg > 0 ? 1 + 0.25 * Math.sin(Math.min(1, tg) * Math.PI) : 0;
         x.tag.sp.visible = tg > 0.01;
-        x.tag.sp.scale.set(x.tag.base * tg * pop, (x.tag.base * tg * pop * TAG.h) / TAG.w, 1);
+        x.tag.sp.scale.set(x.tag.base * bk * tg * pop, (x.tag.base * bk * tg * pop * TAG.h) / TAG.w, 1);
         hang(x.tag.sp, x.b.sp);
       });
-      const fs = fixed.base * arrive * (1 + 0.12 * Math.sin(arrive * Math.PI));
+      /* compact: the "One system" tag (38 px in a 560 canvas, 0.66 wide) keeps about 10 px on screen */
+      const fk = compact && cssH ? textFloor(camera, cssH, FIX, (38 / TAG.w) * 0.66, 10, 3.5) : 1;
+      const fs = fixed.base * fk * arrive * (1 + 0.12 * Math.sin(arrive * Math.PI));
       fixed.sp.visible = fs > 0.002; fixed.sp.scale.set(fs, (fs * BADGE.h) / BADGE.w, 1);
-      fixed.sp.position.copy(FIX).add(V(0, arrive * 0.3 + (reduced ? 0 : Math.sin(t * 1.4) * 0.015), 0));
+      fixed.sp.position.copy(FIX).add(V(0, arrive * 0.3 * fk + (reduced ? 0 : Math.sin(t * 1.4) * 0.015), 0));
       const ft = smooth(0.85, 1, mg);
-      fixedTag.sp.visible = ft > 0.01; fixedTag.sp.scale.set(fixedTag.base * ft, (fixedTag.base * ft * TAG.h) / TAG.w, 1);
+      fixedTag.sp.visible = ft > 0.01; fixedTag.sp.scale.set(fixedTag.base * fk * ft, (fixedTag.base * fk * ft * TAG.h) / TAG.w, 1);
       const off = smooth(3.6, 3.95, p);
       if (off > 0) { fixed.sp.scale.multiplyScalar(1 - off); fixedTag.sp.scale.multiplyScalar(1 - off); }
       hang(fixedTag.sp, fixed.sp);
@@ -567,7 +589,7 @@ export function createOfficeSet(k: SetKit): OfficeSet {
       const glow = smooth(0.7, 1, mg) * (1 - off);
       halo.visible = glow > 0.01;
       if (halo.visible) {
-        const hs = 1.35 * glow * (1 + (reduced ? 0 : Math.sin(t * 1.8) * 0.03));
+        const hs = 1.35 * fk * glow * (1 + (reduced ? 0 : Math.sin(t * 1.8) * 0.03));
         halo.scale.set(hs, hs, 1);
         halo.position.copy(fixed.sp.position).add(V(0, 0.02, -0.03));
         haloMat.rotation = reduced ? 0 : t * 0.25;

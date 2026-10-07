@@ -85,7 +85,7 @@ To add a chapter, add a card, a stop and a chapter name in both dictionaries.
 | 2 | The problem | The table in the well as a cluttered office: register stacks and red-tape files shedding papers, a frozen spreadsheet, phones buzzing with a 999+ group chat. Four badges (registers, Excel, WhatsApp, memory) fail one by one, in step with the card's strike-through |
 | 3 | With Setuk | The clutter streams into the laptop, which becomes one inbox; the badges merge into one Setuk badge, a phone confirms the citizen's SMS, and pulses run from the badge to the seats as the House lights up |
 | 4 | Products | Your desk; the tablet alternates Office and Election |
-| 5 | Discuss | A consultant (suit) and a politician (kurta and Nehru jacket) talk across the middle chairs, taking turns |
+| 5 | Discuss | A consultant (suit) and a politician (white kurta, glasses and mustache) talk across the middle chairs, taking turns |
 | 6 | Design | Over the consultant's shoulder: the laptop opens on the office setup (roles, access, record import, SOPs) |
 | 7 | Train | The laptop shows a role-by-role training call |
 | 8 | Run | The month's numbers count up; then the camera moves to the politician, who smiles, nods and joins his hands |
@@ -111,12 +111,31 @@ On every tier:
 
 Measured on the mid tier (`?q=mid&debug`, then `__sadan.info()` in the console): 96 to 150 draw calls per frame and about 670k triangles. The people add about 17k triangles. The 3D chunk is about 178 KB gzipped and is never part of first-load JS (about 185 KB gzipped).
 
-If frames run slower than about 38 fps, the engine steps down in this order: ambient occlusion, then post-processing, then resolution.
+If frames run slower than about 38 fps, the engine steps down in this order: ambient occlusion, then post-processing, then resolution. The threshold follows the display's own frame cadence (measured on frames that render nothing), so a 30 fps cap such as iOS Low Power Mode doesn't count as a slow GPU. Eased camera values snap once they are within a pixel, so the loop goes idle when scrolling stops. If the browser drops the WebGL context, the photo shows and the chamber is rebuilt when the context returns (or after 3 s).
+
+**Devices and layout modes.** The story CSS (`story.module.css`) picks one of three layouts with media queries and exposes it as `--story-mode`; the controller and the engine read it, so the layout is right before any JS runs:
+
+| Mode | When | Scene | Text |
+|---|---|---|---|
+| `classic` | landscape, at least 768 wide and 560 tall (desktops, laptops, landscape tablets) | full screen, the subject moved away from the card (`sx`) | side cards over the scene |
+| `band` | portrait (phones, portrait tablets, split view) | a band across the top, `--band` tall (in `svh`, so mobile toolbars never resize the canvas) | chapters scroll natively under the band |
+| `side` | short or narrow landscape (landscape phones) | the left column (`--side-w`) | chapters scroll in the right column |
+
+In `band` and `side`:
+- every line of copy shows, and no card scrolls inside itself;
+- a chapter taller than the reading area arrives with its top in view (`anchor` in `lib/sadan/progress.ts`), and progress is measured from the middle of the reading area;
+- How we work pins only its progress header; the four steps are plain cards (`.howInline`);
+- the canvas is only the band, so the camera centres each stop in it and widens the lens for narrow bands. A stop can carry a compact framing (`c: { p, t, fov }` in `STOPS`);
+- in-scene text keeps a minimum size on screen (band labels about 11 px, badge captions about 8 px, the Setuk tag about 10 px); the four problem badges regroup into a 2x2 grid;
+- the header slides away while reading down through the story and returns on any scroll up (`html[data-hide-header]`);
+- the splash gives up after 6 s instead of 15 s; the photo shows until the chamber is ready.
+
+Rotating or resizing across layouts keeps the reader at the same point of the story. Without JavaScript the splash is hidden, the photo stands in for the chamber and every card is readable.
 
 URL options:
-- `?q=low|mid|high` forces a tier;
-- `?ch=4` opens at a chapter;
-- `?debug` exposes `window.__sadan.info()` (draw calls, triangles, programs, textures).
+- `?q=low|mid|high` forces a tier (headless browsers use a software GPU and get `low`; test with `?q=mid`);
+- `?ch=4` opens at a chapter (held until the visitor scrolls, clicks or types);
+- `?debug` exposes `window.__sadan.info()` (draw calls, triangles, programs, textures, layout mode, canvas size, renders) and `window.__story` (`go(i)`, `p()`, `mode()`).
 
 **Theme.** The theme is Lok Navy, light by default, with a dark mode switched by the moon and sun button in the header. The choice is saved in `localStorage` (`setuk-theme`) and applied by an inline script in `<head>` before first paint (`components/site/site-document.tsx`), so there is no flash and the pages stay static. The system setting is not followed. Theme helpers are in `lib/theme.ts`. The colours are CSS variables in `globals.css`, exposed to Tailwind through `@theme` (`bg-bg`, `text-ink`, `text-muted`, `bg-accent` and so on). The engine reads `--accent` and `--accent-ink` for the seat glow and the screens, and redraws when the theme changes (it watches `data-theme` on `<html>`).
 
