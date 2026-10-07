@@ -232,7 +232,9 @@ export async function loadAvatar(spec: AvatarSpec): Promise<Avatar> {
     const { sd } = a;
     const sh = P(sd.arm, vS);
     vD.subVectors(a.tgt, sh);
-    const d = THREE.MathUtils.clamp(vD.length(), 0.08, a.L1 + a.L2 - 0.004);
+    /* past 90% of the reach the arm eases toward 97% instead of locking straight, so elbows stay soft */
+    const R = a.L1 + a.L2, raw = Math.max(0.08, vD.length()), knee = 0.9 * R;
+    const d = raw <= knee ? raw : knee + 0.07 * R * (1 - Math.exp(-(raw - knee) / (0.07 * R)));
     vD.normalize();
     const along = (a.L1 * a.L1 - a.L2 * a.L2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, a.L1 * a.L1 - along * along));
     vPole.set(sd.s * 0.55, -1, -0.45); vPole.addScaledVector(vD, -vPole.dot(vD)).normalize();

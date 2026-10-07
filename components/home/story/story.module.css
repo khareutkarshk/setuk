@@ -142,10 +142,32 @@
 .soon { background: transparent; border-style: dashed; color: var(--muted); }
 .soon svg { color: var(--muted); }
 
-/* How we work */
-.progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 16px; }
-.progress span { height: 4px; border-radius: 4px; background: var(--line); }
-.progress span[data-on] { background: var(--accent); }
+/* How we work: one card pinned over the four step spacers, swapping slides like a story */
+.howGroup { position: relative; }
+.howPin {
+  position: sticky; top: 0; z-index: 1;
+  height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh;
+  display: flex; align-items: center; pointer-events: none;
+}
+.howPin .inner { justify-content: flex-end; }
+.howPin .card { pointer-events: auto; }
+.howGroup[data-active] .card { opacity: 1; transform: none; }
+.progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.progress span { position: relative; height: 4px; border-radius: 4px; overflow: hidden; background: var(--line); }
+.progress span::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(var(--f, 0)); }
+:global(html[dir="rtl"]) .progress span::after { transform-origin: right; }
+/* Slides share one grid cell, so the card keeps the height of the longest and never jumps */
+.slides { display: grid; margin-top: 14px; }
+.slide, .slideFade { opacity: 0; visibility: hidden; transition: opacity 0.35s var(--ease-out), transform 0.45s var(--ease-out), visibility 0s linear 0.35s; }
+.slide { grid-area: 1 / 1; transform: translateY(8px); }
+.slide[data-on], .slideFade[data-on] { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.numeral.slideFade[data-on] { opacity: 0.13; }
+@media (prefers-reduced-motion: reduce) { .slide { transform: none; } }
+@media (max-width: 767px) {
+  .howPin { align-items: flex-end; }
+  .howPin .inner { padding-bottom: 28px; }
+  .howPin .card { position: relative; bottom: auto; }
+}
 .time { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; font-size: 13px; font-weight: 500; background: var(--accent-soft); margin-top: 12px; }
 /* "You get": a hairline, a seal, and the outcome set as the card's closing line */
 .get { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; margin-top: 22px; padding-top: 18px; border-top: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--line)); }

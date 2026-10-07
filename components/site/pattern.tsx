@@ -40,6 +40,9 @@ export function Lotus({ className = "" }: { className?: string }) {
  * A layered mandala after the Ashoka Chakra, rangoli rings and Mughal jaali rosettes. Line art in
  * currentColor. Each ring is a <g data-ring="1..5"> (outside in) so callers can animate them.
  */
+/* Height of a chakra lobe's ends: a 6-wide half chord on the rim of radius 118 */
+const LOBE_Y = Math.sqrt(118 * 118 - 6 * 6);
+
 export function Mandala({ className = "" }: { className?: string }) {
   const c = 200;
   const ring = (n: number, f: (i: number) => ReactNode) => Array.from({ length: n }, (_, i) => f(i));
@@ -66,8 +69,9 @@ export function Mandala({ className = "" }: { className?: string }) {
         <circle cx={c} cy={c} r="118" />
         {ring(24, (i) => (
           <g key={i} transform={`rotate(${i * 15} ${c} ${c})`}>
-            <path d={`M${c} ${c - 40} L${c - 3.2} ${c - 80} L${c} ${c - 116} L${c + 3.2} ${c - 80} Z`} />
-            <path d={`M${c - 15.4} ${c - 117} A 6 6 0 0 0 ${c - 15.4} ${c - 105}`} transform={`rotate(7.5 ${c} ${c})`} />
+            {/* spoke tip and both ends of the lobe sit exactly on the rim (r 118) */}
+            <path d={`M${c} ${c - 40} L${c - 3.2} ${c - 80} L${c} ${c - 118} L${c + 3.2} ${c - 80} Z`} />
+            <path d={`M${c - 6} ${c - LOBE_Y} A 6 6 0 0 0 ${c + 6} ${c - LOBE_Y}`} transform={`rotate(7.5 ${c} ${c})`} />
           </g>
         ))}
         <circle cx={c} cy={c} r="40" />

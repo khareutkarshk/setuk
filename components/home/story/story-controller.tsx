@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Dictionary, SceneLabels } from "@/content/types";
 import { CornerPattern, Mandala } from "@/components/site/pattern";
 import { SetukMark } from "@/components/site/setuk-mark";
-import { createScrollProgress, smooth } from "@/lib/sadan/progress";
+import { clamp01, createScrollProgress, smooth } from "@/lib/sadan/progress";
 import type { SadanHandle } from "@/lib/sadan/engine";
 import poster from "@/assets/loksabha.jpg";
 import styles from "./story.module.css";
@@ -47,6 +47,12 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
     const root = rootRef.current!;
     const steps = [...root.querySelectorAll<HTMLElement>("[data-step]")];
     const progress = createScrollProgress(steps);
+    /* "How we work": a story card over consecutive chapters, from data-how onwards */
+    const how = root.querySelector<HTMLElement>("[data-how]");
+    const howFirst = Number(how?.dataset.how ?? 0);
+    const howSlides = how ? [...how.querySelectorAll<HTMLElement>("[data-k]")] : [];
+    const howBars = how ? [...how.querySelectorAll<HTMLElement>("[data-bar]")] : [];
+    let lastSlide = -1;
     progressRef.current = progress;
     let lastActive = -1, lastRail: boolean | null = null, frame = 0;
 
@@ -55,6 +61,13 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       const p = progress.get();
       steps.forEach((el, i) => el.toggleAttribute("data-active", Math.abs(p - i) < 0.4));
       scrimRef.current?.style.setProperty("--hero", String(1 - smooth(0.05, 0.45, p)));
+      if (how) {
+        /* each bar fills across its step, from halfway in to halfway out (the last one by its centre) */
+        const n = howBars.length, local = p - howFirst, slide = Math.min(n - 1, Math.max(0, Math.round(local)));
+        how.toggleAttribute("data-active", local > -0.4);
+        howBars.forEach((el, k) => el.style.setProperty("--f", (k < slide ? 1 : k > slide ? 0 : clamp01((local - k + 0.5) / (k === n - 1 ? 0.5 : 1))).toFixed(3)));
+        if (slide !== lastSlide) { lastSlide = slide; howSlides.forEach((el) => el.toggleAttribute("data-on", Number(el.dataset.k) === slide)); }
+      }
       const a = Math.round(p);
       if (a !== lastActive) { lastActive = a; setActive(a); }
       const r = root.getBoundingClientRect();

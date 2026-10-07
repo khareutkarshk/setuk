@@ -908,9 +908,9 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     { p: V(2.5, 5.3, -14.7), t: V(-0.5, 1.2, -8.0), tp: V(-0.3, 0.7, -9.6), fov: 52, sx: 0.17, par: 0.3 },                      // 3 With Setuk: from the Speaker's side, the House lights up
     { p: eye, t: tabletPos.clone().addScaledVector(heroOut, -0.05), fov: 40, sx: 0.17, par: 0.06 },     // 4 Products: your desk
     { p: V(-2.75, 1.86, -9.3), t: V(0.35, 0.98, -10.95), fov: 40, sx: -0.16, par: 0.15 },                  // 5 Discuss: the middle chairs, past the politician
-    { p: V(2.05, 1.62, -10.5), t: V(0.55, 0.98, -10.93), fov: 42, sx: 0.18, par: 0.15 },                // 6 Design: over the consultant's shoulder
+    { p: V(2.05, 1.62, -10.5), t: V(0.55, 0.98, -10.93), fov: 42, sx: -0.18, par: 0.15 },                // 6 Design: over the consultant's shoulder
     { p: V(1.74, 1.92, -10.72), t: V(0.53, 0.99, -10.93), fov: 36, sx: -0.18, par: 0.1 },                // 7 Train: the call on his screen
-    { p: V(1.85, 1.52, -10.48), t: V(0.53, 0.97, -10.92), fov: 40, sx: 0.16, par: 0.12 }                // 8 Run: the numbers, then the close-up (office.shot)
+    { p: V(1.85, 1.52, -10.48), t: V(0.53, 0.97, -10.92), fov: 40, sx: -0.16, par: 0.12 }                // 8 Run: the numbers, then the close-up (office.shot)
   ];
   const posCurve = new THREE.CatmullRomCurve3(STOPS.map((s) => s.p), false, "centripetal");
   const tgtCurve = new THREE.CatmullRomCurve3(STOPS.map((s) => s.t), false, "centripetal");

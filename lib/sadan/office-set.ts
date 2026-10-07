@@ -254,6 +254,14 @@ export function createOfficeSet(k: SetKit): OfficeSet {
     sp.renderOrder = 3;
     return { s, sp, mat, base: scale };
   };
+  /*
+   * Hang a tag under a badge in screen space: the camera looks down into the well, so an offset
+   * along world y would foreshorten and slide the tag up over the caption.
+   */
+  const hang = (tag: THREE.Sprite, under: THREE.Sprite) => {
+    tag.position.copy(under.position); tag.position.z += 0.01;
+    tag.center.y = tag.scale.y > 0 ? 1 + under.scale.y / 2 / tag.scale.y : 1;
+  };
   const LOOKS: BadgeLook[] = [
     { glyph: "register", tint: "#8a3b2a" },
     { glyph: "excel", tint: "#1f7246" },
@@ -392,14 +400,14 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   /* ---------- the meeting ---------- */
   const kit = { mat: k.mat, seg: T.tier === "low" ? 8 : T.tier === "mid" ? 12 : 16, weave };
   let consultant: Person = createPerson({ outfit: "suit", skin: "#b27c57", hair: "#1b1411", jacket: "#262d3b", shirt: "#eef1f4", tie: "#6d1f2c", legs: "#262d3b", shoes: "#151515" }, kit);
-  let politician: Person = createPerson({ outfit: "kurta", skin: "#a3714f", hair: "#1a1411", mustache: true, glasses: true, jacket: "#6e4a35", shirt: "#f1ece1", legs: "#ece6da", shoes: "#5a3a22" }, kit);
+  let politician: Person = createPerson({ outfit: "kurta", skin: "#a3714f", hair: "#1a1411", mustache: true, glasses: true, jacket: "#f7f7f5", shirt: "#f7f7f5", legs: "#f7f7f5", shoes: "#5a3a22" }, kit);
   consultant.root.position.set(1.25, 0, -10.9); consultant.root.rotation.y = -Math.PI / 2;
   politician.root.position.set(-1.25, 0, -10.9); politician.root.rotation.y = Math.PI / 2;
   meeting.add(consultant.root, politician.root);
   /*
    * Rigged people replace the procedural ones one at a time as they load; a person whose model
    * is missing or fails the skin check stays procedural. Both use the executive model; the
-   * politician is dressed differently and gets a jacket, glasses and a mustache.
+   * politician is dressed differently and gets glasses and a mustache.
    */
   let swapped = false, gone = false;
   const avatars: Avatar[] = [];
@@ -415,13 +423,8 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   if (k.peopleBase && T.tier !== "low") {
     const face = { blink: 16, smile: 33, open: 67, count: 68 };
     swapIn({ url: k.peopleBase + "consultant.glb", height: 1.76, face, dress: executive }, "consultant");
-    /* the politician: the same model in a kurta, Nehru jacket, glasses and mustache, greying at the temples */
-    /* the Nehru jacket is grown from the shirt's torso, so it is skinned like the body; sleeves and collar stay kurta */
-    const jacket = k.mat({ color: "#5b4636", roughness: 0.86, sheen: 0.35, sheenColor: "#8a7260", sheenRoughness: 0.7 });
-    swapIn({
-      url: k.peopleBase + "consultant.glb", height: 1.74, face, dress: leader, accessories: (a) => leaderExtras(a, k.mat),
-      overlays: [{ from: /Shirt/, material: jacket, drop: /Upperarm|Forearm|Elbow|_Hand|Thumb|Index|Mid\d|Ring\d|Pinky|Neck|Head/, limit: 0.75, below: { bone: /NeckTwist01/, by: -0.01, dip: 0.3, width: 0.075 }, seam: { bone: /^[LR]_Upperarm_\d+$/, margin: 0.015 }, inflate: 0.009 }]
-    }, "politician");
+    /* the politician: the same model in a kurta, glasses and mustache, greying at the temples */
+    swapIn({ url: k.peopleBase + "consultant.glb", height: 1.74, face, dress: leader, accessories: (a) => leaderExtras(a, k.mat) }, "politician");
   }
   extras.push({ dispose: () => { gone = true; avatars.forEach((a) => a.dispose()); } });
   blob(meeting, 0.9, 0.9, 1.1, 0, -10.9, 0.9); blob(meeting, 0.9, 0.9, -1.1, 0, -10.9, 0.9);
@@ -463,8 +466,9 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   /* Pose scratch objects, reused every frame */
   const mkPose = (): Pose => ({ lean: 0.08, look: V(), hands: [V(-0.16, 0.845, 0.43), V(0.16, 0.845, 0.43)], backs: [V(0, 1, 0), V(0, 1, 0)], aim: [V(0, 1, 0), V(0, 1, 0)], aimW: 0, nod: 0, tilt: 0, smile: 0, talk: 0 });
   const pc = mkPose(), pp = mkPose();
-  const rest = (o: Pose, spread = 0.16, z = 0.43) => { o.hands[0].set(-spread, 0.845, z); o.hands[1].set(spread, 0.845, z); o.backs[0].set(-0.1, 1, 0); o.backs[1].set(0.1, 1, 0); };
-  const clasp = (o: Pose) => { o.hands[0].set(-0.04, 0.85, 0.44); o.hands[1].set(0.035, 0.852, 0.455); o.backs[0].set(-0.7, 1, 0.1); o.backs[1].set(0.7, 1, 0.1); };
+  const rest = (o: Pose, spread = 0.16, z = 0.39) => { o.hands[0].set(-spread, 0.845, z); o.hands[1].set(spread, 0.845, z); o.backs[0].set(-0.1, 1, 0); o.backs[1].set(0.1, 1, 0); };
+  /* idle hands sit well inside the reach (the table edge is ~0.33 in front), so the elbows bend */
+  const clasp = (o: Pose) => { o.hands[0].set(-0.045, 0.85, 0.385); o.hands[1].set(0.04, 0.852, 0.4); o.backs[0].set(-0.7, 1, 0.1); o.backs[1].set(0.7, 1, 0.1); };
 
   const choreograph = (p: number, t: number, reduced: boolean) => {
     consultant.head.getWorldPosition(headC); politician.head.getWorldPosition(headP);
@@ -475,7 +479,7 @@ export function createOfficeSet(k: SetKit): OfficeSet {
       /* Discuss: they take turns; the listener nods */
       const turn = Math.sin(tm * 1.05), cTalk = smooth(0.1, 0.4, turn), pTalk = smooth(0.1, 0.4, -turn);
       pc.lean = 0.12; pc.look.copy(headP); rest(pc);
-      pc.hands[0].set(-0.17 + 0.05 * Math.sin(tm * 2.3), 0.845 + cTalk * (0.13 + 0.04 * Math.sin(tm * 3.1)), 0.43 - cTalk * 0.06);
+      pc.hands[0].set(-0.17 + 0.05 * Math.sin(tm * 2.3), 0.845 + cTalk * (0.13 + 0.04 * Math.sin(tm * 3.1)), 0.39 - cTalk * 0.04);
       pc.backs[0].set(-0.5, 1 - cTalk * 1.6, 0.3 * cTalk);
       pc.talk = cTalk; pc.nod = (1 - cTalk) * 0.07 * Math.max(0, Math.sin(tm * 4.4)) - 0.04 * cTalk; pc.tilt = 0.06 * Math.sin(tm * 0.7);
       pp.lean = 0.06; pp.look.copy(headC);
@@ -548,16 +552,16 @@ export function createOfficeSet(k: SetKit): OfficeSet {
         const tg = f * (1 - smooth(0, 0.25, mg)), pop = tg > 0 ? 1 + 0.25 * Math.sin(Math.min(1, tg) * Math.PI) : 0;
         x.tag.sp.visible = tg > 0.01;
         x.tag.sp.scale.set(x.tag.base * tg * pop, (x.tag.base * tg * pop * TAG.h) / TAG.w, 1);
-        x.tag.sp.position.copy(x.b.sp.position).add(V(0, -0.24, 0.01));
+        hang(x.tag.sp, x.b.sp);
       });
       const fs = fixed.base * arrive * (1 + 0.12 * Math.sin(arrive * Math.PI));
       fixed.sp.visible = fs > 0.002; fixed.sp.scale.set(fs, (fs * BADGE.h) / BADGE.w, 1);
       fixed.sp.position.copy(FIX).add(V(0, arrive * 0.3 + (reduced ? 0 : Math.sin(t * 1.4) * 0.015), 0));
-      fixedTag.sp.position.copy(fixed.sp.position).add(V(0, -0.4, 0.01));
       const ft = smooth(0.85, 1, mg);
       fixedTag.sp.visible = ft > 0.01; fixedTag.sp.scale.set(fixedTag.base * ft, (fixedTag.base * ft * TAG.h) / TAG.w, 1);
       const off = smooth(3.6, 3.95, p);
       if (off > 0) { fixed.sp.scale.multiplyScalar(1 - off); fixedTag.sp.scale.multiplyScalar(1 - off); }
+      hang(fixedTag.sp, fixed.sp);
 
       /* halo and ripples: the fix radiating out to the people */
       const glow = smooth(0.7, 1, mg) * (1 - off);
@@ -701,6 +705,22 @@ const recolor = (map: THREE.Texture, fn: (r: number, g: number, b: number, out: 
   return t;
 };
 
+/** White cloth: drop the texture's colour, keep its folds as shading around its mean brightness */
+const whiten = (mat: THREE.MeshPhysicalMaterial) => {
+  if (mat.map && !mat.userData.whitened) {
+    const img = mat.map.image as HTMLImageElement | ImageBitmap;
+    const c = document.createElement("canvas"); c.width = c.height = 16;
+    const g = c.getContext("2d")!; g.drawImage(img, 0, 0, 16, 16);
+    const px = g.getImageData(0, 0, 16, 16).data;
+    let mean = 0;
+    for (let i = 0; i < px.length; i += 4) mean += 0.3 * px[i] + 0.59 * px[i + 1] + 0.11 * px[i + 2];
+    mean = Math.max(1, mean / (px.length / 4));
+    mat.map = recolor(mat.map, (r, gr, b, o) => { o[0] = o[1] = o[2] = Math.min(255, 242 * (0.8 + 0.2 * ((0.3 * r + 0.59 * gr + 0.11 * b) / mean))); });
+    mat.userData.whitened = true;
+  }
+  mat.color.set("#ffffff");
+};
+
 /** Skin: take most of the red out of the texture, then set the tone (multipliers per channel) */
 const skinTone = (mat: THREE.MeshPhysicalMaterial, tone: [number, number, number]) => {
   if (mat.map && !mat.userData.toned) {
@@ -718,8 +738,7 @@ const skinTone = (mat: THREE.MeshPhysicalMaterial, tone: [number, number, number
 const leader = (m: THREE.Mesh) => {
   const mat = m.material as THREE.MeshPhysicalMaterial;
   const matte = () => { mat.metalness = 0; if (mat.isMeshPhysicalMaterial) mat.specularIntensity = 0.2; };
-  if (/Shirt/i.test(mat.name)) { mat.color.set("#f3ecdc"); mat.roughness = 0.9; matte(); }
-  else if (/Slacks/i.test(mat.name)) { mat.color.set("#e9e2d2"); mat.roughness = 0.9; matte(); }
+  if (/Shirt|Slacks/i.test(mat.name)) { whiten(mat); mat.roughness = 0.9; matte(); }
   else if (/shoes/i.test(mat.name)) { mat.color.set("#6b4428"); mat.roughness = 0.5; matte(); }
   else if (/Classic_Taper/.test(mat.name)) {
     /* salt and pepper: strands mapped to greys by their brightness */

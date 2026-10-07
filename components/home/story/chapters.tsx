@@ -36,13 +36,13 @@ const devanagari = (n: number) => String(n).padStart(2, "0").replace(/\d/g, (d) 
 
 /** A chapter card: a temple-border top edge, a corner ornament (a pattern, or the lotus) and the
     chapter number as a Devanagari numeral watermark */
-function Card({ n, ornament, wide, children }: { n: number; ornament: PatternKind | "lotus"; wide?: boolean; children: ReactNode }) {
+function Card({ n, ornament, wide, numeral, children }: { n: number; ornament: PatternKind | "lotus"; wide?: boolean; numeral?: ReactNode; children: ReactNode }) {
   return (
     <div className={styles.inner}>
       <div className={`${styles.card} ${wide ? styles.wide : ""}`}>
         <Pattern kind="temple" className={styles.band} />
         {ornament === "lotus" ? <Lotus className={styles.lotus} /> : <CornerPattern kind={ornament} className={styles.corner} radius={230} />}
-        <span aria-hidden="true" className={styles.numeral}>{devanagari(n)}</span>
+        {numeral ?? <span aria-hidden="true" className={styles.numeral}>{devanagari(n)}</span>}
         <div className={styles.content}>{children}</div>
       </div>
     </div>
@@ -224,33 +224,55 @@ export function ProductsChapter({ t }: { t: Dictionary }) {
   );
 }
 
-/* The four steps of "How we work": the table in the well, the plan view, the Speaker's view, the whole House */
+/* The four steps of "How we work" as one story card. The card is pinned over the whole group and
+   swaps its slide as you scroll; each step keeps an empty chapter of its own as the scroll spacer,
+   so camera stops (the table in the well, the plan view, the Speaker's view, the whole House) stay
+   paired by index. The controller sets data-active on the group, data-on on the current slide and
+   --f (0 to 1) on each progress segment. */
 export function HowChapters({ t }: { t: Dictionary }) {
-  return t.how.steps.map((s, i) => {
-    const Ico = ICONS.steps[i];
-    return (
-      <Chapter key={s.t} step={5 + i} side={i % 2 ? "left" : "right"} id={i === 0 ? "how" : undefined} className={styles.how}>
-        <Card n={6 + i} ornament="lotus">
-          <Eyebrow n={6 + i}>{t.how.eyebrow} · {i + 1}/4</Eyebrow>
-          {i === 0 && <p className="mt-3 text-[15px] font-medium">{t.how.title}</p>}
+  const steps = t.how.steps;
+  return (
+    <div className={styles.howGroup} data-how={5}>
+      <div className={styles.howPin}>
+        <Card
+          n={6}
+          ornament="lotus"
+          numeral={steps.map((s, i) => <span key={s.t} aria-hidden="true" className={`${styles.numeral} ${styles.slideFade}`} data-k={i} data-on={i === 0 ? "" : undefined}>{devanagari(6 + i)}</span>)}
+        >
           <div className={styles.progress} aria-hidden>
-            {[0, 1, 2, 3].map((k) => <span key={k} data-on={k <= i ? "" : undefined} />)}
+            {steps.map((s) => <span key={s.t} data-bar />)}
           </div>
-          <h2 className={`${styles.h2} flex items-center gap-3`}>
-            <Ico className="shrink-0 text-accent" size="0.8em" aria-hidden />
-            <span>{s.t}</span>
-          </h2>
-          <p className={styles.time}><I.Clock aria-hidden />{s.time}</p>
-          <p className={styles.body}>{s.d}</p>
-          <div className={styles.get}>
-            <span className={styles.getSeal} aria-hidden><I.SealCheck weight="fill" /></span>
-            <p>
-              <span className={styles.getLabel}>{t.how.get}</span>
-              <span className={styles.getText}>{s.get}</span>
-            </p>
+          <div className={styles.slides}>
+            {steps.map((s, i) => {
+              const Ico = ICONS.steps[i];
+              return (
+                <section key={s.t} className={styles.slide} data-k={i} data-on={i === 0 ? "" : undefined} aria-label={`${t.how.eyebrow} ${i + 1}/${steps.length}`}>
+                  <Eyebrow n={6 + i}>{t.how.eyebrow} · {i + 1}/{steps.length}</Eyebrow>
+                  <p className="mt-2 text-[15px] font-medium">{t.how.title}</p>
+                  <h2 className={`${styles.h2} flex items-center gap-3`}>
+                    <Ico className="shrink-0 text-accent" size="0.8em" aria-hidden />
+                    <span>{s.t}</span>
+                  </h2>
+                  <p className={styles.time}><I.Clock aria-hidden />{s.time}</p>
+                  <p className={styles.body}>{s.d}</p>
+                  <div className={styles.get}>
+                    <span className={styles.getSeal} aria-hidden><I.SealCheck weight="fill" /></span>
+                    <p>
+                      <span className={styles.getLabel}>{t.how.get}</span>
+                      <span className={styles.getText}>{s.get}</span>
+                    </p>
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </Card>
-      </Chapter>
-    );
-  });
+      </div>
+      {steps.map((s, i) => (
+        <Chapter key={s.t} step={5 + i} side="right" id={i === 0 ? "how" : undefined} className={styles.how}>
+          {null}
+        </Chapter>
+      ))}
+    </div>
+  );
 }
