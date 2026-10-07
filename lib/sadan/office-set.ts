@@ -268,10 +268,50 @@ export function createOfficeSet(k: SetKit): OfficeSet {
     clutter.add(b.sp, tag.sp);
     return { b, tag, home };
   });
-  const fixed = sprite(BADGE.w, BADGE.h, 0.6), fixedTag = sprite(TAG.w, TAG.h, 0.62);
+  const fixed = sprite(BADGE.w, BADGE.h, 0.72), fixedTag = sprite(TAG.w, TAG.h, 0.66);
   const FIX = V(0, BADGE_Y + 0.08, BADGE_Z);
   fixed.sp.position.copy(FIX); fixedTag.sp.position.copy(FIX).add(V(0, -0.33, 0.01));
   clutter.add(fixed.sp, fixedTag.sp);
+
+  /* A chakra halo behind the Setuk badge: glow, a beaded rim and twenty-four spokes, tinted with the accent */
+  const { t: haloTex } = canvasTex(512, 512, (g) => {
+    const c = 256;
+    const glow = g.createRadialGradient(c, c, 0, c, c, 250);
+    glow.addColorStop(0, "rgba(255,255,255,.55)"); glow.addColorStop(0.45, "rgba(255,255,255,.18)"); glow.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = glow; g.fillRect(0, 0, 512, 512);
+    g.strokeStyle = "#fff"; g.fillStyle = "#fff";
+    g.lineWidth = 4; g.beginPath(); g.arc(c, c, 204, 0, Math.PI * 2); g.stroke();
+    g.lineWidth = 2; g.beginPath(); g.arc(c, c, 150, 0, Math.PI * 2); g.stroke();
+    for (let i = 0; i < 24; i++) {
+      g.save(); g.translate(c, c); g.rotate((i / 24) * Math.PI * 2);
+      g.beginPath(); g.moveTo(0, -152); g.lineTo(-5, -176); g.lineTo(0, -202); g.lineTo(5, -176); g.closePath(); g.fill();
+      g.restore();
+    }
+    for (let i = 0; i < 48; i++) {
+      const a = (i / 48) * Math.PI * 2;
+      g.beginPath(); g.arc(c + Math.cos(a) * 224, c + Math.sin(a) * 224, i % 2 ? 2.5 : 4.5, 0, Math.PI * 2); g.fill();
+    }
+  });
+  const haloMat = new THREE.SpriteMaterial({ map: haloTex, transparent: true, depthWrite: false, toneMapped: false, blending: THREE.AdditiveBlending });
+  const halo = new THREE.Sprite(haloMat);
+  halo.renderOrder = 2;
+  clutter.add(halo);
+  extras.push(haloMat, haloTex);
+
+  /* Ripples on the floor of the well, spreading from under the badge out towards the House */
+  const RIPPLES = 3;
+  const rippleGeo = new THREE.RingGeometry(0.94, 1, 128);
+  rippleGeo.rotateX(-Math.PI / 2);
+  const ripples = Array.from({ length: RIPPLES }, () => {
+    const m = new THREE.MeshBasicMaterial({ color: k.accent, transparent: true, depthWrite: false, toneMapped: false, blending: THREE.AdditiveBlending });
+    const r = new THREE.Mesh(rippleGeo, m);
+    r.position.set(0, 0.02, BADGE_Z + 0.6);
+    r.renderOrder = 1;
+    clutter.add(r);
+    extras.push(m);
+    return r;
+  });
+  extras.push(rippleGeo);
 
   /* The stream: points flowing from the clutter into the laptop */
   const STREAM = T.tier === "low" ? 140 : 320;
@@ -317,7 +357,7 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   clutter.add(stream);
 
   /* Pulses from the Setuk badge out to the seats: one system between the office and the people */
-  const OUT = Math.min(k.seatPoints.length, T.tier === "low" ? 60 : 140);
+  const OUT = Math.min(k.seatPoints.length, T.tier === "low" ? 80 : 220);
   const oFrom = new Float32Array(OUT * 3), oTo = new Float32Array(OUT * 3), oSeed = new Float32Array(OUT);
   for (let i = 0; i < OUT; i++) {
     const tp = k.seatPoints[Math.floor((i / OUT) * k.seatPoints.length)];
@@ -519,6 +559,23 @@ export function createOfficeSet(k: SetKit): OfficeSet {
       const off = smooth(3.6, 3.95, p);
       if (off > 0) { fixed.sp.scale.multiplyScalar(1 - off); fixedTag.sp.scale.multiplyScalar(1 - off); }
 
+      /* halo and ripples: the fix radiating out to the people */
+      const glow = smooth(0.7, 1, mg) * (1 - off);
+      halo.visible = glow > 0.01;
+      if (halo.visible) {
+        const hs = 1.35 * glow * (1 + (reduced ? 0 : Math.sin(t * 1.8) * 0.03));
+        halo.scale.set(hs, hs, 1);
+        halo.position.copy(fixed.sp.position).add(V(0, 0.02, -0.03));
+        haloMat.rotation = reduced ? 0 : t * 0.25;
+        haloMat.color.copy(k.accent).multiplyScalar(0.9 * glow);
+      }
+      ripples.forEach((r, i) => {
+        const u = reduced ? (i + 1) / (RIPPLES + 1) : (t * 0.22 + i / RIPPLES) % 1;
+        r.visible = glow > 0.01;
+        r.scale.setScalar(0.6 + u * 7.5);
+        (r.material as THREE.MeshBasicMaterial).color.copy(k.accent).multiplyScalar(glow * (1 - u) * smooth(0, 0.12, u) * 0.9);
+      });
+
       /* clutter dissolves into the stream, item by item */
       const shrink = (i: number) => 1 - smooth(0.1 + i * 0.07, 0.45 + i * 0.07, mg);
       const sA = shrink(0), sB = shrink(1), sF = shrink(2), sP = shrink(3);
@@ -561,7 +618,7 @@ export function createOfficeSet(k: SetKit): OfficeSet {
       const on = smooth(2.7, 3.0, p) * (1 - smooth(3.4, 3.8, p));
       outflow.visible = on > 0.01;
       oMat.uniforms.uOn.value = on; oMat.uniforms.uTime.value = reduced ? 0.5 : t;
-      oMat.uniforms.uSize.value = (0.16 * viewH) / (2 * Math.tan((camera.fov * Math.PI) / 360));
+      oMat.uniforms.uSize.value = (0.24 * viewH) / (2 * Math.tan((camera.fov * Math.PI) / 360));
       sMat.uniforms.uM.value = mg * 1.35 - 0.1;
       sMat.uniforms.uTime.value = t;
       sMat.uniforms.uSize.value = (0.03 * viewH) / (2 * Math.tan((camera.fov * Math.PI) / 360));

@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { SceneLabels } from "@/content/types";
+import type { Dictionary, SceneLabels } from "@/content/types";
+import { CornerPattern, Mandala } from "@/components/site/pattern";
+import { SetukMark } from "@/components/site/setuk-mark";
 import { createScrollProgress, smooth } from "@/lib/sadan/progress";
 import type { SadanHandle } from "@/lib/sadan/engine";
 import poster from "@/assets/loksabha.jpg";
@@ -13,6 +15,7 @@ interface Props {
   railLabel: string;
   labels: SceneLabels;
   ariaLabel: string;
+  brand: Dictionary["brand"];
   children: ReactNode;
 }
 
@@ -25,7 +28,7 @@ interface Props {
  * Three.js is code-split behind a dynamic import, so it never delays first paint; without WebGL,
  * or before the engine is ready, the Lok Sabha photo stays as the backdrop.
  */
-export function StoryController({ chapters, railLabel, labels, ariaLabel, children }: Props) {
+export function StoryController({ chapters, railLabel, labels, ariaLabel, brand, children }: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasSlotRef = useRef<HTMLDivElement>(null);
@@ -34,6 +37,10 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, childr
   const [active, setActive] = useState(0);
   const [railVisible, setRailVisible] = useState(false);
   const [ready, setReady] = useState(false);
+  /* "loading" keeps the splash up; "failed" drops it and falls back to the photo */
+  const [percent, setPercent] = useState(0);
+  const targetRef = useRef(0.04);
+  const [boot, setBoot] = useState<"loading" | "done" | "failed">("loading");
 
   /* Scroll chrome: active chapter, scrim, rail visibility */
   useEffect(() => {
@@ -83,9 +90,22 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, childr
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const quality = new URLSearchParams(location.search).get("q");
 
+    /* The shown number eases toward the engine's progress and creeps on between reports */
+    let shown = 0, raf = 0;
+    const animate = () => {
+      const target = targetRef.current;
+      const creep = target < 1 ? Math.min(target + 0.08, 0.99) : 1;
+      shown += (Math.max(target, Math.min(shown + 0.0006, creep)) - shown) * 0.08;
+      if (target >= 1 && shown > 0.995) shown = 1;
+      setPercent(Math.floor(shown * 100));
+      if (shown < 1) raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+
     import("@/lib/sadan/engine")
-      .then(({ createSadan }) =>
-        createSadan({
+      .then(({ createSadan }) => {
+        targetRef.current = Math.max(targetRef.current, 0.1);
+        return createSadan({
           container: canvasSlotRef.current!,
           stage: stageRef.current!,
           progress: () => progressRef.current?.get() ?? 0,
@@ -94,24 +114,39 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, childr
           assetBase: "/sadan/v1/",
           quality,
           signal: ac.signal,
-          onReady: () => setReady(true),
+          onProgress: (p) => { targetRef.current = Math.max(targetRef.current, p); },
+          onReady: () => { targetRef.current = 1; setReady(true); },
           onContextLost: () => setReady(false)
-        })
-      )
+        });
+      })
       .then((h) => {
         if (ac.signal.aborted) h?.dispose();
+        else if (!h) setBoot("failed");
         else handle = h;
       })
       .catch((err) => {
-        /* The photo backdrop stays; the story still works without the scene */
+        /* The photo backdrop takes over; the story still works without the scene */
         console.error("[sadan] 3D chamber failed to start", err);
+        if (!ac.signal.aborted) setBoot("failed");
       });
 
+    /* Never trap the visitor behind the splash on a slow or stuck load */
+    const timeout = setTimeout(() => setBoot((b) => (b === "loading" ? "failed" : b)), 15000);
+
     return () => {
+      clearTimeout(timeout);
+      cancelAnimationFrame(raf);
       ac.abort();
       handle?.dispose();
     };
   }, [labels]);
+
+  /* Hold the splash a beat at 100 so the count visibly completes */
+  useEffect(() => {
+    if (!ready || percent < 100) return;
+    const t = setTimeout(() => setBoot((b) => (b === "loading" ? "done" : b)), 350);
+    return () => clearTimeout(t);
+  }, [ready, percent]);
 
   const go = (i: number) => {
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -120,7 +155,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, childr
 
   return (
     <section ref={rootRef} className={styles.story} aria-label={ariaLabel}>
-      <div ref={stageRef} className={styles.stage} data-ready={ready ? "" : undefined} aria-hidden="true">
+      <div ref={stageRef} className={styles.stage} data-ready={ready ? "" : undefined} data-boot={boot} aria-hidden="true">
         <Image src={poster} alt="" fill preload sizes="100vw" placeholder="blur" className={styles.poster} />
         <div ref={canvasSlotRef} className={styles.canvasSlot} />
         <div className={styles.vignette} />
@@ -130,6 +165,23 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, childr
           <span className={styles.spin} />
           <span>{labels.loading}</span>
         </p>
+      </div>
+
+      <div className={styles.splash} data-hidden={boot === "loading" ? undefined : ""} role="status" aria-live="polite">
+        <CornerPattern kind="jaali" fx={0} fy={0} radius={420} className="inset-0 text-accent opacity-[0.07]" />
+        <CornerPattern kind="jaali" fx={100} fy={100} radius={420} className="inset-0 text-accent opacity-[0.07]" />
+        <div className={styles.splashEmblem}>
+          <Mandala className={`${styles.splashLotus} text-accent`} />
+          <span className={styles.splashHalo} />
+          <SetukMark draw className={styles.splashMark} />
+        </div>
+        <p className={`${styles.splashName} text-ink`}>{brand.name}</p>
+        <p className={`${styles.splashLine} text-muted`}>{brand.line}</p>
+        <p className={`${styles.splashPercent} tnum text-ink`}>{percent}<span className="text-muted">%</span></p>
+        <span className={styles.splashBar} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent}>
+          <span style={{ transform: `scaleX(${percent / 100})` }} />
+        </span>
+        <p className={`${styles.splashStatus} text-muted`}>{labels.loading}</p>
       </div>
 
       <nav className={styles.rail} data-hidden={railVisible ? undefined : ""} aria-label={railLabel}>

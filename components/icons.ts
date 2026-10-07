@@ -43,6 +43,7 @@ export { List } from "@phosphor-icons/react/dist/ssr/List";
 export { ListChecks } from "@phosphor-icons/react/dist/ssr/ListChecks";
 export { MapPin } from "@phosphor-icons/react/dist/ssr/MapPin";
 export { Moon } from "@phosphor-icons/react/dist/ssr/Moon";
+export { SealCheck } from "@phosphor-icons/react/dist/ssr/SealCheck";
 export { Notebook } from "@phosphor-icons/react/dist/ssr/Notebook";
 export { Phone } from "@phosphor-icons/react/dist/ssr/Phone";
 export { Plus } from "@phosphor-icons/react/dist/ssr/Plus";

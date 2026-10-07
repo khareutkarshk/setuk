@@ -41,7 +41,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       </a>
       <SiteHeader t={t} locale={locale} />
       <main id="main">
-        <StoryController chapters={t.chapters} railLabel={t.nav.chapters} labels={t.scene} ariaLabel={t.meta.title}>
+        <StoryController chapters={t.chapters} railLabel={t.nav.chapters} labels={t.scene} ariaLabel={t.meta.title} brand={t.brand}>
           <HeroChapter t={t} locale={locale} />
           <ServeChapter t={t} />
           <ProblemChapter t={t} />

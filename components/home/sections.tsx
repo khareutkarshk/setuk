@@ -3,7 +3,7 @@ import type { Dictionary } from "@/content";
 import { site } from "@/content/site";
 import * as I from "@/components/icons";
 import { SetukMark } from "@/components/site/setuk-mark";
-import { CornerPattern, Lotus, Pattern } from "@/components/site/pattern";
+import { AshokaChakra, CornerPattern, Pattern } from "@/components/site/pattern";
 
 /* Sections after the scroll story. All server-rendered; the FAQ uses <details>, so no JS.
    Each section carries its own Indian pattern (components/site/pattern.tsx): a toran over
@@ -28,7 +28,7 @@ export function Engagements({ t }: { t: Dictionary }) {
   return (
     <section id="engagements" aria-labelledby="engagements-title" className="relative z-10 overflow-hidden border-t border-line bg-bg">
       <Pattern kind="toran" className="absolute inset-x-0 top-0 text-accent opacity-60" />
-      <Lotus className="absolute -top-40 -right-48 w-[640px] text-accent opacity-[.08]" />
+      <AshokaChakra className="absolute -top-40 -right-48 w-[640px] animate-[spin_120s_linear_infinite] text-accent opacity-[.08] motion-reduce:animate-none" />
       <div className="relative mx-auto max-w-page px-5 py-20 md:px-8 md:py-28">
         <div className="grid items-end gap-6 md:grid-cols-2 md:gap-16">
           <div>

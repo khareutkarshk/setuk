@@ -242,7 +242,13 @@ export function HowChapters({ t }: { t: Dictionary }) {
           </h2>
           <p className={styles.time}><I.Clock aria-hidden />{s.time}</p>
           <p className={styles.body}>{s.d}</p>
-          <p className={styles.get}><span className={styles.getLabel}>{t.how.get}</span>{s.get}</p>
+          <div className={styles.get}>
+            <span className={styles.getSeal} aria-hidden><I.SealCheck weight="fill" /></span>
+            <p>
+              <span className={styles.getLabel}>{t.how.get}</span>
+              <span className={styles.getText}>{s.get}</span>
+            </p>
+          </div>
         </Card>
       </Chapter>
     );

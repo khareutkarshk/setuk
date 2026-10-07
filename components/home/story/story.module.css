@@ -15,6 +15,44 @@
 .stage canvas { opacity: 0; transition: opacity 1.2s var(--ease-out); }
 .stage[data-ready] canvas { opacity: 1; }
 .stage[data-ready] .poster { opacity: 0; }
+/* The photo only shows if the 3D chamber could not start */
+.stage[data-boot="loading"] .poster, .stage[data-boot="done"] .poster { opacity: 0; }
+
+/* First-load splash: covers the viewport until the chamber is ready */
+.splash {
+  position: fixed; inset: 0; z-index: 100; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;
+  background: radial-gradient(70% 60% at 50% 42%, var(--accent-soft), var(--bg) 70%);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), visibility 0s linear 0s;
+}
+.splash[data-hidden] { opacity: 0; transform: scale(1.03); visibility: hidden; pointer-events: none; transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), visibility 0s linear 0.8s; }
+.splashEmblem { position: relative; width: min(300px, 70vw); aspect-ratio: 1; display: grid; place-items: center; }
+.splashLotus { position: absolute; inset: -18%; width: 136%; height: 136%; opacity: 0.4; animation: lotusIn 1.6s var(--ease-out) both; }
+.splashLotus > g { transform-origin: 200px 200px; }
+.splashLotus [data-ring="1"] { animation: lotusTurn 90s linear infinite; opacity: 0.7; }
+.splashLotus [data-ring="2"] { animation: lotusTurn 60s linear infinite reverse; }
+.splashLotus [data-ring="3"] { animation: lotusTurn 30s linear infinite; opacity: 0.55; }
+.splashLotus [data-ring="4"] { animation: lotusTurn 20s linear infinite reverse, bloom 3.2s ease-in-out infinite; }
+.splashHalo { position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%); animation: halo 2.6s ease-in-out infinite; }
+.splashMark { position: relative; width: 52% !important; }
+.splashName { margin-top: 18px; font-size: clamp(28px, 5vw, 40px); font-weight: 600; letter-spacing: -0.02em; animation: rise 0.8s var(--ease-out) 0.9s both; }
+.splashLine { margin-top: 4px; font-size: 14px; animation: rise 0.8s var(--ease-out) 1.05s both; }
+.splashPercent { margin-top: 24px; font-size: 34px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; animation: rise 0.8s var(--ease-out) 1.15s both; }
+.splashPercent > span { margin-left: 2px; font-size: 16px; }
+.splashBar { position: relative; margin-top: 14px; width: 200px; height: 2px; border-radius: 2px; overflow: hidden; background: var(--line); animation: rise 0.8s var(--ease-out) 1.2s both; }
+.splashBar > span { position: absolute; inset: 0; border-radius: inherit; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+.splashBar > span::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.6), transparent); animation: sweep 1.4s ease-in-out infinite; }
+.splashStatus { margin-top: 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; animation: rise 0.8s var(--ease-out) 1.3s both, breathe 2.4s ease-in-out 2s infinite; }
+@keyframes lotusTurn { to { rotate: 360deg; } }
+@keyframes lotusIn { from { opacity: 0; scale: 0.85; } }
+@keyframes bloom { 50% { scale: 1.12; } }
+@keyframes halo { 50% { opacity: 0.5; scale: 1.12; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+@keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@keyframes breathe { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) {
+  .splashLotus, .splashLotus > g, .splashHalo, .splashBar > span::after, .splashStatus { animation: none; }
+}
 .vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(8 6 4 / 0.55) 100%); }
 .topScrim { position: absolute; inset: 0 0 auto; height: 140px; pointer-events: none; background: linear-gradient(color-mix(in srgb, var(--bg) 80%, transparent), transparent); }
 /* Hero scrim: fades into the page background so the headline reads in both modes */
@@ -109,8 +147,12 @@
 .progress span { height: 4px; border-radius: 4px; background: var(--line); }
 .progress span[data-on] { background: var(--accent); }
 .time { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; font-size: 13px; font-weight: 500; background: var(--accent-soft); margin-top: 12px; }
-.get { margin-top: 16px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border-left: 3px solid var(--accent); font-size: 15px; line-height: 1.45; }
-.getLabel { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 2px; font-weight: 600; }
+/* "You get": a hairline, a seal, and the outcome set as the card's closing line */
+.get { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; margin-top: 22px; padding-top: 18px; border-top: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.getSeal { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 22px; color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+.getLabel { display: block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 4px; }
+.getText { display: block; font-size: 17px; line-height: 1.4; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); text-wrap: pretty; }
+:global(html[lang="hi"]) .getLabel { font-family: var(--font-deva); font-size: 13px; letter-spacing: 0; }
 
 /* Proof strip */
 .proof { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: color-mix(in srgb, var(--line) 80%, transparent); border: 1px solid color-mix(in srgb, var(--line) 80%, transparent); border-radius: 18px; overflow: hidden; }

@@ -47,6 +47,8 @@ export interface SadanOptions {
   quality?: string | null;
   signal?: AbortSignal;
   onReady?: () => void;
+  /** Load progress, 0..1, reported as textures arrive and the scene compiles */
+  onProgress?: (p: number) => void;
   onContextLost?: () => void;
 }
 
@@ -139,7 +141,15 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   /* ---------- textures ---------- */
   const loader = new THREE.TextureLoader();
   const base = o.assetBase + "tex/" + T.tex;
+  const TEX_COUNT = 10;
+  let texDone = 0;
+  const tick = () => o.onProgress?.(0.1 + 0.6 * (++texDone / TEX_COUNT));
   const load = async (name: string, srgb = false, detail = false): Promise<THREE.Texture | null> => {
+    const t = await loadTex(name, srgb, detail);
+    tick();
+    return t;
+  };
+  const loadTex = async (name: string, srgb: boolean, detail: boolean): Promise<THREE.Texture | null> => {
     if (detail && !T.maps) return null;
     try {
       const t = await loader.loadAsync(base + name);
@@ -160,6 +170,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     load("peacock_jaali.jpg", true)
   ]);
   if (aborted()) { disposeAll(); return null; }
+  o.onProgress?.(0.75);
   const woodImg = woodD?.image as HTMLImageElement | undefined;
 
   /* A texture copy with its own tiling. UVs in this scene are in metres, so repeat = 1 / tile size. */
@@ -995,10 +1006,12 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   };
 
   /* Compile every shader before the first frame, so scrolling never stalls on a new material */
+  o.onProgress?.(0.85);
   office.showAll(true);
   try { await renderer.compileAsync(scene, camera); } catch { /* compile lazily */ }
   office.showAll(false);
   if (aborted()) { handle.dispose(); return null; }
+  o.onProgress?.(0.97);
 
   const right = V(0, 0, 0), up = V(0, 0, 0), fwd = V(0, 0, 0), worldUp = V(0, 1, 0), lastCam = new THREE.Matrix4();
   let first = true, deskTimer = 0, lastP = -1, lastAnim = 0;
@@ -1086,7 +1099,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
     if (!dirty) { perf.lastRender = 0; return; }
     dirty--;
     if (usePost && composer) composer.render(); else renderer.render(scene, camera);
-    if (first) { first = false; o.onReady?.(); return; }
+    if (first) { first = false; o.onProgress?.(1); o.onReady?.(); return; }
     trackPerf(now);
   };
   raf = requestAnimationFrame(frame);
