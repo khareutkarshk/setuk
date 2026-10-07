@@ -197,6 +197,7 @@ export const hi: Dictionary = {
     address: "मकान सं. 413, नेहरू नगर, पाटलिपुत्र, फुलवारी, पटना 800013, बिहार",
     rights: "सेतुक प्राइवेट लिमिटेड। सर्वाधिकार सुरक्षित।",
     model: "3D सदन एक चित्रण है, वास्तविक माप में नहीं।",
+    credits: [{ t: "सलाहकार: “Buisness man”, art.piskov द्वारा, CC BY 4.0", href: "https://sketchfab.com/3d-models/buisness-man-with-talking-animation-3fe2b15e0c884b66b987f6f48e420f56" }],
     guideItems: [
       { t: "क्षेत्रीय दफ़्तर ट्रैकिंग", href: "https://setuk.org/constituency-office-tracking-system" },
       { t: "पार्टी प्रबंधन व्यवस्था", href: "https://setuk.org/enterprise-political-party-management-system" },

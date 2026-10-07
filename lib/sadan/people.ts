@@ -16,8 +16,6 @@ export interface PersonLook {
   outfit: "suit" | "kurta";
   skin: string;
   hair: string;
-  /** Hair only at the sides and back */
-  receding?: boolean;
   mustache?: boolean;
   glasses?: boolean;
   /** Suit jacket, or the Nehru jacket over the kurta */
@@ -130,7 +128,7 @@ const sculpt = (x: number, y: number, z: number): [number, number, number] => {
   if (z <= 0.02) return [x, y, z];
   const w = Math.min(1, (z - 0.02) / 0.03);
   const brow = 0.004 * Math.exp(-((y - 0.03) ** 2) / 0.0001) * Math.exp(-(x * x) / 0.0025);
-  const socket = 0.0045 * (gauss(x - 0.03, y - 0.012, 0.00018) + gauss(x + 0.03, y - 0.012, 0.00018));
+  const socket = 0.0036 * (gauss(x - 0.03, y - 0.012, 0.00018) + gauss(x + 0.03, y - 0.012, 0.00018));
   const cheek = 0.0035 * (gauss(x - 0.047, y + 0.02, 0.0003) + gauss(x + 0.047, y + 0.02, 0.0003));
   const chin = 0.005 * gauss(x, y + 0.09, 0.0003);
   return [x + Math.sign(x) * cheek * 0.5 * w, y, z + (brow - socket + cheek + chin) * w];
@@ -143,6 +141,33 @@ const blinkAt = (t: number) => {
   return Math.max(one(t % 4.3), one((t * 1.13 + 1.9) % 6.7));
 };
 const hash = (n: number) => { const s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); };
+/** Height of the hairline (unit-sphere y) by azimuth from the front: forehead, temples, over the ears, nape */
+const HAIRLINE: [number, number][] = [[0, 0.6], [0.5, 0.55], [0.85, 0.36], [1.12, 0.05], [1.3, 0.22], [1.7, 0.24], [2.2, -0.12], [Math.PI, -0.45]];
+const hairlineAt = (az: number) => {
+  const a = Math.abs(az);
+  for (let i = 1; i < HAIRLINE.length; i++) {
+    const [a0, h0] = HAIRLINE[i - 1], [a1, h1] = HAIRLINE[i];
+    if (a <= a1) return h0 + ((h1 - h0) * (a - a0)) / (a1 - a0);
+  }
+  return HAIRLINE[HAIRLINE.length - 1][1];
+};
+const smoothstep = (a: number, b: number, x: number) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+/** Fine combed strands as a bump map, running from the crown down */
+let strands: THREE.CanvasTexture | null = null;
+const strandMap = () => {
+  if (strands || typeof document === "undefined") return strands;
+  const c = document.createElement("canvas"); c.width = c.height = 256;
+  const g = c.getContext("2d")!;
+  g.fillStyle = "#808080"; g.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 900; i++) {
+    const x = hash(i) * 256, w = 0.6 + hash(i + 0.5) * 1.4, v = 90 + hash(i + 0.25) * 90 | 0;
+    g.strokeStyle = `rgb(${v},${v},${v})`; g.lineWidth = w;
+    g.beginPath(); g.moveTo(x, 0); g.bezierCurveTo(x + 6, 85, x - 6, 170, x + 3, 256); g.stroke();
+  }
+  strands = new THREE.CanvasTexture(c);
+  strands.wrapS = strands.wrapT = THREE.RepeatWrapping; strands.repeat.set(10, 1);
+  return strands;
+};
 const ABDOMEN: [number, number][] = [[0, -0.08], [0.12, -0.075], [0.166, -0.03], [0.171, 0.04], [0.163, 0.14], [0.159, 0.22], [0.162, 0.28], [0, 0.28]];
 const CHEST: [number, number][] = [[0, -0.02], [0.159, -0.02], [0.169, 0.06], [0.179, 0.15], [0.177, 0.21], [0.16, 0.25], [0.115, 0.278], [0.056, 0.292], [0, 0.292]];
 
@@ -157,9 +182,11 @@ export function createPerson(look: PersonLook, kit: PersonKit): Person {
   const shirt = m({ color: look.shirt, roughness: 0.88, normalMap: kit.weave, normalScale: ns(0.25), sheen: 0.4, sheenColor: "#ffffff", sheenRoughness: 0.6 });
   const legs = look.legs === look.jacket ? jacket : look.legs === look.shirt ? shirt : m({ color: look.legs, roughness: 0.85, normalMap: kit.weave, normalScale: ns(0.35) });
   const shoes = m({ color: look.shoes, roughness: 0.32, clearcoat: 0.6, clearcoatRoughness: 0.25 });
-  const hair = m({ color: look.hair, roughness: 0.75, sheen: 0.25, sheenColor: tint(look.hair, 0.2), sheenRoughness: 0.6 });
-  const eyeW = m({ color: "#ece4dc", roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05 });
-  const iris = m({ color: "#4a2f1c", roughness: 0.3 });
+  const hair = m({ color: look.hair, roughness: 0.62, bumpMap: strandMap(), bumpScale: 1.2, sheen: 0.35, sheenColor: tint(look.hair, 0.3), sheenRoughness: 0.45 });
+  const brow = m({ color: look.hair, roughness: 0.8 });
+  const lash = m({ color: new THREE.Color(look.hair).multiplyScalar(0.6), roughness: 0.9 });
+  const eyeW = m({ color: "#e2d8cc", roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05 });
+  const iris = m({ color: "#3d2616", roughness: 0.3 });
   const pupil = m({ color: "#070404", roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.02 });
   const lip = m({ color: new THREE.Color(look.skin).multiplyScalar(0.72).lerp(new THREE.Color("#8a3f3a"), 0.35), roughness: 0.45, clearcoat: 0.25, clearcoatRoughness: 0.35 });
   const dark = m({ color: "#2a1210", roughness: 0.8 });
@@ -262,10 +289,10 @@ export function createPerson(look: PersonLook, kit: PersonKit): Person {
     sk.translate(HC.x, HC.y, HC.z);
     const parts: G[] = [sk];
     /* nose: a bridge that widens to the tip, with nostril wings */
-    parts.push(along(limb(0.007, 0.0105, 0.03, 8), face(0, 0.006, -0.004), face(0, -0.024, 0.006)));
-    parts.push(sphere(8, 0.0102, 0.0095, 0.0098, 0, HC.y - 0.029, HC.z + 0.097));
+    parts.push(along(limb(0.0062, 0.0092, 0.032, 8), face(0, 0.008, -0.004), face(0, -0.025, 0.005)));
+    parts.push(sphere(10, 0.0078, 0.0074, 0.008, 0, HC.y - 0.029, HC.z + 0.093));
     for (const s of [-1, 1]) {
-      parts.push(sphere(8, 0.0075, 0.0068, 0.0072, s * 0.0105, HC.y - 0.033, HC.z + 0.09));
+      parts.push(sphere(10, 0.0058, 0.0055, 0.0062, s * 0.0105, HC.y - 0.031, HC.z + 0.084));
       /* ears, swept back a little */
       const ear = sphere(8, 0.009, 0.028, 0.018); ear.rotateY(s * 0.35); ear.rotateZ(-s * 0.12); ear.translate(s * 0.076, HC.y + 0.0, HC.z - 0.006);
       parts.push(ear);
@@ -276,7 +303,7 @@ export function createPerson(look: PersonLook, kit: PersonKit): Person {
     const whites: G[] = [], irises: G[] = [], pupils: G[] = [];
     for (const s of [-1, 1]) {
       whites.push(sphere(12, ER, ER, ER, s * 0.03, EY, EZ));
-      irises.push(sphere(10, 0.0062, 0.0062, 0.0016, s * 0.03, EY, EZ + ER - 0.0004));
+      irises.push(sphere(10, 0.0064, 0.0064, 0.0016, s * 0.03, EY, EZ + ER - 0.0004));
       pupils.push(sphere(8, 0.0028, 0.0028, 0.0009, s * 0.03, EY, EZ + ER + 0.0011));
     }
     add(head, merge(whites), eyeW);
@@ -288,10 +315,16 @@ export function createPerson(look: PersonLook, kit: PersonKit): Person {
       const g = new THREE.Group(); g.position.set(0, EY, EZ); head.add(g);
       const shells: G[] = [];
       for (const s of [-1, 1]) {
-        const sh = new THREE.SphereGeometry(ER * 1.07, 16, 6, 0, Math.PI * 2, top ? 0 : Math.PI / 2, Math.PI / 2);
+        const sh = new THREE.SphereGeometry(ER * 1.028, 16, 6, 0, Math.PI * 2, top ? 0 : Math.PI / 2, Math.PI / 2);
         sh.translate(s * 0.03, 0, 0); shells.push(sh);
       }
       add(g, merge(shells), skin);
+      if (top) {
+        /* lash line along the upper lid edge */
+        const ll: G[] = [];
+        for (const s of [-1, 1]) { const t = new THREE.TorusGeometry(ER * 1.033, 0.0008, 4, 16, Math.PI); t.rotateX(Math.PI / 2); t.translate(s * 0.03, 0, 0); ll.push(t); }
+        add(g, merge(ll), lash);
+      }
       return g;
     };
     lidsUp = lid(true); lidsLow = lid(false);
@@ -299,44 +332,48 @@ export function createPerson(look: PersonLook, kit: PersonKit): Person {
 
     /* hair: cap, brows and the mustache */
     const hairParts: G[] = [];
-    const cap = look.receding
-      ? new THREE.SphereGeometry(1, S * 2, S, Math.PI / 2 + 1.2, Math.PI * 2 - 2.4, 0.34 * Math.PI, 0.3 * Math.PI)
-      : new THREE.SphereGeometry(1, S * 2, S, 0, Math.PI * 2, 0, 0.6 * Math.PI);
-    if (!look.receding) cap.rotateX(-0.9);
     {
+      /* a shell over the skull, full thickness inside the hairline and thinning to nothing at it */
+      const cap = new THREE.SphereGeometry(1, Math.max(48, S * 4), Math.max(32, S * 3));
       const cp = cap.attributes.position;
-      for (let i = 0; i < cp.count; i++) cp.setXYZ(i, ...skullPoint(cp.getX(i), cp.getY(i), cp.getZ(i), look.receding ? 1.045 : 1.06));
+      for (let i = 0; i < cp.count; i++) {
+        const x = cp.getX(i), y = cp.getY(i), z = cp.getZ(i);
+        const h = hairlineAt(Math.atan2(x, z)), c = smoothstep(h - 0.05, h + 0.09, y);
+        const lift = c * (0.055 + 0.03 * Math.max(0, y) + 0.025 * Math.max(0, z) * Math.max(0, y)) - (1 - c) * 0.15;
+        cp.setXYZ(i, ...skullPoint(x, y, z, 1 + lift));
+      }
       cap.computeVertexNormals();
+      cap.translate(HC.x, HC.y, HC.z);
+      add(head, cap, hair);
     }
-    cap.translate(HC.x, HC.y, HC.z);
-    hairParts.push(cap);
     if (look.mustache) {
-      const mu = new THREE.TorusGeometry(0.022, 0.0062, 6, 14, Math.PI); mu.scale(1.05, 0.45, 0.7); mu.translate(0, HC.y - 0.045, HC.z + 0.091);
+      const mu = new THREE.TorusGeometry(0.02, 0.0042, 6, 16, Math.PI); mu.scale(1.05, 0.42, 0.6); mu.translate(0, HC.y - 0.046, HC.z + 0.09);
       hairParts.push(mu);
     }
-    add(head, merge(hairParts), hair);
-    if (look.receding) (hair as THREE.MeshStandardMaterial).side = THREE.DoubleSide;
+    if (hairParts.length) add(head, merge(hairParts), brow);
     const browParts: G[] = [];
     for (const s of [-1, 1]) {
-      const a = face(s * 0.011, 0.03, 0.0055), mid = face(s * 0.03, 0.035, 0.005), b = face(s * 0.048, 0.027, 0.004);
-      browParts.push(along(limb(0.0046, 0.0042, a.distanceTo(mid), 6), a, mid), along(limb(0.0042, 0.0028, mid.distanceTo(b), 6), mid, b));
+      const a = face(s * 0.012, 0.03, 0.0038), mid = face(s * 0.031, 0.034, 0.0034), b = face(s * 0.048, 0.029, 0.0026);
+      const p1 = along(limb(0.0034, 0.003, a.distanceTo(mid), 6), a, mid), p2 = along(limb(0.003, 0.0018, mid.distanceTo(b), 6), mid, b);
+      browParts.push(p1, p2);
     }
     brows = new THREE.Group(); head.add(brows);
-    add(brows, merge(browParts), hair);
+    add(brows, merge(browParts), brow);
 
     /* mouth: the upper lip line curves into a smile; the lower lip drops with the jaw */
-    const smileGeo = new THREE.TorusGeometry(0.02, 0.0036, 5, 12, Math.PI); smileGeo.rotateZ(Math.PI);
+    const upper = sphere(10, 0.0148, 0.0031, 0.0048); upper.translate(0, HC.y - 0.0525, HC.z + 0.084); add(head, upper, lip);
+    const smileGeo = new THREE.TorusGeometry(0.017, 0.0016, 5, 12, Math.PI); smileGeo.rotateZ(Math.PI);
     smile = add(head, smileGeo, lip); smile.position.set(0, HC.y - 0.055, HC.z + 0.086);
     open = add(head, sphere(8, 0.013, 0.01, 0.004), dark); open.position.set(0, HC.y - 0.059, HC.z + 0.083);
-    lowerLip = add(head, sphere(10, 0.0155, 0.0052, 0.0062), lip); lowerLip.position.set(0, HC.y - 0.062, HC.z + 0.083);
+    lowerLip = add(head, sphere(10, 0.0135, 0.0042, 0.0052), lip); lowerLip.position.set(0, HC.y - 0.062, HC.z + 0.083);
 
     if (look.glasses) {
       const gl: G[] = [];
       for (const s of [-1, 1]) {
-        const ring = new THREE.TorusGeometry(0.0175, 0.0017, 4, 20); ring.scale(1.22, 0.92, 1); ring.translate(s * 0.031, HC.y + 0.012, HC.z + 0.099); gl.push(ring);
-        const arm = new THREE.BoxGeometry(0.0026, 0.0026, 0.09); arm.translate(s * 0.08, HC.y + 0.015, HC.z + 0.052); gl.push(arm);
+        const ring = new THREE.TorusGeometry(0.0165, 0.0011, 4, 24); ring.scale(1.28, 0.82, 1); ring.translate(s * 0.031, HC.y + 0.012, HC.z + 0.099); gl.push(ring);
+        const arm = new THREE.BoxGeometry(0.0018, 0.0022, 0.09); arm.translate(s * 0.08, HC.y + 0.015, HC.z + 0.052); gl.push(arm);
       }
-      const bridge = new THREE.BoxGeometry(0.016, 0.0026, 0.0026); bridge.translate(0, HC.y + 0.017, HC.z + 0.1); gl.push(bridge);
+      const bridge = new THREE.BoxGeometry(0.016, 0.0018, 0.0018); bridge.translate(0, HC.y + 0.017, HC.z + 0.1); gl.push(bridge);
       add(head, merge(gl), metal);
     }
   }
@@ -413,7 +450,7 @@ export function createPerson(look: PersonLook, kit: PersonKit): Person {
     a.wr.quaternion.copy(qFore.invert().multiply(qHand));
   };
   const lk = V(0, 0, 0), hc = V(0, 0, 0);
-  const blinkPhase = look.receding ? 2.1 : 0.4;
+  const blinkPhase = look.outfit === "kurta" ? 2.1 : 0.4;
 
   const pose = (p: Pose, dt: number, t: number) => {
     const k = dt <= 0 ? 1 : 1 - Math.exp(-dt * 5);
@@ -457,8 +494,8 @@ export function createPerson(look: PersonLook, kit: PersonKit): Person {
 
     /* lids: irregular blinks, a squint when smiling, upper lids follow the gaze down */
     const bl = blinkAt(t + blinkPhase);
-    lidsUp.rotation.x = THREE.MathUtils.lerp(-0.5 + st.smile * 0.1 + Math.max(0, pitch) * 0.25, 0.7, bl);
-    lidsLow.rotation.x = THREE.MathUtils.lerp(0.6 - st.smile * 0.28, 0.45, bl);
+    lidsUp.rotation.x = THREE.MathUtils.lerp(-0.36 + st.smile * 0.1 + Math.max(0, pitch) * 0.25, 0.7, bl);
+    lidsLow.rotation.x = THREE.MathUtils.lerp(0.5 - st.smile * 0.22, 0.4, bl);
 
     /* brows lift on stressed words and with a smile */
     brows.position.y = 0.0028 * st.talk * Math.max(0, Math.sin(t * 2.7 + blinkPhase)) + 0.0014 * st.smile;

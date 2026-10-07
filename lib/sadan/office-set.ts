@@ -24,7 +24,8 @@ import {
   BADGE, LAPTOP, PHONE, TAG, drawBadge, drawChat, drawExcel, drawInbox, drawMeet, drawMissed, drawPaper, drawPhoneOk, drawRun,
   drawLidMark, drawSetukBadge, drawSetup, drawTag, type BadgeLook
 } from "./set-screens";
-import { createPerson, type Pose } from "./people";
+import { createPerson, type Person, type Pose } from "./people";
+import { loadAvatar, type Anchors, type Avatar, type AvatarSpec } from "./avatar";
 
 export interface SetKit {
   world: THREE.Group;
@@ -36,6 +37,8 @@ export interface SetKit {
   normalFromHeight: (c: HTMLCanvasElement, strength?: number) => THREE.Texture;
   /** A sample of seat positions (world), for the pulses that run from the fix out to the House */
   seatPoints: THREE.Vector3[];
+  /** Public folder holding the rigged people (consultant.glb, politician.glb); mid and high tiers swap them in */
+  peopleBase?: string;
 }
 
 export interface SetFrame {
@@ -348,11 +351,39 @@ export function createOfficeSet(k: SetKit): OfficeSet {
 
   /* ---------- the meeting ---------- */
   const kit = { mat: k.mat, seg: T.tier === "low" ? 8 : T.tier === "mid" ? 12 : 16, weave };
-  const consultant = createPerson({ outfit: "suit", skin: "#b27c57", hair: "#1b1411", jacket: "#262d3b", shirt: "#eef1f4", tie: "#6d1f2c", legs: "#262d3b", shoes: "#151515" }, kit);
-  const politician = createPerson({ outfit: "kurta", skin: "#9c6a47", hair: "#d9d5ce", receding: true, mustache: true, glasses: true, jacket: "#6e4a35", shirt: "#f1ece1", legs: "#ece6da", shoes: "#5a3a22" }, kit);
+  let consultant: Person = createPerson({ outfit: "suit", skin: "#b27c57", hair: "#1b1411", jacket: "#262d3b", shirt: "#eef1f4", tie: "#6d1f2c", legs: "#262d3b", shoes: "#151515" }, kit);
+  let politician: Person = createPerson({ outfit: "kurta", skin: "#a3714f", hair: "#1a1411", mustache: true, glasses: true, jacket: "#6e4a35", shirt: "#f1ece1", legs: "#ece6da", shoes: "#5a3a22" }, kit);
   consultant.root.position.set(1.25, 0, -10.9); consultant.root.rotation.y = -Math.PI / 2;
   politician.root.position.set(-1.25, 0, -10.9); politician.root.rotation.y = Math.PI / 2;
   meeting.add(consultant.root, politician.root);
+  /*
+   * Rigged people replace the procedural ones one at a time as they load; a person whose model
+   * is missing or fails the skin check stays procedural. Both use the executive model; the
+   * politician is dressed differently and gets a jacket, glasses and a mustache.
+   */
+  let swapped = false, gone = false;
+  const avatars: Avatar[] = [];
+  const swapIn = (spec: AvatarSpec, which: "consultant" | "politician") => loadAvatar(spec).then((next) => {
+    avatars.push(next);
+    if (gone) return;
+    const old = which === "consultant" ? consultant : politician;
+    next.root.position.copy(old.root.position); next.root.quaternion.copy(old.root.quaternion);
+    meeting.remove(old.root); meeting.add(next.root);
+    if (which === "consultant") consultant = next; else politician = next;
+    swapped = true;
+  }).catch((err) => console.warn(`sadan: keeping the procedural ${which}`, err));
+  if (k.peopleBase && T.tier !== "low") {
+    const face = { blink: 16, smile: 33, open: 67, count: 68 };
+    swapIn({ url: k.peopleBase + "consultant.glb", height: 1.76, face, dress: executive }, "consultant");
+    /* the politician: the same model in a kurta, Nehru jacket, glasses and mustache, greying at the temples */
+    /* the Nehru jacket is grown from the shirt's torso, so it is skinned like the body; sleeves and collar stay kurta */
+    const jacket = k.mat({ color: "#5b4636", roughness: 0.86, sheen: 0.35, sheenColor: "#8a7260", sheenRoughness: 0.7 });
+    swapIn({
+      url: k.peopleBase + "consultant.glb", height: 1.74, face, dress: leader, accessories: (a) => leaderExtras(a, k.mat),
+      overlays: [{ from: /Shirt/, material: jacket, drop: /Upperarm|Forearm|Elbow|_Hand|Thumb|Index|Mid\d|Ring\d|Pinky|Neck|Head/, limit: 0.75, below: { bone: /NeckTwist01/, by: -0.01, dip: 0.3, width: 0.075 }, seam: { bone: /^[LR]_Upperarm_\d+$/, margin: 0.015 }, inflate: 0.007 }]
+    }, "politician");
+  }
+  extras.push({ dispose: () => { gone = true; avatars.forEach((a) => a.dispose()); } });
   blob(meeting, 0.9, 0.9, 1.1, 0, -10.9, 0.9); blob(meeting, 0.9, 0.9, -1.1, 0, -10.9, 0.9);
   const lapScr = screen(LAPTOP.w, LAPTOP.h, sc);
   const lap = makeLaptop(lapScr, true);
@@ -579,11 +610,84 @@ export function createOfficeSet(k: SetKit): OfficeSet {
     } else shot.w = 0;
 
     const animating = !reduced && ((clut && p > 1.4 && p < 3.6) || (meet && p > 4.4));
+    if (swapped) { swapped = false; changed = true; }
     return { animating, changed };
   };
 
   extras.push(sGeo, sMat);
   return { root: set, update, shot, redraw, showAll, extras };
 }
+
+/**
+ * The consultant model: matte cloth (the converted materials come out glossy), black hair with
+ * clean card edges, and a warmer complexion.
+ */
+const executive = (m: THREE.Mesh) => {
+  const mat = m.material as THREE.MeshPhysicalMaterial;
+  if (/Shirt/i.test(mat.name)) mat.color.set("#c9dcf0");
+  if (/Shirt|Slacks|shoes/i.test(mat.name)) { mat.roughness = /shoes/i.test(mat.name) ? 0.45 : 0.85; mat.metalness = 0; if (mat.isMeshPhysicalMaterial) mat.specularIntensity = 0.25; }
+  if (/Classic_Taper/.test(mat.name)) { mat.color.set("#3a3330"); mat.alphaTest = 0.5; mat.transparent = false; mat.depthWrite = true; mat.roughness = 0.6; }
+  if (/Std_Skin|Std_Nails/.test(mat.name)) skinTone(mat, [0.98, 0.9, 0.84]);
+};
+
+/** Redraw a texture through a per-pixel colour function (keeps folds and strands) */
+const recolor = (map: THREE.Texture, fn: (r: number, g: number, b: number, out: number[]) => void) => {
+  const img = map.image as HTMLImageElement | ImageBitmap;
+  const c = document.createElement("canvas"); c.width = img.width; c.height = img.height;
+  const g = c.getContext("2d")!; g.drawImage(img, 0, 0);
+  const d = g.getImageData(0, 0, c.width, c.height), px = d.data, o = [0, 0, 0];
+  for (let i = 0; i < px.length; i += 4) { fn(px[i], px[i + 1], px[i + 2], o); px[i] = o[0]; px[i + 1] = o[1]; px[i + 2] = o[2]; }
+  g.putImageData(d, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.flipY = map.flipY; t.channel = map.channel; t.wrapS = map.wrapS; t.wrapT = map.wrapT; t.colorSpace = THREE.SRGBColorSpace;
+  map.dispose();
+  return t;
+};
+
+/** Skin: take most of the red out of the texture, then set the tone (multipliers per channel) */
+const skinTone = (mat: THREE.MeshPhysicalMaterial, tone: [number, number, number]) => {
+  if (mat.map && !mat.userData.toned) {
+    mat.map = recolor(mat.map, (r, g, b, o) => {
+      const l = 0.3 * r + 0.59 * g + 0.11 * b;
+      o[0] = (l + (r - l) * 0.45) * tone[0]; o[1] = (l + (g - l) * 0.45) * tone[1]; o[2] = (l + (b - l) * 0.45) * tone[2];
+    });
+    mat.userData.toned = true;
+  }
+  mat.color.set("#ffffff"); mat.roughness = 0.6;
+  if (mat.isMeshPhysicalMaterial) { mat.specularIntensity = 0.3; mat.sheen = 0; }
+};
+
+/** The politician's clothes and colouring on the executive model */
+const leader = (m: THREE.Mesh) => {
+  const mat = m.material as THREE.MeshPhysicalMaterial;
+  const matte = () => { mat.metalness = 0; if (mat.isMeshPhysicalMaterial) mat.specularIntensity = 0.2; };
+  if (/Shirt/i.test(mat.name)) { mat.color.set("#f3ecdc"); mat.roughness = 0.9; matte(); }
+  else if (/Slacks/i.test(mat.name)) { mat.color.set("#e9e2d2"); mat.roughness = 0.9; matte(); }
+  else if (/shoes/i.test(mat.name)) { mat.color.set("#6b4428"); mat.roughness = 0.5; matte(); }
+  else if (/Classic_Taper/.test(mat.name)) {
+    /* salt and pepper: strands mapped to greys by their brightness */
+    if (mat.map) mat.map = recolor(mat.map, (r, g, b, o) => { const l = (r + g + b) / 765, v = 28 + l * 190 + ((r * 7 + b) % 23 > 15 ? 55 : 0); o[0] = o[1] = o[2] = Math.min(200, v); });
+    mat.color.set("#ffffff"); mat.alphaTest = 0.5; mat.transparent = false; mat.depthWrite = true; mat.roughness = 0.65;
+  } else if (/Std_Skin|Std_Nails/.test(mat.name)) skinTone(mat, [0.8, 0.7, 0.62]);
+};
+
+/** Glasses and mustache (ride the head), built around the rest pose */
+const leaderExtras = (a: Anchors, mat: SetKit["mat"]) => {
+  const frame = mat({ color: "#1d1b1a", metalness: 0.5, roughness: 0.35 });
+  const hairM = mat({ color: "#4a4643", roughness: 0.8 });
+  /* glasses: thin rectangular-round rims in front of the eyes, temples back to the ears */
+  const [eR, eL] = a.eyes, mid = eR.clone().add(eL).multiplyScalar(0.5), z = mid.z + 0.03;
+  const parts: THREE.BufferGeometry[] = [];
+  for (const e of [eR, eL]) {
+    const ring = new THREE.TorusGeometry(0.0175, 0.0012, 6, 28); ring.scale(1.2, 0.85, 1); ring.translate(e.x, e.y, z); parts.push(ring);
+    const s = Math.sign(e.x - mid.x);
+    const arm = new THREE.BoxGeometry(0.002, 0.0022, 0.1); arm.translate(e.x + s * 0.026, e.y + 0.004, z - 0.05); parts.push(arm);
+  }
+  const bridge = new THREE.BoxGeometry(Math.abs(eL.x - eR.x) - 0.042, 0.002, 0.002); bridge.translate(mid.x, mid.y + 0.004, z + 0.002); parts.push(bridge);
+  parts.forEach((g) => a.head.add(new THREE.Mesh(g, frame)));
+  /* mustache over the upper lip */
+  const mu = new THREE.TorusGeometry(0.019, 0.005, 8, 18, Math.PI); mu.scale(1.1, 0.42, 0.55);
+  const must = new THREE.Mesh(mu, hairM); must.position.set(mid.x, mid.y - 0.058, mid.z + 0.03); a.head.add(must);
+};
 
 const smoother = (x: number) => { const t = clamp01(x); return t * t * (3 - 2 * t); };

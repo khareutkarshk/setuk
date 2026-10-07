@@ -17,7 +17,8 @@ export function SiteDocument({ locale, fontClassName, children }: { locale: Loca
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-dvh">{children}</body>
+      {/* extensions add attributes to <body> before React hydrates */}
+      <body className="min-h-dvh" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

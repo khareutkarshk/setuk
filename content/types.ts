@@ -150,6 +150,8 @@ export interface Dictionary {
     address: string;
     rights: string;
     model: string;
+    /** Attribution for third-party 3D models (CC BY 4.0) */
+    credits: Link[];
     guideItems: Link[];
     legalItems: Link[];
   };

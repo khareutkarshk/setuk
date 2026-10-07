@@ -783,7 +783,7 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
 
   /* ---------- the office set: clutter, the fix, the consultant and the politician ---------- */
   const office = createOfficeSet({
-    world, T, mat: P, paint, maxAniso, accent: glowColor, normalFromHeight,
+    world, T, mat: P, paint, maxAniso, accent: glowColor, normalFromHeight, peopleBase: o.assetBase + "people/",
     seatPoints: seats.filter((_, j) => j % 7 === 3).map((s) => V(C.x + (s.R + 0.15) * Math.sin(s.a), s.y + 0.9, C.z + (s.R + 0.15) * Math.cos(s.a)))
   });
   extras.push(...office.extras);

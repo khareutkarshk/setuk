@@ -196,6 +196,7 @@ export const en: Dictionary = {
     address: "H.No. 413, Nehru Nagar, Patliputra, Phulwari, Patna 800013, Bihar",
     rights: "Setuk Private Limited. All rights reserved.",
     model: "3D chamber is an illustrative model, not to scale.",
+    credits: [{ t: "Consultant: “Buisness man” by art.piskov, CC BY 4.0", href: "https://sketchfab.com/3d-models/buisness-man-with-talking-animation-3fe2b15e0c884b66b987f6f48e420f56" }],
     guideItems: [
       { t: "Constituency office tracking", href: "https://setuk.org/constituency-office-tracking-system" },
       { t: "Party management system", href: "https://setuk.org/enterprise-political-party-management-system" },
