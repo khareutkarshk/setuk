@@ -10,7 +10,7 @@ export const en: Dictionary = {
   skip: "Skip to content",
   chapters: ["Welcome", "Who we serve", "The problem", "With Setuk", "Products", "Discuss", "Design", "Train", "Run"],
   nav: {
-    labels: { home: "Home", about: "About", features: "Features", roadmap: "Roadmap", contact: "Contact", legal: "Legal", voterList: "Voter List Excel" },
+    labels: { home: "Home", how: "How we work", engagements: "Engagements", about: "About", articles: "Articles", faqs: "FAQs", contact: "Contact" },
     demo: "Request demo",
     menu: "Menu",
     close: "Close menu",
@@ -197,25 +197,374 @@ export const en: Dictionary = {
     rights: "Setuk Private Limited. All rights reserved.",
     model: "3D chamber is an illustrative model, not to scale.",
     credits: [{ t: "Consultant: “Buisness man” by art.piskov, CC BY 4.0", href: "https://sketchfab.com/3d-models/buisness-man-with-talking-animation-3fe2b15e0c884b66b987f6f48e420f56" }],
+    voterList: "Voter List Excel",
     guideItems: [
-      { t: "Constituency office tracking", href: "https://setuk.org/constituency-office-tracking-system" },
-      { t: "Party management system", href: "https://setuk.org/enterprise-political-party-management-system" },
-      { t: "Office operating system", href: "https://setuk.org/indian-political-office-operating-system" },
-      { t: "MLA office digitisation", href: "https://setuk.org/mla-office-digitisation-tools" },
-      { t: "Appointment scheduling", href: "https://setuk.org/the-complete-guide-to-political-appointment-scheduling-software-in-india" },
-      { t: "Office management guide", href: "https://setuk.org/the-complete-guide-to-political-office-management-software-in-india" },
-      { t: "Modernizing Indian governance", href: "https://setuk.org/modernizing-indian-governance" },
-      { t: "Political office management software", href: "https://setuk.org/political-office-management-software" }
+      { t: "Constituency office tracking", slug: "constituency-office-tracking-system" },
+      { t: "Party management system", slug: "enterprise-political-party-management-system" },
+      { t: "Office operating system", slug: "indian-political-office-operating-system" },
+      { t: "MLA office digitisation", slug: "mla-office-digitisation-tools" },
+      { t: "Appointment scheduling", slug: "the-complete-guide-to-political-appointment-scheduling-software-in-india" },
+      { t: "Office management guide", slug: "the-complete-guide-to-political-office-management-software-in-india" },
+      { t: "Modernizing Indian governance", slug: "modernizing-indian-governance" },
+      { t: "Political office management software", slug: "political-office-management-software" }
     ],
     legalItems: [
-      { t: "Privacy policy", href: "https://setuk.org/legal/privacy" },
-      { t: "Terms and conditions", href: "https://setuk.org/legal/terms" },
-      { t: "Consent for data usage", href: "https://setuk.org/legal/consent" },
-      { t: "Data retention", href: "https://setuk.org/legal/data-retention" },
-      { t: "Data processing agreement", href: "https://setuk.org/legal/dpa" },
-      { t: "Refund and cancellation", href: "https://setuk.org/legal/refund" },
-      { t: "Disclaimer", href: "https://setuk.org/legal/disclaimer" }
+      { t: "Privacy policy", slug: "privacy" },
+      { t: "Terms and conditions", slug: "terms" },
+      { t: "Consent for data usage", slug: "consent" },
+      { t: "Data retention", slug: "data-retention" },
+      { t: "Data processing agreement", slug: "dpa" },
+      { t: "Refund and cancellation", slug: "refund" },
+      { t: "Disclaimer", slug: "disclaimer" }
     ]
+  },
+  pages: {
+    common: {
+      home: "Home",
+      minRead: "{n} min read",
+      onThisPage: "On this page",
+      englishOnly: "",
+      related: "Keep reading",
+      read: "Read the guide",
+      allArticles: "All articles",
+      demoTitle: "See Setuk run on your own office's work.",
+      demoBody: "We'll walk you through it with your letters, appointments and requests, then show you how setup would go."
+    },
+    how: {
+      meta: {
+        title: "How we work | Setuk",
+        description: "We set up Setuk with your office in two to three weeks: we observe, design the system, train your staff, then stay on with monthly reports."
+      },
+      title: "We set it up with you, then we stay.",
+      sub: "Software alone doesn't change an office. We study how yours runs, configure Setuk around it and train your staff.",
+      primary: "Request demo",
+      secondary: "See the modules",
+      heroAlt: "A constituency office team working in Setuk on laptops, with the week's numbers on the wall screen",
+      process: {
+        title: "From the first meeting to a running office in two to three weeks.",
+        sub: "The same four steps for a ward office or an MP's three offices. Only the size of the work changes.",
+        doLabel: "What we do",
+        needLabel: "What we need from you",
+        steps: [
+          {
+            does: ["Sit in on a normal office day", "Map how letters, appointments and requests move", "Note who follows up on what, and where work stalls"],
+            needs: "An hour with the representative, and time with the staff who handle requests."
+          },
+          {
+            does: ["Write the office's SOPs: who handles what, and who sees which data", "Set up roles, permissions and the modules you need", "Import your registers and Excel sheets"],
+            needs: "Your existing records, and a staff list with each person's role."
+          },
+          {
+            does: ["Train each role on its own part of the work", "Run real requests through Setuk with your team", "Hand over the SOPs as a written reference"],
+            needs: "Two to three hours with each staff member, in your office."
+          },
+          {
+            does: ["Send a monthly report on what was handled and what is pending", "Review each quarter what works and what doesn't", "Adjust the SOPs and settings as the office changes"],
+            needs: "One person in your office who owns the system day to day."
+          }
+        ]
+      },
+      modules: {
+        title: "What we set up in your office.",
+        sub: "Six modules are live today. Each one ships with an SOP for how your office should use it.",
+        items: [
+          { t: "Appointments", h: "No more missed meetings.", d: "Requests, slots and visitors tracked end to end, so the right people get the right time.", img: "appointments", alt: "A citizen greeted at a constituency office reception desk" },
+          { t: "Program calendar", h: "Every commitment in one calendar.", d: "Inaugurations, public meetings, party events and visits, shared with the whole team.", img: "calendar", alt: "A staff member briefing the representative on the day's schedule from a tablet" },
+          { t: "eLetter", h: "Letters that don't get lost.", d: "Every letter in or out is logged and tracked until the right action is taken.", img: "eletter", alt: "An office assistant reviewing the eLetter list in Setuk" },
+          { t: "PNR letters", h: "Railway requests, kept apart.", d: "A dedicated queue for PNR letters, so urgent travel requests never sit in the general pile.", img: "pnr", alt: "A citizen handing over a railway ticket request at a help desk" },
+          { t: "Booth management", h: "Win from the booth up.", d: "Map, staff and track every booth in your constituency, ready for polling day.", img: "booths", alt: "Booth workers checking voter details on phones outside a polling station" },
+          { t: "Citizen management", h: "Know the people you serve.", d: "Who they are, what they asked for and what was done, searchable in seconds.", img: "citizens", alt: "A representative meeting citizens at a public gathering" }
+        ]
+      },
+      screen: {
+        title: "This is the screen your staff will open every morning.",
+        body: "eLetter files every letter by where it stands, from follow-up to dispatch, with the department and the person handling it.",
+        alt: "The eLetter screen in Setuk: letters grouped by follow-up, inbox, ongoing, issued and dispatched, with file number, date, department and status"
+      },
+      citizens: {
+        title: "Citizens can follow their own requests.",
+        body: "Most political software only looks inward. In Setuk, citizens get their own login, and every update on their request reaches them without a phone call.",
+        points: ["Book and track appointments", "Letter and PNR status updates", "SMS and WhatsApp alerts at every step"],
+        alt: "A citizen checking an appointment and a letter update on their phone"
+      },
+      roadmap: {
+        title: "What we're building next.",
+        sub: "We ship each module when it's ready. The order follows what offices ask for most.",
+        nowLabel: "In progress",
+        nextLabel: "Planned",
+        now: [
+          { t: "Visitor management", d: "Everyone who came to the office, even if they didn't get a meeting." },
+          { t: "WhatsApp and SMS sender", d: "Reach citizens and workers directly, in bulk or one by one." },
+          { t: "Event management", d: "Plan and run political events and public programs." },
+          { t: "Karyakarta management", d: "Assignments, communication and tracking for ground workers." }
+        ],
+        next: [
+          { t: "LADs management", d: "Local area development funds: allocation, tracking and reports." },
+          { t: "Digital call center", d: "Run the office call center remotely, with memos and support." },
+          { t: "Image and video management", d: "Fast uploads from the field, even on a weak network." },
+          { t: "Social media management", d: "Profiles, inbox and comment moderation in one place." },
+          { t: "Influential voters", d: "Identify and engage the people who move opinion locally." },
+          { t: "Election management", d: "Planning from strategy to polling day." },
+          { t: "Citizen surveys", d: "Ask constituents what they think, then act on it." },
+          { t: "Resume maker for ticket applications", d: "Help aspirants present their work when applying for a ticket." },
+          { t: "Party and office management", d: "Tools for the wider party office, beyond one representative." },
+          { t: "Constituency analytics", d: "Dashboards and reports on the constituency." },
+          { t: "Grievance management", d: "A structured way to receive, track and resolve grievances." },
+          { t: "Constituency mapping", d: "Wards, booths and key areas on a map that stays current." }
+        ]
+      }
+    },
+    engagements: {
+      meta: {
+        title: "Engagements and pricing | Setuk",
+        description: "Three engagements, from a single ward office to a party with many offices. Each includes setup, staff training and a monthly report."
+      },
+      title: "Pick the engagement that fits your office.",
+      sub: "Every engagement includes setup, staff training and a monthly report. Plans are monthly or annual.",
+      art: [
+        { img: "localBody", alt: "Villagers meeting under a banyan tree, a local body in session" },
+        { img: "vidhanSabha", alt: "A state legislative assembly building" },
+        { img: "lokSabha", alt: "The Lok Sabha chamber seen from the gallery" }
+      ],
+      compare: {
+        title: "Compare what's included.",
+        feature: "Included",
+        included: "Included",
+        notIncluded: "Not included",
+        rows: [
+          { t: "Political office management software", from: 0 },
+          { t: "Discuss and observe", from: 0 },
+          { t: "Setup and record import", from: 0 },
+          { t: "Staff training, role by role", from: 0 },
+          { t: "Monthly report", from: 0 },
+          { t: "Election management software", from: 1 },
+          { t: "Booth management and voter list", from: 1 },
+          { t: "Karyakarta coordination", from: 1 },
+          { t: "Quarterly review", from: 1 },
+          { t: "Multiple office locations", from: 2 },
+          { t: "Party view across offices", from: 2 },
+          { t: "Custom SOPs", from: 2 },
+          { t: "A named success manager", from: 2 }
+        ]
+      },
+      pricing: {
+        title: "How pricing works.",
+        body: "We quote after the first conversation, once we know how many offices, staff and modules you need.",
+        items: [
+          { t: "Monthly or annual", d: "Pay by the month, or by the year." },
+          { t: "Priced by what you use", d: "The number of offices, staff and modules sets the price." },
+          { t: "Trial on request", d: "Ask for a trial when you request a demo." },
+          { t: "A reply within two business days", d: "For quotes and most other enquiries." }
+        ]
+      },
+      faqTitle: "Questions about engagements",
+      faqs: [
+        { q: "How long does it take to get started?", a: "Usually 2 to 3 weeks: 1 to 2 meetings to understand your office, a week to design and set up, and a week to train your staff." },
+        { q: "Is there a trial?", a: "Yes, a trial is available on request. Ask for one when you request a demo." },
+        { q: "Can we export our data if we stop?", a: "Yes. Your data can be exported, and it is kept for up to 60 days after cancellation." }
+      ],
+      allFaqs: "See all FAQs"
+    },
+    about: {
+      meta: {
+        title: "About Setuk",
+        description: "Setuk was built by people who spent years inside Indian election campaigns, war rooms and constituency offices, and kept watching good offices lose track of citizens."
+      },
+      title: "Built from years inside campaigns, war rooms and constituency offices.",
+      sub: "We kept watching good offices lose track of citizens' requests. Setuk is the system we wished they had.",
+      heroAlt: "A campaign war room at night: a team at laptops in front of maps and whiteboards",
+      origin: {
+        title: "Where it started",
+        paras: [
+          "I've worked with many representatives, aspiring politicians and people who genuinely wanted change.",
+          "Between election campaigns, war room meetings and constituency work, I helped people win. Then I helped them govern.",
+          "Every time, I used whatever I could: Excel, Word, email labels, WhatsApp groups. At one point, even Slack.",
+          "Each time, I felt the gap. The data was there, but it was scattered and impossible to trace. The outcome was never what it should have been. Not because of a lack of effort, but because the tools were never meant for this work.",
+          "That's where Setuk was born. Not in a meeting or on a whiteboard, but slowly, one frustration at a time."
+        ]
+      },
+      moment: {
+        quote: "The citizen came asking. The staff started searching. Nothing was found. I've seen that happen too many times.",
+        by: "Founder, Setuk",
+        paras: [
+          "People come to their representative's office with requests. Sometimes politely, sometimes urgently, sometimes after months of waiting.",
+          "When they ask for an update, the staff search through WhatsApp, old emails, physical files and memory. Nothing surfaces cleanly. The citizen leaves frustrated, the staff feel helpless, and the representative looks unreliable. Not because they don't care, but because the system failed them.",
+          "This is the problem Setuk solves, with clarity rather than complexity."
+        ],
+        alt: "The same office before and after: desks buried in files, then one clean desk with a laptop"
+      },
+      beliefs: {
+        title: "What we believe",
+        items: [
+          "Effort isn't the problem. The system is.",
+          "Every citizen request deserves to be found.",
+          "Political knowledge shouldn't live only in people's heads.",
+          "A modern office is the first sign of a serious representative.",
+          "India's democracy deserves better infrastructure.",
+          "The gap we kept feeling became the product."
+        ]
+      },
+      name: {
+        title: "Why सेतुक",
+        paras: [
+          "Setuk comes from the Sanskrit setu, a bridge: a path that lets people and work move across.",
+          "Between a representative and the people they serve, that path is the office. We build the system that keeps it open."
+        ],
+        alt: "A representative addressing villagers under a banyan tree, with updates arriving on a phone"
+      },
+      letter: {
+        title: "A note from the founder",
+        paras: [
+          "I didn't set out to build a company. I set out to stop feeling the gap I felt in every campaign and every office, each time I watched good people lose because their systems failed them.",
+          "Setuk is for every representative who knows they're capable of more, and for every aspiring politician who wants to start right.",
+          "The chaos is manageable. I've seen it and lived it. Now we've built the answer."
+        ],
+        by: "Founder, Setuk"
+      },
+      company: [
+        { t: "Company", d: "Setuk Private Limited" },
+        { t: "Office", d: "Patna, Bihar" },
+        { t: "Contact", d: "contact@setuk.org" }
+      ]
+    },
+    articles: {
+      meta: {
+        title: "Articles: guides for political offices | Setuk",
+        description: "Practical guides on running a political office in India: letters, appointments, constituency tracking, party management and digitisation."
+      },
+      title: "Guides for running a political office.",
+      sub: "Practical writing on letters, appointments, constituency work and party management, from the team behind Setuk.",
+      all: "All topics",
+      topics: { office: "Office management", constituency: "Constituency work", party: "Party and elections", appointments: "Appointments", governance: "Governance" },
+      filterLabel: "Filter articles by topic",
+      empty: "No articles on this topic yet.",
+      count: "{n} articles"
+    },
+    contact: {
+      meta: {
+        title: "Contact Setuk",
+        description: "Talk to the Setuk team about demos, pricing, support and partnerships, by email, phone, WhatsApp or the contact form."
+      },
+      title: "Talk to the Setuk team.",
+      sub: "Demos, pricing and product questions. Send us a note and we'll route it to the right person.",
+      channels: {
+        email: "Email",
+        phone: "Phone",
+        whatsapp: "WhatsApp",
+        office: "Office",
+        emailNote: "Demos, pricing and support",
+        phoneNote: "The Patna office",
+        whatsappNote: "Quick questions"
+      },
+      form: {
+        title: "Send us a message",
+        name: "Full name",
+        email: "Work email",
+        org: "Office or organisation",
+        optional: "optional",
+        topic: "Topic",
+        topics: ["Product demo and pricing", "Technical support", "Partnership and integrations", "Press and media", "Other"],
+        message: "How can we help?",
+        messageHint: "Tell us about your office: how many staff, which offices, what you'd like to fix first.",
+        consent: "Setuk may contact me about this request.",
+        privacy: "Privacy policy",
+        submit: "Send message",
+        submitNote: "Opens your email app with the message ready to send.",
+        errors: {
+          name: "Enter your name.",
+          email: "Enter a valid email address, like name@office.in.",
+          message: "Tell us a little about what you need.",
+          consent: "Tick this so we can reply to you."
+        },
+        sentTitle: "Your message is ready in your email app.",
+        sentBody: "Press send there and we'll reply within two business days. If no app opened, write to us at contact@setuk.org.",
+        again: "Write another message"
+      },
+      expect: {
+        title: "What to expect",
+        items: [
+          "We reply within two business days to most enquiries.",
+          "Existing customers: include your office's name, so we can route it faster.",
+          "Don't send passwords or sensitive citizen data through this form. For security disclosures, email us with a subject starting with [Security]."
+        ]
+      },
+      alt: "A desk with a laptop showing the Setuk dashboard, a phone, files and a notebook"
+    },
+    legal: {
+      meta: {
+        title: "Legal and policies | Setuk",
+        description: "The terms, privacy policy, consent, data retention, data processing agreement and other policies that govern Setuk."
+      },
+      title: "Legal and policies.",
+      sub: "The documents that govern how Setuk works and how we handle data. Questions about any of them go to contact@setuk.org.",
+      groups: { use: "Using Setuk", data: "Your data", billing: "Billing", voterList: "Voter list Excel" },
+      docs: {
+        terms: { t: "Terms and conditions", d: "The rules for using the Setuk platform." },
+        privacy: { t: "Privacy policy", d: "How we collect, use and protect your information." },
+        consent: { t: "Consent for data usage", d: "Your consent for how we process your data." },
+        "declaration-accuracy": { t: "Declaration of accuracy", d: "Your responsibility for accurate submissions." },
+        disclaimer: { t: "Disclaimer and liability", d: "Disclaimers and limits on liability." },
+        "data-retention": { t: "Data retention and deletion", d: "How long we keep data, and how deletion works." },
+        dpa: { t: "Data processing agreement", d: "Processor terms for organisations." },
+        refund: { t: "Refund and cancellation", d: "Subscriptions, refunds and cancellations." },
+        "voter-list-excel-disclaimer": { t: "Voter list Excel disclaimer", d: "The terms for voter list Excel files." }
+      },
+      all: "All policies",
+      questions: "Questions about this policy? Write to contact@setuk.org."
+    },
+    faqs: {
+      meta: {
+        title: "Frequently asked questions | Setuk",
+        description: "Answers about getting started with Setuk, the product, how citizen data is stored and protected, and pricing."
+      },
+      title: "Questions offices ask us.",
+      sub: "About getting started, the product, your data and pricing. If yours isn't here, ask us directly.",
+      search: "Search the questions",
+      clear: "Clear the search",
+      results: "{n} matching",
+      noResults: "No question matches that. Try another word, or ask us directly.",
+      groups: [
+        {
+          t: "Getting started",
+          items: [
+            { q: "Who is Setuk for?", a: "MPs, MLAs and MLCs, local body representatives, ministers and mayors, party teams, karyakartas and aspiring politicians. Any office that deals with citizens every day." },
+            { q: "How long does it take to get started?", a: "Usually 2 to 3 weeks: 1 to 2 meetings to understand your office, a week to design and set up, and a week to train your staff." },
+            { q: "Can we bring in our paper records and Excel sheets?", a: "Yes. Existing registers and spreadsheets are imported during setup, so you keep your history." },
+            { q: "Do you train our staff?", a: "Yes. We train each role in your office before go-live, and hand over the SOPs as a written reference." }
+          ]
+        },
+        {
+          t: "The product",
+          items: [
+            { q: "What's live today, and what's coming?", a: "Appointments, the program calendar, eLetter, PNR letters, booth management and citizen management are live. Visitor management, WhatsApp and SMS sending, event management and karyakarta management are being built now." },
+            { q: "Can several offices and staff use one account?", a: "Yes. Constituency, residence, camp and capital offices work from one system, with role-based access for every staff member." },
+            { q: "Does it work on mobile?", a: "Yes. Setuk is cloud-based, so your team and the representative can use it from the office or the field." },
+            { q: "Do citizens get access too?", a: "Yes. Citizens get their own login to book appointments and check the status of their letters and PNR requests, with SMS and WhatsApp alerts when something changes." },
+            { q: "What happens to requests that come on WhatsApp?", a: "Staff log them into Setuk, so they are tracked like every other request." },
+            { q: "How is this different from a CRM?", a: "A CRM is built for sales. Setuk is built around a political office: citizen requests, official letters, PNR, appointments, programs, booths and karyakartas, with SOPs included." }
+          ]
+        },
+        {
+          t: "Your data",
+          items: [
+            { q: "Where is our data stored, and who can see it?", a: "Primarily in India. Only people you authorise can see it, based on their role. We don't sell your data." },
+            { q: "Who owns our office's records?", a: "Your office does. We don't sell your data, and you can export it at any time." },
+            { q: "What happens if there is a data breach?", a: "If a breach affects your data, we tell you within 72 hours." },
+            { q: "Can we export our data if we stop?", a: "Yes. Your data can be exported, and it is kept for up to 60 days after cancellation, then deleted or anonymised." },
+            { q: "How do we report a security issue?", a: "Email contact@setuk.org with a subject line starting with [Security]. Please don't include passwords or citizen data." }
+          ]
+        },
+        {
+          t: "Pricing",
+          items: [
+            { q: "What does it cost?", a: "Monthly or annual plans, priced by the number of offices, staff and modules. Request a demo for a quote." },
+            { q: "Is there a trial?", a: "Yes, a trial is available on request. Ask for one when you request a demo." }
+          ]
+        }
+      ],
+      still: "Still have a question?",
+      stillBody: "Write to us or call. We reply within two business days."
+    }
   },
   scene: {
     loading: "Preparing the chamber",

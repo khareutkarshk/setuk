@@ -1,9 +1,9 @@
+import { routes } from "@/lib/paths";
 import type { Locale, NavKey } from "./types";
 
 /**
  * Site-wide facts that do not change with language. Contact details are from setuk.org/contact.
- * Menu links point at the live setuk.org pages until each page is migrated to this app;
- * when one is, change its href to the internal path (e.g. "/about").
+ * Paths are locale-free; build links with `href(locale, path)` from lib/paths.
  */
 export const site = {
   url: "https://setuk.org",
@@ -12,8 +12,8 @@ export const site = {
   email: "contact@setuk.org",
   phone: { href: "tel:+917739039777", label: "+91 77390 39777" },
   whatsapp: { href: "https://wa.me/919155609667", label: "+91 91556 09667" },
-  demoHref: "https://setuk.org/contact",
-  legalHref: "https://setuk.org/legal",
+  /* Still served by the live site until it is migrated */
+  voterListHref: "https://setuk.org/voter-list-excel/",
   address: {
     street: "H.No. 413, Nehru Nagar, Patliputra, Phulwari",
     city: "Patna",
@@ -28,17 +28,15 @@ export const site = {
     { key: "youtube", label: "YouTube", href: "https://www.youtube.com/@SetukIndia" }
   ],
   nav: [
-    { key: "home", href: "https://setuk.org/" },
-    { key: "about", href: "https://setuk.org/about" },
-    { key: "features", href: "https://setuk.org/features" },
-    { key: "roadmap", href: "https://setuk.org/roadmap" },
-    { key: "contact", href: "https://setuk.org/contact" },
-    { key: "legal", href: "https://setuk.org/legal" },
-    { key: "voterList", href: "https://setuk.org/voter-list-excel/" }
-  ] satisfies { key: NavKey; href: string }[]
+    { key: "home", path: routes.home },
+    { key: "how", path: routes.how },
+    { key: "engagements", path: routes.engagements },
+    { key: "about", path: routes.about },
+    { key: "articles", path: routes.articles },
+    { key: "faqs", path: routes.faqs },
+    { key: "contact", path: routes.contact }
+  ] satisfies { key: NavKey; path: string }[]
 } as const;
-
-export const localePath: Record<Locale, string> = { en: "/", hi: "/hi" };
 
 /**
  * Proof strip figures. [placeholder] These are illustrative; replace them with real totals

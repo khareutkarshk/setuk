@@ -26,6 +26,8 @@
   --leaf-soft: #e2f2e8;
   /* leaf on the inverse (ink) sections, which flip with the theme */
   --leaf-inverse: #5fd08b;
+  /* form errors only */
+  --danger: #b42318;
   /* Brand mark: the original navy bridge with green and blue dots */
   --mark-arch: #15428c;
   --mark-dot-side: #2e8b4e;
@@ -51,6 +53,7 @@
   --leaf-ink: #04130a;
   --leaf-soft: #11301f;
   --leaf-inverse: #1f7a43;
+  --danger: #ff8a80;
   --mark-arch: #eef2f8;
   --mark-dot-mid: #5b9bff;
 }
@@ -70,6 +73,7 @@
   --color-leaf-soft: var(--leaf-soft);
   --color-leaf-mark: var(--mark-dot-side);
   --color-leaf-inverse: var(--leaf-inverse);
+  --color-danger: var(--danger);
 
   /* Geist for Latin, Anek Devanagari for Hindi, Geist Mono for figures */
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
@@ -105,15 +109,17 @@
 
   /* Hindi: Devanagari face, taller line-height for matras, no negative tracking */
   html[lang="hi"] body { font-family: var(--font-deva); }
-  html[lang="hi"] :is(h1, h2, h3) { font-family: var(--font-deva); letter-spacing: 0 !important; }
-  html[lang="hi"] :is(h1, h2) { line-height: 1.28 !important; }
-  html[lang="hi"] h3 { line-height: 1.4 !important; }
-  html[lang="hi"] :is(p, li) { line-height: 1.75; }
+  html[lang="hi"] :is(h1, h2, h3):not(:lang(en)) { font-family: var(--font-deva); letter-spacing: 0 !important; }
+  html[lang="hi"] :is(h1, h2):not(:lang(en)) { line-height: 1.28 !important; }
+  html[lang="hi"] h3:not(:lang(en)) { line-height: 1.4 !important; }
+  html[lang="hi"] :is(p, li):not(:lang(en)) { line-height: 1.75; }
+  /* English passages inside Hindi pages (articles, policies) keep the Latin type */
+  html[lang="hi"] [lang="en"] { font-family: var(--font-sans); }
 }
 
 /* Hindi: Devanagari in display type too (Geist has none), and no tracking on labels set in capitals for Latin */
 html[lang="hi"] { --font-display: var(--font-geist), var(--font-anek), ui-sans-serif, system-ui, sans-serif; }
-html[lang="hi"] .font-display-tight { letter-spacing: 0; }
+html[lang="hi"] .font-display-tight:not(:lang(en)) { letter-spacing: 0; }
 html[lang="hi"] .uppercase { letter-spacing: 0; text-transform: none; }
 
 /* Header: slides away while reading down through the story on compact screens (the story controller sets
@@ -171,6 +177,42 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
   animation-delay: calc(var(--i, 0) * 90ms + 100ms);
 }
 @keyframes rise { to { opacity: 1; transform: none; } }
+
+/* Inner pages: sections ease in as they enter, on the browser's scroll timeline (no script). Browsers
+   without scroll-driven animations, and reduced motion, show everything at rest. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 35%; }
+  }
+}
+@keyframes reveal { from { opacity: 0; translate: 0 22px; } }
+
+/* Setuk's illustrations are drawn on white; in dark mode they sit a step back */
+:root[data-theme="dark"] .illo img { filter: brightness(0.84) contrast(1.04) saturate(0.95); }
+
+/* Long-form text (components/pages/prose.tsx): articles and policies */
+.prose-setuk { color: var(--ink); font-size: 18px; line-height: 1.75; max-width: 68ch; }
+.prose-setuk > * + * { margin-top: 1.15em; }
+.prose-setuk p, .prose-setuk li { color: color-mix(in srgb, var(--ink) 84%, var(--muted)); text-wrap: pretty; }
+.prose-setuk h2 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.025em; font-size: clamp(24px, 2.4vw, 30px); line-height: 1.2; margin-top: 2.2em; scroll-margin-top: calc(var(--header-h) + 24px); text-wrap: balance; }
+.prose-setuk h3 { font-weight: 600; font-size: 20px; line-height: 1.35; margin-top: 1.8em; }
+.prose-setuk h2 + *, .prose-setuk h3 + * { margin-top: 0.6em; }
+.prose-setuk ul, .prose-setuk ol { padding-left: 1.3em; }
+.prose-setuk ul { list-style: none; padding-left: 0; }
+.prose-setuk ul > li { position: relative; padding-left: 1.4em; }
+.prose-setuk ul > li::before { content: ""; position: absolute; left: 0.2em; top: 0.72em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); opacity: 0.75; transform: rotate(45deg); }
+.prose-setuk ol { list-style: decimal; }
+.prose-setuk ol > li::marker { color: var(--accent); font-weight: 600; }
+.prose-setuk li + li { margin-top: 0.45em; }
+.prose-setuk blockquote { border-left: 3px solid var(--accent); padding-left: 1.1em; font-size: 20px; font-weight: 500; }
+.prose-setuk figure { margin-block: 2em; overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--line); background: var(--surface); }
+.prose-table { overflow-x: auto; border: 1px solid var(--line); border-radius: 1.5rem; background: var(--surface); margin-block: 1.8em; }
+.prose-table table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 15px; line-height: 1.5; }
+.prose-table th, .prose-table td { text-align: left; vertical-align: top; padding: 12px 16px; border-top: 1px solid var(--line); }
+.prose-table thead th { border-top: 0; background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+.prose-table tbody th { font-weight: 600; }
+.prose-table td { color: var(--muted); }
+.prose-setuk:lang(hi) { line-height: 1.85; }
 
 /* Tactile press */
 @utility press {

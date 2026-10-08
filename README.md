@@ -13,8 +13,22 @@ pnpm lint
 
 | URL | Source | Notes |
 |---|---|---|
-| `/` | `app/(en)/page.tsx` | English, static |
-| `/hi` | `app/(hi)/hi/page.tsx` | Hindi, static |
+| `/` | `app/(en)/page.tsx` | English homepage (the 3D story), static |
+| `/how-we-work` | `app/(en)/how-we-work/page.tsx` | The four steps, the live modules, the eLetter screen, the roadmap |
+| `/engagements` | `app/(en)/engagements/page.tsx` | Packages, comparison, pricing, questions |
+| `/about` | `app/(en)/about/page.tsx` | The founder's account |
+| `/articles`, `/articles/[slug]` | `app/(en)/articles/...` | Guides list (topic filter) and each guide (contents beside the text) |
+| `/faqs` | `app/(en)/faqs/page.tsx` | All questions, grouped and searchable |
+| `/contact` | `app/(en)/contact/page.tsx` | Channels and the contact form |
+| `/legal`, `/legal/[slug]` | `app/(en)/legal/...` | Policy hub and each policy |
+| `/hi/...` | `app/(hi)/hi/...` | The same pages in Hindi |
+| `/sitemap.xml` | `app/sitemap.ts` | Every page in both languages |
+
+Inner pages share `components/pages/page-shell.tsx` (header, closing call to action, footer) and are server components; their client islands are small: the process rail on How we work (GSAP ScrollTrigger, loaded on demand), the article contents list, the topic filter, the FAQ search and the contact form. Their copy is in `pages` in both dictionaries. Articles and policies are long-form text in `content/articles.ts` and `content/legal.ts` (generated once from setuk.org, now edited by hand), rendered by `components/pages/prose.tsx`; they are English only, so `/hi` shows them with Hindi navigation and a note. Pictures are Setuk's own illustrations from setuk.org, in `assets/media/` and listed in `content/media.ts`.
+
+The contact form has no backend yet: sending opens the visitor's email app with the message filled in (to contact@setuk.org). Wire it to a form endpoint before launch if replies should not depend on a mail app.
+
+`next.config.ts` redirects setuk.org's old addresses: each guide's root URL to `/articles/<slug>`, `/features` to `/how-we-work#modules` and `/roadmap` to `/how-we-work#roadmap`.
 
 Each locale has its own **root layout** (`app/(en)/layout.tsx`, `app/(hi)/layout.tsx`). This gives each URL:
 - the correct `<html lang>`;

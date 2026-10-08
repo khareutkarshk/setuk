@@ -39,7 +39,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-surface focus:px-4 focus:py-2">
         {t.skip}
       </a>
-      <SiteHeader t={t} locale={locale} />
+      <SiteHeader t={t} locale={locale} path="/" />
       <main id="main">
         <StoryController chapters={t.chapters} railLabel={t.nav.chapters} labels={t.scene} ariaLabel={t.meta.title} brand={t.brand}>
           <HeroChapter t={t} locale={locale} />
@@ -49,12 +49,12 @@ export function HomePage({ locale }: { locale: Locale }) {
           <ProductsChapter t={t} />
           <HowChapters t={t} />
         </StoryController>
-        <Engagements t={t} />
-        <Trust t={t} />
-        <Faq t={t} />
-        <Cta t={t} />
+        <Engagements t={t} locale={locale} />
+        <Trust t={t} locale={locale} />
+        <Faq t={t} locale={locale} />
+        <Cta t={t} locale={locale} />
       </main>
-      <SiteFooter t={t} />
+      <SiteFooter t={t} locale={locale} home />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>
   );

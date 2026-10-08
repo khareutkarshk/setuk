@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { articles } from "./content/articles";
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -9,6 +10,15 @@ const nextConfig: NextConfig = {
         source: "/sadan/:path*",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }]
       }
+    ];
+  },
+  /* setuk.org served the guides at the root and had separate features and roadmap pages;
+     keep those addresses (and their search ranking) working */
+  async redirects() {
+    return [
+      ...articles.map((a) => ({ source: `/${a.slug}`, destination: `/articles/${a.slug}`, permanent: true })),
+      { source: "/features", destination: "/how-we-work#modules", permanent: true },
+      { source: "/roadmap", destination: "/how-we-work#roadmap", permanent: true }
     ];
   }
 };

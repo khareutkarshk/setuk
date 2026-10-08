@@ -1,9 +1,11 @@
 import type { CSSProperties, ReactNode } from "react";
-import type { Dictionary } from "@/content";
+import Link from "next/link";
+import type { Dictionary, Locale } from "@/content";
 import { site } from "@/content/site";
 import * as I from "@/components/icons";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { AshokaChakra, CornerPattern, Pattern } from "@/components/site/pattern";
+import { href, routes } from "@/lib/paths";
 import engage from "./engage.module.css";
 
 /* Sections after the scroll story. All server-rendered; the FAQ uses <details>, so no JS.
@@ -34,7 +36,7 @@ const LOOKS = [
   { card: "border-accent bg-accent text-accent-ink", soft: "text-accent-ink/75", key: "text-accent-ink", hi: "border-accent-ink bg-accent-ink text-accent", cta: "bg-accent-ink text-accent hover:brightness-95" }
 ];
 
-export function Engagements({ t }: { t: Dictionary }) {
+export function Engagements({ t, locale }: { t: Dictionary; locale: Locale }) {
   const pkgs = t.engage.pkgs, n = pkgs.length;
   const pad = (k: number) => String(k).padStart(2, "0");
   const scope = { timelineScope: pkgs.map((_, i) => `--eng-${i}`).join(", ") } as CSSProperties;
@@ -91,10 +93,10 @@ export function Engagements({ t }: { t: Dictionary }) {
                       ))}
                     </ul>
                     <div className="mt-auto pt-8">
-                      <a href="#contact" className={`press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full px-6 text-[15px] font-semibold ${look.cta}`}>
+                      <Link href={href(locale, routes.contact)} className={`press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full px-6 text-[15px] font-semibold ${look.cta}`}>
                         {t.engage.cta}
                         <I.ArrowRight weight="bold" aria-hidden />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                   {/* what's included, framed like a screen with corner marks */}
@@ -127,7 +129,7 @@ export function Engagements({ t }: { t: Dictionary }) {
 
 const TRUST_ICONS = [I.MapPin, I.IdentificationBadge, I.Prohibit, I.BellRinging, I.Export, I.ClockCounterClockwise];
 
-export function Trust({ t }: { t: Dictionary }) {
+export function Trust({ t, locale }: { t: Dictionary; locale: Locale }) {
   return (
     <section id="trust" aria-labelledby="trust-title" className="relative z-10 overflow-hidden bg-ink text-bg">
       <Pattern kind="sadan" className="absolute inset-0 opacity-[.07]" style={sadanWall} />
@@ -138,11 +140,11 @@ export function Trust({ t }: { t: Dictionary }) {
           <Kicker className="text-leaf-inverse" ornament="text-accent-soft">{t.trust.eyebrow}</Kicker>
           <Title><span id="trust-title">{t.trust.title}</span></Title>
           <p className="mt-5 max-w-[44ch] text-[17px] leading-relaxed text-bg/70">{t.trust.body}</p>
-          <a href={site.legalHref} className="mt-7 inline-flex min-h-11 items-center gap-2 font-semibold underline-offset-4 hover:underline focus-visible:outline-accent-soft">
+          <Link href={href(locale, routes.legal)} className="mt-7 inline-flex min-h-11 items-center gap-2 font-semibold underline-offset-4 hover:underline focus-visible:outline-accent-soft">
             <I.Scales aria-hidden />
             {t.trust.legal}
-            <I.ArrowUpRight aria-hidden />
-          </a>
+            <I.ArrowRight aria-hidden />
+          </Link>
           <p className="mt-3 max-w-[40ch] text-[14px] text-bg/60">{t.trust.dpa}</p>
         </div>
         <ul className="grid gap-x-10 gap-y-8 self-center sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
@@ -167,7 +169,7 @@ export function Trust({ t }: { t: Dictionary }) {
   );
 }
 
-export function Faq({ t }: { t: Dictionary }) {
+export function Faq({ t, locale }: { t: Dictionary; locale: Locale }) {
   return (
     <section id="faq" aria-labelledby="faq-title" className="relative z-10 border-t border-line bg-bg">
       <div className="mx-auto grid max-w-page gap-10 px-5 py-20 md:px-8 md:py-28 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-20">
@@ -182,6 +184,10 @@ export function Faq({ t }: { t: Dictionary }) {
               <a href={`mailto:${site.email}`} className="inline-flex min-h-11 items-center gap-2 break-all hover:text-accent"><I.EnvelopeSimple aria-hidden />{site.email}</a>
               <a href={site.whatsapp.href} className="inline-flex min-h-11 items-center gap-2 hover:text-accent"><I.WhatsappLogo className="text-leaf" aria-hidden />WhatsApp</a>
             </div>
+            <Link href={href(locale, routes.faqs)} className="mt-6 inline-flex min-h-11 items-center gap-2 font-semibold text-accent underline-offset-4 hover:underline">
+              {t.pages.engagements.allFaqs}
+              <I.ArrowRight aria-hidden />
+            </Link>
           </div>
         </div>
         <div className="border-t border-line">
@@ -203,9 +209,10 @@ export function Faq({ t }: { t: Dictionary }) {
   );
 }
 
-export function Cta({ t }: { t: Dictionary }) {
+/** The closing call to action, shared by every page */
+export function Cta({ t, locale }: { t: Dictionary; locale: Locale }) {
   return (
-    <section id="contact" aria-labelledby="cta-title" className="relative z-10 bg-bg">
+    <section aria-labelledby="cta-title" className="relative z-10 bg-bg">
       <div className="mx-auto max-w-page px-5 pb-20 md:px-8 md:pb-28">
         <div className="relative grid items-end gap-10 overflow-hidden rounded-[32px] bg-accent px-6 py-14 text-accent-ink sm:px-10 sm:py-16 lg:grid-cols-[1fr_auto] lg:px-16 lg:py-24">
           <Pattern kind="jaali" className="absolute inset-0 opacity-[.1]" style={bigJaali} />
@@ -218,10 +225,10 @@ export function Cta({ t }: { t: Dictionary }) {
             <p className="mt-5 max-w-[52ch] text-[17px] leading-relaxed opacity-80">{t.cta.body}</p>
           </div>
           <div className="relative flex flex-wrap gap-3">
-            <a href={site.demoHref} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent-ink px-6 font-semibold text-accent focus-visible:outline-accent-ink hover:brightness-95">
+            <Link href={href(locale, routes.contact)} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent-ink px-6 font-semibold text-accent focus-visible:outline-accent-ink hover:brightness-95">
               {t.cta.primary}
               <I.ArrowRight weight="bold" aria-hidden />
-            </a>
+            </Link>
             <a href={site.whatsapp.href} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full border border-accent-ink/40 px-6 font-semibold focus-visible:outline-accent-ink hover:border-accent-ink">
               <I.WhatsappLogo size={18} aria-hidden />
               {t.cta.secondary}
