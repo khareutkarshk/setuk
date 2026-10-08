@@ -4,7 +4,12 @@
    One palette, light by default, dark when <html data-theme="dark"> (the header toggle, saved in
    localStorage and applied before paint by the script in site-document.tsx). Every pair used for text passes
    WCAG AA (body ink AAA). Raw values live here; Tailwind reads them through @theme below,
-   and the 3D engine reads --accent and --accent-ink for the screens and seat glow. */
+   and the 3D engine reads --accent and --accent-ink for the screens and seat glow.
+   Blue is the primary. Leaf, the green of the mark's dots, is a second accent kept to about one
+   touch in ten: outcomes and checks, the recommendation, WhatsApp, and the small ornaments. Never
+   a button fill or a headline colour. The rule: every eyebrow label is leaf, its number or
+   ornament stays blue; inside cards leaf marks outcomes and confirmations only. leaf-mark is the
+   mark's own green, for the dot after card numbers; leaf-inverse is leaf on the ink sections. */
 :root {
   color-scheme: light;
   --bg: #f5f6f8;
@@ -16,6 +21,11 @@
   --accent: #1747a6;
   --accent-ink: #f7f9ff;
   --accent-soft: #e2e9f7;
+  --leaf: #1f7a43;
+  --leaf-ink: #f3fbf6;
+  --leaf-soft: #e2f2e8;
+  /* leaf on the inverse (ink) sections, which flip with the theme */
+  --leaf-inverse: #5fd08b;
   /* Brand mark: the original navy bridge with green and blue dots */
   --mark-arch: #15428c;
   --mark-dot-side: #2e8b4e;
@@ -37,6 +47,10 @@
   --accent: #7aa3ff;
   --accent-ink: #06101f;
   --accent-soft: #16264a;
+  --leaf: #4cc27a;
+  --leaf-ink: #04130a;
+  --leaf-soft: #11301f;
+  --leaf-inverse: #1f7a43;
   --mark-arch: #eef2f8;
   --mark-dot-mid: #5b9bff;
 }
@@ -51,6 +65,11 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
+  --color-leaf: var(--leaf);
+  --color-leaf-ink: var(--leaf-ink);
+  --color-leaf-soft: var(--leaf-soft);
+  --color-leaf-mark: var(--mark-dot-side);
+  --color-leaf-inverse: var(--leaf-inverse);
 
   /* Geist for Latin, Anek Devanagari for Hindi, Geist Mono for figures */
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;

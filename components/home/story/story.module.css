@@ -99,8 +99,9 @@
 }
 /* Ornaments: the temple border hangs from the top edge; the corner pattern and numeral sit behind the text */
 .band { position: absolute; inset: 0 0 auto; color: var(--accent); transform: scaleY(-1); }
-.corner { top: 0; right: 0; width: 240px; height: 240px; color: var(--accent); opacity: 0.16; }
-.lotus { position: absolute; top: -70px; right: -70px; width: 230px; color: var(--accent); opacity: 0.16; }
+/* the corner ornament is leaf on every card: the green every chapter shares with the mark */
+.corner { top: 0; right: 0; width: 240px; height: 240px; color: var(--leaf); opacity: 0.38; }
+.lotus { position: absolute; top: -70px; right: -70px; width: 230px; color: var(--leaf); opacity: 0.34; }
 .numeral { position: absolute; top: 20px; right: 22px; font-family: var(--font-deva); font-size: 58px; font-weight: 700; line-height: 1; color: var(--accent); opacity: 0.13; pointer-events: none; }
 .content { position: relative; }
 .wide { max-width: 540px; }
@@ -112,8 +113,11 @@
   .corner { width: 170px; height: 170px; }
 }
 
-.eyebrow { display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); font-weight: 500; }
-.num { font-family: var(--font-mono); color: var(--accent); }
+/* every chapter's eyebrow: blue number, the mark's green dot, a leaf label */
+.eyebrow { display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--leaf); font-weight: 600; }
+.num { font-family: var(--font-mono); color: var(--accent); display: inline-flex; align-items: center; gap: 10px; }
+/* the mark's green dot after every card number, the one leaf touch every chapter shares */
+.num::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--mark-dot-side); box-shadow: 0 0 0 3px color-mix(in srgb, var(--mark-dot-side) 18%, transparent); }
 .h2 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.035em; font-size: clamp(25px, 3.2vw, 38px); line-height: 1.08; margin-top: 12px; text-wrap: balance; }
 .h2sm { font-size: clamp(24px, 2.6vw, 33px); }
 .body { margin-top: 12px; color: var(--muted); font-size: 16px; line-height: 1.6; }
@@ -130,6 +134,7 @@
 .tier { display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
 .tier:last-child { border-bottom: 0; }
 .ico { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: var(--accent-soft); color: var(--accent); flex: none; }
+
 
 /* The problem: each tool gets struck through, one after another */
 .strike {
@@ -169,7 +174,8 @@
 .time { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; font-size: 13px; font-weight: 500; background: var(--accent-soft); margin-top: 12px; }
 /* "You get": a hairline, a seal, and the outcome set as the card's closing line */
 .get { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; margin-top: 22px; padding-top: 18px; border-top: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--line)); }
-.getSeal { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 22px; color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+/* the outcome is the one leaf-green mark on the step */
+.getSeal { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 22px; color: var(--leaf); background: var(--leaf-soft); box-shadow: 0 0 0 4px color-mix(in srgb, var(--leaf-soft) 45%, transparent); }
 .getLabel { display: block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 4px; }
 .getText { display: block; font-size: 17px; line-height: 1.4; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); text-wrap: pretty; }
 :global(html[lang="hi"]) .getLabel { font-family: var(--font-deva); font-size: 13px; letter-spacing: 0; }

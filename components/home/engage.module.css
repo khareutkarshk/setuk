@@ -10,7 +10,7 @@
   .card {
     position: sticky;
     top: calc(var(--header-h) + 28px + var(--i) * 18px);
-    min-height: min(600px, calc(100svh - var(--header-h) - 96px - var(--i) * 18px));
+    min-height: min(540px, calc(100svh - var(--header-h) - 96px - var(--i) * 18px));
     transform-origin: 50% 0;
     view-timeline-name: var(--self);
   }

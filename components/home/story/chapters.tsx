@@ -63,8 +63,8 @@ export function HeroChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
     <Chapter step={0} side="left" className={styles.hero}>
       <div className={`${styles.inner} ${styles.heroInner}`}>
         <div className="max-w-[640px]">
-          <p className="rise flex max-w-[46ch] items-start gap-2 text-[13px] text-muted" style={stagger(0)}>
-            <I.UsersThree className="mt-px shrink-0 text-accent" size={16} aria-hidden />
+          <p className="rise flex max-w-[46ch] items-start gap-2 text-[13px] font-medium text-leaf" style={stagger(0)}>
+            <I.UsersThree className="mt-px shrink-0 text-leaf" size={16} aria-hidden />
             <span>{t.hero.eyebrow}</span>
           </p>
           <h1 className={`${styles.heroTitle} font-display-tight mt-4 text-[40px] leading-[0.98] sm:text-[56px] md:mt-5 lg:text-[68px]`}>
@@ -87,7 +87,7 @@ export function HeroChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
         <div className={`${styles.heroProof} rise mt-8 max-w-[880px] md:absolute md:right-20 md:bottom-8 md:left-8 md:mt-0 lg:left-[max(32px,calc((100vw-1280px)/2+32px))]`} style={stagger(5)}>
           <div className="mb-2 flex items-center gap-3">
             <p className="shrink-0 text-[12px] font-semibold uppercase tracking-[.08em] text-muted">{t.proof.label}</p>
-            <Pattern kind="temple" className="h-[10px] flex-1 text-accent opacity-40 [mask-size:17px_10px]" />
+            <Pattern kind="temple" className="h-[10px] flex-1 text-leaf opacity-40 [mask-size:17px_10px]" />
           </div>
           <ProofStrip locale={locale} items={t.proof.items} />
           <p className="mt-2 flex items-center gap-1.5 text-[11px] text-muted">
@@ -163,7 +163,7 @@ export function SolutionChapter({ t }: { t: Dictionary }) {
   return (
     <Chapter step={3} side="left" id="solution">
       <Card n={4} ornament="kolam">
-        <Eyebrow n={4}><span className="font-semibold text-accent">{t.solution.eyebrow}</span></Eyebrow>
+        <Eyebrow n={4}>{t.solution.eyebrow}</Eyebrow>
         <h2 className={`${styles.h2} ${styles.h2sm}`}>{t.solution.title}</h2>
         <p className={styles.body}>{t.solution.body}</p>
         <ul className={`${styles.list} mt-5 space-y-3`}>

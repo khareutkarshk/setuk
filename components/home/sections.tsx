@@ -14,10 +14,11 @@ import engage from "./engage.module.css";
 const bigJaali = { "--s": "64px", "--r": "45px", "--w": "1.6px" } as CSSProperties;
 const sadanWall = { "--s": "56px" } as CSSProperties;
 
-function Kicker({ children, className = "text-accent" }: { children: ReactNode; className?: string }) {
+/* Section eyebrows follow the story's: a blue ornament and a leaf label */
+function Kicker({ children, className = "text-leaf", ornament = "text-accent" }: { children: ReactNode; className?: string; ornament?: string }) {
   return (
     <p className={`flex items-center gap-2.5 text-[13px] font-semibold uppercase tracking-[.08em] ${className}`}>
-      <Pattern kind="temple" className="w-[24px] shrink-0" />
+      <Pattern kind="temple" className={`w-[24px] shrink-0 ${ornament}`} />
       {children}
     </p>
   );
@@ -39,7 +40,7 @@ export function Engagements({ t }: { t: Dictionary }) {
   const scope = { timelineScope: pkgs.map((_, i) => `--eng-${i}`).join(", ") } as CSSProperties;
   return (
     <section id="engagements" aria-labelledby="engagements-title" className="relative z-10 overflow-clip border-t border-line bg-bg">
-      <Pattern kind="toran" className="absolute inset-x-0 top-0 text-accent opacity-60" />
+      <Pattern kind="toran" className="absolute inset-x-0 top-0 text-leaf opacity-50" />
       <AshokaChakra className="absolute -top-40 -right-48 w-[380px] md:w-[640px] animate-[spin_120s_linear_infinite] text-accent opacity-[.08] motion-reduce:animate-none" />
       <div className="relative mx-auto max-w-page px-5 py-20 md:px-8 md:py-28">
         <div className="grid items-end gap-6 md:grid-cols-2 md:gap-16">
@@ -61,9 +62,9 @@ export function Engagements({ t }: { t: Dictionary }) {
                 {/* header: number, the recommendation, and where this card sits in the stack */}
                 <div className="relative flex min-h-[64px] flex-wrap items-center justify-between gap-3 border-b border-current/10 px-6 pt-5 pb-3 font-mono text-[12px] tracking-[.18em] uppercase sm:px-9">
                   <p className="flex flex-wrap items-center gap-3">
-                    <span className={look.key}>{pad(i + 1)}</span>
+                    <span className={`inline-flex items-center gap-3 ${look.key}`}>{pad(i + 1)}<span className="h-[5px] w-[5px] rounded-full bg-leaf-mark" /></span>
                     <span className={look.soft}>{t.engage.eyebrow}</span>
-                    {pick && <span className="rounded-full bg-accent px-3 py-1 font-sans text-[12px] font-semibold tracking-normal normal-case text-accent-ink">{t.engage.pick}</span>}
+                    {pick && <span className="rounded-full bg-leaf px-3 py-1 font-sans text-[12px] font-semibold tracking-normal normal-case text-leaf-ink">{t.engage.pick}</span>}
                   </p>
                   <p className={`flex items-center gap-3 ${look.soft}`} aria-hidden="true">
                     <span className="flex items-center gap-1.5">
@@ -73,17 +74,27 @@ export function Engagements({ t }: { t: Dictionary }) {
                   </p>
                 </div>
                 <div className="relative grid flex-1 gap-8 p-6 sm:p-9 md:grid-cols-[1fr_1.15fr] md:gap-10">
-                  <div className="flex flex-col">
+                  <div className="relative flex flex-col">
+                    {/* the package number as a Devanagari watermark, like the story cards */}
+                    <span aria-hidden="true" className={`font-deva pointer-events-none absolute -bottom-2 right-0 select-none text-[120px] leading-none font-bold opacity-[.07] max-md:hidden ${look.key}`}>{pad(i + 1).replace(/\d/g, (d) => "०१२३४५६७८९"[Number(d)])}</span>
                     <h3 className="font-display-tight text-balance text-[clamp(32px,4vw,52px)] leading-[1.04]">{p.t}</h3>
                     <p className={`mt-5 max-w-[42ch] text-[17px] leading-relaxed ${look.soft}`}>
                       <b className="font-semibold">{t.engage.forLabel}:</b> {p.for}
                     </p>
-                    <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-8">
+                    {/* terms: price and trial, each with its icon */}
+                    <ul className="mt-7 max-w-[360px] divide-y divide-current/10 border-y border-current/10 text-[15px]">
+                      {([[I.CurrencyInr, t.engage.price], [I.HourglassMedium, t.engage.trial]] as const).map(([Ico, label]) => (
+                        <li key={label} className="flex items-center gap-3 py-3">
+                          <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[10px] bg-current/[.06] ${look.key}`}><Ico size={16} aria-hidden /></span>
+                          <span>{label}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-auto pt-8">
                       <a href="#contact" className={`press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full px-6 text-[15px] font-semibold ${look.cta}`}>
                         {t.engage.cta}
                         <I.ArrowRight weight="bold" aria-hidden />
                       </a>
-                      <span className={`text-[14px] ${look.soft}`}>{t.engage.price}</span>
                     </div>
                   </div>
                   {/* what's included, framed like a screen with corner marks */}
@@ -95,7 +106,7 @@ export function Engagements({ t }: { t: Dictionary }) {
                     <ul className="relative grid w-full gap-2.5 sm:grid-cols-2">
                       {p.inc.map((x, k) => (
                         <li key={x} className={`flex items-center gap-2.5 rounded-2xl border px-4 py-3.5 text-[15px] leading-snug ${k === 0 ? look.hi : "border-current/12 bg-current/[.04]"} ${k === 0 && p.inc.length % 2 ? "sm:col-span-2" : ""}`}>
-                          <I.CheckCircle size={18} weight={k === 0 ? "fill" : "regular"} className={`shrink-0 ${k === 0 ? "" : look.key}`} aria-hidden />
+                          <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-leaf text-leaf-ink"><I.Check size={12} weight="bold" aria-hidden /></span>
                           <span>{x}</span>
                         </li>
                       ))}
@@ -107,8 +118,6 @@ export function Engagements({ t }: { t: Dictionary }) {
           })}
         </div>
         <p className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[13px] text-muted">
-          <span className="inline-flex items-center gap-1.5"><I.CurrencyInr aria-hidden />{t.engage.price}</span>
-          <span className="inline-flex items-center gap-1.5"><I.HourglassMedium aria-hidden />{t.engage.trial}</span>
           <span className="inline-flex items-center gap-1.5"><I.Info aria-hidden />{t.engage.draft}</span>
         </p>
       </div>
@@ -126,7 +135,7 @@ export function Trust({ t }: { t: Dictionary }) {
       <Pattern kind="temple" className="absolute inset-x-0 bottom-0 text-accent-soft opacity-50" />
       <div className="relative mx-auto grid max-w-page gap-12 px-5 py-20 md:px-8 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
         <div>
-          <Kicker className="text-accent-soft">{t.trust.eyebrow}</Kicker>
+          <Kicker className="text-leaf-inverse" ornament="text-accent-soft">{t.trust.eyebrow}</Kicker>
           <Title><span id="trust-title">{t.trust.title}</span></Title>
           <p className="mt-5 max-w-[44ch] text-[17px] leading-relaxed text-bg/70">{t.trust.body}</p>
           <a href={site.legalHref} className="mt-7 inline-flex min-h-11 items-center gap-2 font-semibold underline-offset-4 hover:underline focus-visible:outline-accent-soft">
@@ -140,7 +149,7 @@ export function Trust({ t }: { t: Dictionary }) {
           {t.trust.items.map((x, i) => {
             const Ico = TRUST_ICONS[i];
             return (
-              <li key={x.t} className="flex gap-4 border-t border-bg/15 pt-5">
+              <li key={x.t} className="relative flex gap-4 border-t border-bg/15 pt-5 before:absolute before:-top-px before:left-0 before:h-px before:w-10 before:bg-leaf-mark">
                 <span className="relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-[14px] bg-accent-soft text-accent">
                   <Pattern kind="buti" className="absolute inset-0 opacity-[.18] [mask-size:24px_24px]" />
                   <Ico size={22} className="relative" aria-hidden />
@@ -171,7 +180,7 @@ export function Faq({ t }: { t: Dictionary }) {
             <p className="mt-6 text-muted">{t.faq.more}</p>
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 font-medium">
               <a href={`mailto:${site.email}`} className="inline-flex min-h-11 items-center gap-2 break-all hover:text-accent"><I.EnvelopeSimple aria-hidden />{site.email}</a>
-              <a href={site.whatsapp.href} className="inline-flex min-h-11 items-center gap-2 hover:text-accent"><I.WhatsappLogo aria-hidden />WhatsApp</a>
+              <a href={site.whatsapp.href} className="inline-flex min-h-11 items-center gap-2 hover:text-accent"><I.WhatsappLogo className="text-leaf" aria-hidden />WhatsApp</a>
             </div>
           </div>
         </div>
@@ -180,7 +189,7 @@ export function Faq({ t }: { t: Dictionary }) {
             <details key={x.q} className="group border-b border-line">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[17px] font-semibold [&::-webkit-details-marker]:hidden">
                 <span className="flex gap-4">
-                  <span className="mt-0.5 font-mono text-[13px] font-medium text-accent">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="mt-0.5 font-mono text-[13px] font-medium text-accent transition-colors group-open:text-leaf">{String(i + 1).padStart(2, "0")}</span>
                   <span>{x.q}</span>
                 </span>
                 <I.Plus size={20} className="shrink-0 text-muted transition-transform duration-300 group-open:rotate-45" aria-hidden />

@@ -36,13 +36,13 @@ export function SiteFooter({ t }: { t: Dictionary }) {
               <p className="flex gap-2"><MapPin className="mt-0.5 shrink-0" aria-hidden /><span>{site.legalName}, {t.footer.address}</span></p>
               <p><a className="inline-flex min-h-9 items-center gap-2 hover:text-ink" href={`mailto:${site.email}`}><EnvelopeSimple aria-hidden />{site.email}</a></p>
               <p><a className="inline-flex min-h-9 items-center gap-2 hover:text-ink" href={site.phone.href}><Phone aria-hidden />{site.phone.label}</a></p>
-              <p><a className="inline-flex min-h-9 items-center gap-2 hover:text-ink" href={site.whatsapp.href}><WhatsappLogo aria-hidden />{site.whatsapp.label}</a></p>
+              <p><a className="inline-flex min-h-9 items-center gap-2 hover:text-ink" href={site.whatsapp.href}><WhatsappLogo className="text-leaf" aria-hidden />{site.whatsapp.label}</a></p>
             </address>
             <div className="mt-6 flex gap-2">
               {site.social.map((s) => {
                 const Ico = SOCIAL_ICONS[s.key];
                 return (
-                  <a key={s.key} href={s.href} aria-label={`${site.name} on ${s.label}`} className="grid h-10 w-10 place-items-center rounded-full border border-line hover:border-ink">
+                  <a key={s.key} href={s.href} aria-label={`${site.name} on ${s.label}`} className="grid h-10 w-10 place-items-center rounded-full border border-line transition-colors hover:border-leaf hover:text-leaf">
                     <Ico aria-hidden />
                   </a>
                 );

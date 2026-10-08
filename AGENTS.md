@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - Read `README.md` first for the architecture: two root layouts (`app/(en)`, `app/(hi)`), typed dictionaries in `content/`, and a framework-free Three.js engine in `lib/sadan/` that is lazy-loaded by `components/home/story/story-controller.tsx`.
 - All copy lives in `content/en.ts` and `content/hi.ts`, both typed by `content/types.ts`. Don't hard-code user-facing strings in components.
-- Use the Lok Navy tokens (`bg-bg`, `bg-surface`, `text-ink`, `text-muted`, `border-line`, `bg-accent`, `text-accent-ink`, `bg-accent-soft`), not raw colours.
+- Use the Lok Navy tokens (`bg-bg`, `bg-surface`, `text-ink`, `text-muted`, `border-line`, `bg-accent`, `text-accent-ink`, `bg-accent-soft`), not raw colours. Blue (`accent`) is the primary; `leaf` (`text-leaf`, `bg-leaf`, `text-leaf-ink`, `bg-leaf-soft`) is the logo green, a second accent kept to small touches (outcomes, checks, the recommendation, WhatsApp, ornaments), never buttons or headlines.
 - Import icons only through `components/icons.ts`.
 - Layout modes: `classic`, `band` and `side` are chosen by media queries in `components/home/story/story.module.css` (exposed as `--story-mode`). Keep the queries in step with the compact-mode checks in `story-controller.tsx` and `app/globals.css`. Compact framing for a stop lives in its `c` entry in `STOPS`. Never hide copy on small screens.
 - Story cards (`chapters.tsx`) and camera stops (`STOPS` in `lib/sadan/engine.ts`) are paired by index. The office scenes (chapters 2, 3 and 5 to 8) are driven by `update()` in `lib/sadan/office-set.ts` from the same progress value; the Run close-up feeds the camera through `office.shot`.
