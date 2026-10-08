@@ -711,7 +711,10 @@ const recolor = (map: THREE.Texture, fn: (r: number, g: number, b: number, out: 
   return t;
 };
 
-/** White cloth: drop the texture's colour, keep its folds as shading around its mean brightness */
+/**
+ * White cloth: drop the texture's colour, keep its folds as shading around its mean brightness. Kept
+ * a khadi ivory rather than pure white, so lit folds stay under the bloom threshold and never glow.
+ */
 const whiten = (mat: THREE.MeshPhysicalMaterial) => {
   if (mat.map && !mat.userData.whitened) {
     const img = mat.map.image as HTMLImageElement | ImageBitmap;
@@ -721,10 +724,12 @@ const whiten = (mat: THREE.MeshPhysicalMaterial) => {
     let mean = 0;
     for (let i = 0; i < px.length; i += 4) mean += 0.3 * px[i] + 0.59 * px[i + 1] + 0.11 * px[i + 2];
     mean = Math.max(1, mean / (px.length / 4));
-    mat.map = recolor(mat.map, (r, gr, b, o) => { o[0] = o[1] = o[2] = Math.min(255, 242 * (0.8 + 0.2 * ((0.3 * r + 0.59 * gr + 0.11 * b) / mean))); });
+    mat.map = recolor(mat.map, (r, gr, b, o) => { o[0] = o[1] = o[2] = Math.min(232, 218 * (0.8 + 0.2 * ((0.3 * r + 0.59 * gr + 0.11 * b) / mean))); });
     mat.userData.whitened = true;
   }
-  mat.color.set("#ffffff");
+  mat.color.set("#ece6da");
+  mat.emissive?.set(0);
+  if (mat.isMeshPhysicalMaterial) { mat.sheen = 0; mat.clearcoat = 0; }
 };
 
 /** Skin: take most of the red out of the texture, then set the tone (multipliers per channel) */

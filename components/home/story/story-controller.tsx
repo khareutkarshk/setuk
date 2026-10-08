@@ -6,6 +6,7 @@ import type { Dictionary, SceneLabels } from "@/content/types";
 import { CornerPattern, Mandala } from "@/components/site/pattern";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { clamp01, createScrollProgress, smooth } from "@/lib/sadan/progress";
+import { scrollToY } from "@/lib/smooth-scroll";
 import type { SadanHandle } from "@/lib/sadan/engine";
 import poster from "@/assets/loksabha.jpg";
 import styles from "./story.module.css";
@@ -27,6 +28,9 @@ interface Props {
  * (data attributes and a CSS variable) so React only re-renders when the active chapter changes.
  * Three.js is code-split behind a dynamic import, so it never delays first paint; without WebGL,
  * or before the engine is ready, the Lok Sabha photo stays as the backdrop.
+ *
+ * When the scroll settles between two chapters it finishes the move to one of them (Lenis eases
+ * it), so a card is never left half on screen and the camera always rests on a stop.
  */
 export function StoryController({ chapters, railLabel, labels, ariaLabel, brand, children }: Props) {
   const rootRef = useRef<HTMLElement>(null);
@@ -108,21 +112,51 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       else if (lastY - y > 8) { setHideHeader(false); lastY = y; }
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+
+    /* Snap: once the scroll has been still for a moment between chapters i and i + 1, go on to the next
+       chapter if it has come a good way in (back to i when moving up), otherwise back. Compact chapters
+       taller than the reading area are read by scrolling through them, so they never snap. Off with
+       reduced motion, and while a finger or the scrollbar holds the page. */
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let settle = 0, dir = 0, prevY = scrollY, held = false;
+    const fits = (el: HTMLElement) => mode === "classic" || el.offsetHeight <= innerHeight - (mode === "band" ? band : headerH);
+    const snap = () => {
+      if (reduced || held || pinCh !== null || !inView) return;
+      const p = progress.get(), i = Math.floor(p), f = p - i;
+      if (i >= steps.length - 1 || f < 0.005 || f > 0.995) return;
+      if (!fits(steps[i]) || !fits(steps[i + 1])) return;
+      const to = f > (dir < 0 ? 0.7 : 0.3) ? i + 1 : i;
+      scrollToY(progress.centre(to), { duration: 0.6 + 0.6 * (to === i ? f : 1 - f) });
+    };
+    const onScroll = () => {
+      schedule();
+      const y = scrollY;
+      if (y !== prevY) { dir = Math.sign(y - prevY); prevY = y; }
+      clearTimeout(settle);
+      settle = window.setTimeout(snap, 160);
+    };
+    const hold = () => { held = true; clearTimeout(settle); };
+    const letGo = () => { if (!held) return; held = false; clearTimeout(settle); settle = window.setTimeout(snap, 160); };
     const remeasure = () => {
       const prevMode = mode, prevW = lastW;
       readLayout();
       lastW = innerWidth;
       progress.measure();
-      if (pinCh !== null) scrollTo({ top: progress.centre(pinCh), behavior: "instant" });
+      if (pinCh !== null) scrollToY(progress.centre(pinCh), { immediate: true });
       /* the layout changed under the reader (rotation, split view, a resize across modes): keep their place.
          Height-only changes (mobile toolbars) are left alone so they never fight a fling. */
-      else if (inView && (mode !== prevMode || innerWidth !== prevW)) scrollTo({ top: progress.at(lastP), behavior: "instant" });
+      else if (inView && (mode !== prevMode || innerWidth !== prevW)) scrollToY(progress.at(lastP), { immediate: true });
       schedule();
     };
 
-    if (pinCh !== null) scrollTo({ top: progress.centre(pinCh), behavior: "instant" });
+    if (pinCh !== null) scrollToY(progress.centre(pinCh), { immediate: true });
     update();
-    addEventListener("scroll", schedule, { passive: true });
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("pointerdown", hold, { passive: true });
+    addEventListener("touchstart", hold, { passive: true });
+    addEventListener("pointerup", letGo);
+    addEventListener("pointercancel", letGo);
+    addEventListener("touchend", letGo);
     addEventListener("resize", remeasure);
     document.fonts?.ready.then(remeasure);
     const ro = new ResizeObserver(remeasure);
@@ -130,7 +164,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
 
     if (new URLSearchParams(location.search).has("debug")) {
       (window as unknown as { __story: unknown }).__story = {
-        go: (i: number) => { pinCh = null; scrollTo({ top: progress.centre(i), behavior: "instant" }); },
+        go: (i: number) => { pinCh = null; scrollToY(progress.centre(i), { immediate: true }); },
         p: () => progress.get(),
         mode: () => mode
       };
@@ -138,7 +172,13 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
 
     return () => {
       cancelAnimationFrame(frame);
-      removeEventListener("scroll", schedule);
+      clearTimeout(settle);
+      removeEventListener("scroll", onScroll);
+      removeEventListener("pointerdown", hold);
+      removeEventListener("touchstart", hold);
+      removeEventListener("pointerup", letGo);
+      removeEventListener("pointercancel", letGo);
+      removeEventListener("touchend", letGo);
       removeEventListener("resize", remeasure);
       releaseOn.forEach((e) => removeEventListener(e, release));
       ro.disconnect();
@@ -225,7 +265,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
 
   const go = (i: number) => {
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    scrollTo({ top: progressRef.current?.centre(i) ?? 0, behavior: reduce ? "auto" : "smooth" });
+    scrollToY(progressRef.current?.centre(i) ?? 0, { immediate: reduce, duration: 1.4 });
   };
 
   return (

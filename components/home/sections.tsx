@@ -4,11 +4,12 @@ import { site } from "@/content/site";
 import * as I from "@/components/icons";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { AshokaChakra, CornerPattern, Pattern } from "@/components/site/pattern";
+import engage from "./engage.module.css";
 
 /* Sections after the scroll story. All server-rendered; the FAQ uses <details>, so no JS.
    Each section carries its own Indian pattern (components/site/pattern.tsx): a toran over
-   Engagements, a jaali screen behind Data and trust, block-print buti in the FAQ panel and
-   the jaali with सेतु on the closing call to action. */
+   Engagements (whose package cards stack as they scroll, engage.module.css), a jaali screen behind Data and trust, block-print buti in the FAQ panel and
+   the jaali with सेतुक on the closing call to action. */
 
 const bigJaali = { "--s": "64px", "--r": "45px", "--w": "1.6px" } as CSSProperties;
 const sadanWall = { "--s": "56px" } as CSSProperties;
@@ -25,9 +26,19 @@ function Title({ children, className = "" }: { children: ReactNode; className?: 
   return <h2 className={`font-display-tight mt-3 text-balance text-[clamp(32px,4.2vw,52px)] leading-[1.04] ${className}`}>{children}</h2>;
 }
 
+/* One look per package card, from light to dark to the brand colour, so the stack reads as three layers */
+const LOOKS = [
+  { card: "border-line bg-surface text-ink", soft: "text-muted", key: "text-accent", hi: "border-accent bg-accent text-accent-ink", cta: "bg-accent text-accent-ink hover:brightness-110" },
+  { card: "border-ink bg-ink text-bg", soft: "text-bg/70", key: "text-accent-soft", hi: "border-accent bg-accent text-accent-ink", cta: "bg-accent text-accent-ink hover:brightness-110" },
+  { card: "border-accent bg-accent text-accent-ink", soft: "text-accent-ink/75", key: "text-accent-ink", hi: "border-accent-ink bg-accent-ink text-accent", cta: "bg-accent-ink text-accent hover:brightness-95" }
+];
+
 export function Engagements({ t }: { t: Dictionary }) {
+  const pkgs = t.engage.pkgs, n = pkgs.length;
+  const pad = (k: number) => String(k).padStart(2, "0");
+  const scope = { timelineScope: pkgs.map((_, i) => `--eng-${i}`).join(", ") } as CSSProperties;
   return (
-    <section id="engagements" aria-labelledby="engagements-title" className="relative z-10 overflow-hidden border-t border-line bg-bg">
+    <section id="engagements" aria-labelledby="engagements-title" className="relative z-10 overflow-clip border-t border-line bg-bg">
       <Pattern kind="toran" className="absolute inset-x-0 top-0 text-accent opacity-60" />
       <AshokaChakra className="absolute -top-40 -right-48 w-[380px] md:w-[640px] animate-[spin_120s_linear_infinite] text-accent opacity-[.08] motion-reduce:animate-none" />
       <div className="relative mx-auto max-w-page px-5 py-20 md:px-8 md:py-28">
@@ -38,37 +49,58 @@ export function Engagements({ t }: { t: Dictionary }) {
           </div>
           <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted">{t.engage.body}</p>
         </div>
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {t.engage.pkgs.map((p, i) => {
-            const pick = i === 1;
+        <div className={`${engage.stack} mt-12`} style={scope}>
+          {pkgs.map((p, i) => {
+            const look = LOOKS[i % LOOKS.length], pick = i === 1;
+            const vars = { "--i": i, "--self": `--eng-${i}`, "--next": i < n - 1 ? `--eng-${i + 1}` : "none" } as CSSProperties;
             return (
-              <article key={p.t} className={`relative flex flex-col overflow-hidden rounded-3xl border p-6 pt-9 sm:p-7 sm:pt-9 md:last:odd:col-span-2 lg:last:odd:col-span-1 ${pick ? "border-ink bg-ink text-bg shadow-[0_30px_70px_-35px_rgb(0_0_0/.6)]" : "border-line bg-surface"}`}>
-                <Pattern kind="temple" className={`absolute inset-x-0 top-0 -scale-y-100 ${pick ? "text-accent-soft" : "text-accent"}`} />
-                {pick ? <Pattern kind="jaali" className="absolute inset-0 text-bg opacity-[.07]" /> : <CornerPattern kind="kolam" className="top-0 right-0 h-[200px] w-[200px] text-accent opacity-[.12]" radius={200} />}
-                <p className="relative min-h-[26px]">
-                  {pick && <span className="inline-block rounded-2xl bg-accent px-3 py-1 text-[12px] leading-snug font-semibold text-balance text-accent-ink">{t.engage.pick}</span>}
-                </p>
-                <h3 className="font-display-tight relative mt-3 text-[26px]">{p.t}</h3>
-                <p className={`relative mt-3 text-[14px] ${pick ? "text-bg/70" : "text-muted"}`}>
-                  <b className="font-semibold">{t.engage.forLabel}:</b> {p.for}
-                </p>
-                <ul className="relative mt-6 flex-1 space-y-3 text-[15px]">
-                  {p.inc.map((x) => (
-                    <li key={x} className="flex gap-2.5">
-                      <I.CheckCircle size={18} className={`mt-0.5 shrink-0 ${pick ? "text-accent-soft" : "text-accent"}`} aria-hidden />
-                      <span>{x}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className={`relative mt-8 flex flex-wrap items-center justify-between gap-3 border-t pt-5 ${pick ? "border-bg/20" : "border-line"}`}>
-                  <span className={`text-[14px] ${pick ? "text-bg/70" : "text-muted"}`}>{t.engage.price}</span>
-                  <a
-                    href="#contact"
-                    className={`press inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full px-4 text-[14px] font-semibold ${pick ? "bg-accent text-accent-ink" : "border border-line hover:border-ink"}`}
-                  >
-                    {t.engage.cta}
-                    <I.ArrowRight aria-hidden />
-                  </a>
+              <article key={p.t} style={vars} className={`${engage.card} relative flex flex-col overflow-hidden rounded-[28px] border shadow-[0_-18px_60px_-34px_rgb(0_0_0/.45)] ${look.card}`}>
+                <Pattern kind="temple" className={`absolute inset-x-0 top-0 -scale-y-100 opacity-70 ${look.key}`} />
+                <Pattern kind="jaali" className="absolute inset-0 opacity-[.05]" />
+                <CornerPattern kind="kolam" fx={0} fy={100} radius={320} className={`inset-0 opacity-[.1] ${look.key}`} />
+                {/* header: number, the recommendation, and where this card sits in the stack */}
+                <div className="relative flex min-h-[64px] flex-wrap items-center justify-between gap-3 border-b border-current/10 px-6 pt-5 pb-3 font-mono text-[12px] tracking-[.18em] uppercase sm:px-9">
+                  <p className="flex flex-wrap items-center gap-3">
+                    <span className={look.key}>{pad(i + 1)}</span>
+                    <span className={look.soft}>{t.engage.eyebrow}</span>
+                    {pick && <span className="rounded-full bg-accent px-3 py-1 font-sans text-[12px] font-semibold tracking-normal normal-case text-accent-ink">{t.engage.pick}</span>}
+                  </p>
+                  <p className={`flex items-center gap-3 ${look.soft}`} aria-hidden="true">
+                    <span className="flex items-center gap-1.5">
+                      {pkgs.map((q, k) => <span key={q.t} className={`h-[3px] rounded-full ${k === i ? "w-8 bg-current" : "w-3 bg-current/25"}`} />)}
+                    </span>
+                    <span className="tnum">{pad(i + 1)} / {pad(n)}</span>
+                  </p>
+                </div>
+                <div className="relative grid flex-1 gap-8 p-6 sm:p-9 md:grid-cols-[1fr_1.15fr] md:gap-10">
+                  <div className="flex flex-col">
+                    <h3 className="font-display-tight text-balance text-[clamp(32px,4vw,52px)] leading-[1.04]">{p.t}</h3>
+                    <p className={`mt-5 max-w-[42ch] text-[17px] leading-relaxed ${look.soft}`}>
+                      <b className="font-semibold">{t.engage.forLabel}:</b> {p.for}
+                    </p>
+                    <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-8">
+                      <a href="#contact" className={`press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full px-6 text-[15px] font-semibold ${look.cta}`}>
+                        {t.engage.cta}
+                        <I.ArrowRight weight="bold" aria-hidden />
+                      </a>
+                      <span className={`text-[14px] ${look.soft}`}>{t.engage.price}</span>
+                    </div>
+                  </div>
+                  {/* what's included, framed like a screen with corner marks */}
+                  <div className="relative flex items-center rounded-3xl border border-current/12 bg-current/[.03] p-5 sm:p-7">
+                    <Pattern kind="buti" className="absolute inset-0 rounded-3xl opacity-[.06]" />
+                    {["top-3 left-3 border-t border-l", "top-3 right-3 border-t border-r", "bottom-3 left-3 border-b border-l", "bottom-3 right-3 border-b border-r"].map((c) => (
+                      <span key={c} aria-hidden="true" className={`absolute h-4 w-4 border-current/40 ${c} ${look.key}`} />
+                    ))}
+                    <ul className="relative grid w-full gap-2.5 sm:grid-cols-2">
+                      {p.inc.map((x, k) => (
+                        <li key={x} className={`flex items-center gap-2.5 rounded-2xl border px-4 py-3.5 text-[15px] leading-snug ${k === 0 ? look.hi : "border-current/12 bg-current/[.04]"} ${k === 0 && p.inc.length % 2 ? "sm:col-span-2" : ""}`}>
+                          <I.CheckCircle size={18} weight={k === 0 ? "fill" : "regular"} className={`shrink-0 ${k === 0 ? "" : look.key}`} aria-hidden />
+                          <span>{x}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </article>
             );
@@ -170,7 +202,7 @@ export function Cta({ t }: { t: Dictionary }) {
           <Pattern kind="jaali" className="absolute inset-0 opacity-[.1]" style={bigJaali} />
           <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 opacity-35" />
           <Pattern kind="temple" className="absolute inset-x-0 bottom-0 opacity-35" />
-          <span aria-hidden="true" className="font-deva pointer-events-none absolute right-[3vw] -bottom-[0.22em] select-none text-[34vw] leading-none font-bold opacity-[.12] lg:text-[300px]">सेतु</span>
+          <span aria-hidden="true" className="font-deva pointer-events-none absolute right-[3vw] bottom-[0.06em] select-none text-[26vw] leading-none font-bold opacity-[.12] lg:text-[230px]">सेतुक</span>
           <div className="relative max-w-[640px]">
             <span className="block w-14 [--mark-arch:var(--accent-ink)] [--mark-dot-mid:var(--accent-ink)]"><SetukMark /></span>
             <Title className="mt-8"><span id="cta-title">{t.cta.title}</span></Title>

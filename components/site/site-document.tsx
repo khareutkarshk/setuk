@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Locale } from "@/content";
 import { geist, geistMono } from "@/lib/fonts";
 import { THEME_BG, THEME_KEY } from "@/lib/theme";
+import { SmoothScroll } from "./smooth-scroll";
 
 /* Runs in <head> before first paint: applies a saved dark theme so there is no light flash.
    Light is the default, so the server always renders light and the page stays static. */
@@ -18,7 +19,10 @@ export function SiteDocument({ locale, fontClassName, children }: { locale: Loca
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       {/* extensions add attributes to <body> before React hydrates */}
-      <body className="min-h-dvh" suppressHydrationWarning>{children}</body>
+      <body className="min-h-dvh" suppressHydrationWarning>
+        <SmoothScroll />
+        {children}
+      </body>
     </html>
   );
 }

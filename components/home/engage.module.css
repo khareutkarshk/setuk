@@ -1,0 +1,32 @@
+/* Engagements: the packages stack as they scroll. Each card pins under the header a little lower than
+   the one before, and the next slides up over it; one card fills the view at a time. The covered card
+   recedes (scaled and dimmed) on the next card's view timeline where scroll-driven animations exist.
+   Short or narrow screens get a plain list, so no card ever hides another's copy. */
+
+.stack { display: grid; gap: 16px; }
+
+@media (min-width: 768px) and (min-height: 640px) {
+  .stack { gap: 0; padding-bottom: 6vh; }
+  .card {
+    position: sticky;
+    top: calc(var(--header-h) + 28px + var(--i) * 18px);
+    min-height: min(600px, calc(100svh - var(--header-h) - 96px - var(--i) * 18px));
+    transform-origin: 50% 0;
+    view-timeline-name: var(--self);
+  }
+  .card + .card { margin-top: 32vh; }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .card {
+        animation: recede linear both;
+        animation-timeline: var(--next);
+        animation-range: entry 0% entry 100%;
+      }
+    }
+  }
+}
+
+@keyframes recede {
+  to { scale: 0.93; filter: brightness(0.82) saturate(0.9); }
+}
