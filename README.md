@@ -48,7 +48,7 @@ components/
 lib/
   sadan/engine.ts                The chamber: geometry, materials, lights, camera path, render loop
   sadan/office-set.ts            The table in the well: the problem, the fix and the four steps
-  sadan/people.ts                The consultant and the politician: seated rig, IK arms, expressions
+  sadan/avatar.ts                The consultant and the politician: rigged GLB (public/sadan/v1/people/), IK arms, expressions
   sadan/set-screens.ts           Canvas screens for the set: badges, spreadsheet, chat, setup, call, report
   sadan/glyphs.ts                Phosphor icon paths for canvas drawing (generated)
   sadan/screens.ts               Canvas-drawn wall screens and desk tablet
@@ -92,7 +92,7 @@ To add a chapter, add a card, a stop and a chapter name in both dictionaries.
 
 The clutter and the people are swapped while the camera is at your desk (chapter 4), out of sight. Chapter 8's close-up is timed rather than scrolled: it plays about four seconds after the card arrives, and reverses if you scroll back. With reduced motion every animation shows its end state.
 
-The people are stylised, built from primitives (`people.ts`). A pose is a set of wrist targets, hand orientations, a look-at point and expression values, so rigged glTF characters could replace them later behind the same `Pose` interface.
+The people are a rigged glTF model (`public/sadan/v1/people/consultant.glb`, loaded by `avatar.ts` on every tier and placed while the camera is at the desk). A pose is a set of wrist targets, hand orientations, a look-at point and expression values. If the model fails to load, the meeting plays without people.
 
 **Performance tiers.** These are set in `lib/sadan/quality.ts` and picked from the GPU name, memory, cores, screen size and Save-Data:
 
@@ -109,7 +109,7 @@ On every tier:
 - canvas screens redraw at about 8 fps while they animate, otherwise only on change;
 - the loop idles off screen and in background tabs.
 
-Measured on the mid tier (`?q=mid&debug`, then `__sadan.info()` in the console): 96 to 150 draw calls per frame and about 670k triangles. The people add about 17k triangles. The 3D chunk is about 178 KB gzipped and is never part of first-load JS (about 185 KB gzipped).
+Measured on the mid tier (`?q=mid&debug`, then `__sadan.info()` in the console): 96 to 150 draw calls per frame and about 670k triangles. The 3D chunk is about 178 KB gzipped and is never part of first-load JS (about 185 KB gzipped).
 
 If frames run slower than about 38 fps, the engine steps down in this order: ambient occlusion, then post-processing, then resolution. The threshold follows the display's own frame cadence (measured on frames that render nothing), so a 30 fps cap such as iOS Low Power Mode doesn't count as a slow GPU. Eased camera values snap once they are within a pixel, so the loop goes idle when scrolling stops. If the browser drops the WebGL context, the photo shows and the chamber is rebuilt when the context returns (or after 3 s).
 

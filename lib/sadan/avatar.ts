@@ -1,5 +1,5 @@
 /**
- * Rigged GLB people for the meeting, driven by the same `Pose` as the procedural ones in people.ts.
+ * Rigged GLB people for the meeting (the consultant and the politician), driven by a target-based `Pose`.
  *
  * Works with Mixamo-style (Ready Player Me) and Character Creator skeletons. Bones are found by
  * name, and every rotation is set as a world-space change from the rest pose, so the code never
@@ -11,7 +11,35 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import type { Person, Pose } from "./people";
+
+export interface Pose {
+  /** Torso lean forward, radians */
+  lean: number;
+  /** World point to look at */
+  look: THREE.Vector3;
+  /** Wrist targets in the person's frame: right, then left */
+  hands: [THREE.Vector3, THREE.Vector3];
+  /** Direction the back of each hand faces, person's frame */
+  backs: [THREE.Vector3, THREE.Vector3];
+  /** Where the fingers point (person's frame), blended over the forearm direction by aimW (bent wrists, e.g. namaste) */
+  aim: [THREE.Vector3, THREE.Vector3];
+  aimW: number;
+  /** Added head pitch (nodding), radians */
+  nod: number;
+  /** Head roll, radians */
+  tilt: number;
+  smile: number;
+  /** Mouth opening, 0..1 */
+  talk: number;
+}
+
+export interface Person {
+  root: THREE.Group;
+  /** Ease toward a pose; `dt` in seconds (0 snaps) */
+  pose(p: Pose, dt: number, t: number): void;
+  /** Head centre, world space */
+  head: THREE.Object3D;
+}
 
 export interface AvatarSpec {
   url: string;

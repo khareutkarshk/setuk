@@ -24,8 +24,7 @@ import {
   BADGE, LAPTOP, PHONE, TAG, drawBadge, drawChat, drawExcel, drawInbox, drawMeet, drawMissed, drawPaper, drawPhoneOk, drawRun,
   drawLidMark, drawSetukBadge, drawSetup, drawTag, type BadgeLook
 } from "./set-screens";
-import { createPerson, type Person, type Pose } from "./people";
-import { loadAvatar, type Anchors, type Avatar, type AvatarSpec } from "./avatar";
+import { loadAvatar, type Anchors, type Avatar, type AvatarSpec, type Pose } from "./avatar";
 
 export interface SetKit {
   world: THREE.Group;
@@ -37,7 +36,7 @@ export interface SetKit {
   normalFromHeight: (c: HTMLCanvasElement, strength?: number) => THREE.Texture;
   /** A sample of seat positions (world), for the pulses that run from the fix out to the House */
   seatPoints: THREE.Vector3[];
-  /** Public folder holding the rigged people (consultant.glb, politician.glb); mid and high tiers swap them in */
+  /** Public folder holding the rigged people (consultant.glb) */
   peopleBase?: string;
   /** Compile an object's materials against the scene's lights, so late arrivals (the rigged people) never compile mid-scroll */
   compile?: (o: THREE.Object3D) => Promise<unknown>;
@@ -94,17 +93,6 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   const sc = T.tier === "low" ? 0.6 : T.tier === "mid" ? 0.8 : 1;
 
   /* ---------- shared textures ---------- */
-  const weave = T.maps ? (() => {
-    const { c, t } = canvasTex(128, 128, (g) => {
-      g.fillStyle = "#808080"; g.fillRect(0, 0, 128, 128);
-      for (let i = -128; i < 256; i += 6) { g.strokeStyle = i % 12 ? "#9a9a9a" : "#6a6a6a"; g.lineWidth = 2.5; g.beginPath(); g.moveTo(i, 0); g.lineTo(i + 128, 128); g.stroke(); }
-    }, false);
-    t.dispose();
-    const n = k.normalFromHeight(c, 1.2);
-    n.repeat.set(9, 9);
-    extras.push(n);
-    return n;
-  })() : null;
   const paperTex = canvasTex(256, 362, (g) => drawPaper(g, 256, 362, 7)).t;
   paperTex.wrapS = paperTex.wrapT = THREE.ClampToEdgeWrapping;
   const edgeTex = canvasTex(64, 64, (g) => {
@@ -404,35 +392,30 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   extras.push(oGeo, oMat);
 
   /* ---------- the meeting ---------- */
-  const kit = { mat: k.mat, seg: T.tier === "low" ? 8 : T.tier === "mid" ? 12 : 16, weave };
-  let consultant: Person = createPerson({ outfit: "suit", skin: "#b27c57", hair: "#1b1411", jacket: "#262d3b", shirt: "#eef1f4", tie: "#6d1f2c", legs: "#262d3b", shoes: "#151515" }, kit);
-  let politician: Person = createPerson({ outfit: "kurta", skin: "#a3714f", hair: "#1a1411", mustache: true, glasses: true, jacket: "#f7f7f5", shirt: "#f7f7f5", legs: "#f7f7f5", shoes: "#5a3a22" }, kit);
-  consultant.root.position.set(1.25, 0, -10.9); consultant.root.rotation.y = -Math.PI / 2;
-  politician.root.position.set(-1.25, 0, -10.9); politician.root.rotation.y = Math.PI / 2;
-  meeting.add(consultant.root, politician.root);
+  /* Seats (x along the table, facing across it) */
+  const SEATS = { consultant: { x: 1.25, ry: -Math.PI / 2 }, politician: { x: -1.25, ry: Math.PI / 2 } };
+  let consultant: Avatar | null = null, politician: Avatar | null = null;
   /*
-   * Rigged people replace the procedural ones one at a time as they load; a person whose model
-   * is missing or fails the skin check stays procedural. Both use the executive model; the
-   * politician is dressed differently and gets glasses and a mustache.
+   * Rigged people, placed as they load (the camera is at the desk in chapter 4 meanwhile). Both
+   * use the executive model; the politician is dressed differently and gets glasses and a mustache.
    */
   let swapped = false, gone = false;
   const avatars: Avatar[] = [];
-  const swapIn = (spec: AvatarSpec, which: "consultant" | "politician") => loadAvatar(spec).then(async (next) => {
+  const seat = (spec: AvatarSpec, which: "consultant" | "politician") => loadAvatar(spec).then(async (next) => {
     avatars.push(next);
     if (gone) return;
     await k.compile?.(next.root).catch(() => undefined);
     if (gone) return;
-    const old = which === "consultant" ? consultant : politician;
-    next.root.position.copy(old.root.position); next.root.quaternion.copy(old.root.quaternion);
-    meeting.remove(old.root); meeting.add(next.root);
+    next.root.position.set(SEATS[which].x, 0, -10.9); next.root.rotation.y = SEATS[which].ry;
+    meeting.add(next.root);
     if (which === "consultant") consultant = next; else politician = next;
     swapped = true;
-  }).catch((err) => console.warn(`sadan: keeping the procedural ${which}`, err));
-  if (k.peopleBase && T.tier !== "low") {
+  }).catch((err) => console.warn(`sadan: could not load the ${which}`, err));
+  if (k.peopleBase) {
     const face = { blink: 16, smile: 33, open: 67, count: 68 };
-    swapIn({ url: k.peopleBase + "consultant.glb", height: 1.76, face, dress: executive }, "consultant");
+    seat({ url: k.peopleBase + "consultant.glb", height: 1.76, face, dress: executive }, "consultant");
     /* the politician: the same model in a kurta, glasses and mustache, greying at the temples */
-    swapIn({ url: k.peopleBase + "consultant.glb", height: 1.74, face, dress: leader, accessories: (a) => leaderExtras(a, k.mat) }, "politician");
+    seat({ url: k.peopleBase + "consultant.glb", height: 1.74, face, dress: leader, accessories: (a) => leaderExtras(a, k.mat) }, "politician");
   }
   extras.push({ dispose: () => { gone = true; avatars.forEach((a) => a.dispose()); } });
   blob(meeting, 0.9, 0.9, 1.1, 0, -10.9, 0.9); blob(meeting, 0.9, 0.9, -1.1, 0, -10.9, 0.9);
@@ -468,7 +451,8 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   const shot = { w: 0, p: V(0.42, 1.36, -10.2), t: V(-1.2, 1.16, -10.9), fov: 34 };
   const clock = { fail: 0, setup: 0, run: 0, lastSlow: -1 };
   const m4 = new THREE.Matrix4(), q4 = new THREE.Quaternion(), e4 = new THREE.Euler(), v4 = V(), s4 = V();
-  const headC = V(), headP = V(), camPos = V();
+  /* where the heads sit until the models arrive */
+  const headC = V(1.2, 1.24, -10.9), headP = V(-1.2, 1.24, -10.9), camPos = V();
   let showing = false;
 
   /* Pose scratch objects, reused every frame */
@@ -479,7 +463,7 @@ export function createOfficeSet(k: SetKit): OfficeSet {
   const clasp = (o: Pose) => { o.hands[0].set(-0.045, 0.85, 0.385); o.hands[1].set(0.04, 0.852, 0.4); o.backs[0].set(-0.7, 1, 0.1); o.backs[1].set(0.7, 1, 0.1); };
 
   const choreograph = (p: number, t: number, reduced: boolean) => {
-    consultant.head.getWorldPosition(headC); politician.head.getWorldPosition(headP);
+    consultant?.head.getWorldPosition(headC); politician?.head.getWorldPosition(headP);
     const ph = p < 5.5 ? 0 : p < 6.5 ? 1 : p < 7.5 ? 2 : 3;
     const tm = reduced ? 0 : t;
     [pc, pp].forEach((o) => { o.nod = 0; o.tilt = 0; o.smile = 0; o.talk = 0; o.aimW = 0; });
@@ -681,8 +665,8 @@ export function createOfficeSet(k: SetKit): OfficeSet {
       lap.lid.rotation.x = THREE.MathUtils.lerp(Math.PI / 2 - 0.02, -0.26, open);
       lap.disp.visible = open > 0.4;
       choreograph(p, t, reduced);
-      consultant.pose(pc, reduced ? 0 : dt, reduced ? 0 : t);
-      politician.pose(pp, reduced ? 0 : dt, reduced ? 0 : t);
+      consultant?.pose(pc, reduced ? 0 : dt, reduced ? 0 : t);
+      politician?.pose(pp, reduced ? 0 : dt, reduced ? 0 : t);
       /* laptop screen */
       let key = "", draw: (() => void) | null = null;
       if (p < 6.6) { const pr = smooth(0.2, 4.6, clock.setup); key = "s" + Math.round(pr * 90); draw = () => drawSetup(lapScr, paint, pr); }
