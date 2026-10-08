@@ -67,15 +67,7 @@ export function SiteFooter({ t, locale, home = false }: { t: Dictionary; locale:
         </div>
         <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6 text-[13px] text-muted">
           <span>&copy; 2026 {t.footer.rights}</span>
-          {home && <span>
-            {t.footer.model}
-            {t.footer.credits.map((c) => (
-              <span key={c.href}>
-                {" · "}
-                <a href={c.href} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-ink hover:underline">{c.t}</a>
-              </span>
-            ))}
-          </span>}
+          
         </div>
       </div>
     </footer>
