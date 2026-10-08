@@ -311,8 +311,6 @@ export interface Dictionary {
     address: string;
     rights: string;
     model: string;
-    /** Attribution for third-party 3D models (CC BY 4.0) */
-    credits: Link[];
     voterList: string;
     /** Short labels for the articles, by slug */
     guideItems: { t: string; slug: string }[];
