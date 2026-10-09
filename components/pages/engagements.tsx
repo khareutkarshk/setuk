@@ -3,9 +3,11 @@ import Link from "next/link";
 import { getDictionary, type Locale } from "@/content";
 import { media } from "@/content/media";
 import * as I from "@/components/icons";
+import { Kicker } from "@/components/site/kicker";
+import { CornerPattern, Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
 import { Faqs } from "./faq-list";
-import { H1, H2, Lead, TextLink, Wrap } from "./ui";
+import { Band, deva, H1, IconTile, Lead, PageHero, Panel, SectionHead, TextLink, TICK, Wrap } from "./ui";
 
 const PRICING_ICONS = [I.CalendarDots, I.UsersThree, I.HourglassMedium, I.Clock];
 
@@ -20,12 +22,13 @@ export function EngagementsPage({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <Wrap className="pt-10 pb-12 md:pt-16 md:pb-16">
+      <PageHero className="pt-10 pb-12 md:pt-16 md:pb-16">
         <div className="max-w-[760px]">
-          <H1 className="rise">{p.title}</H1>
-          <Lead className="rise mt-5 [--i:1]">{p.sub}</Lead>
+          <Kicker className="rise text-leaf">{t.nav.labels.engagements}</Kicker>
+          <H1 className="rise mt-4 [--i:1]">{p.title}</H1>
+          <Lead className="rise mt-5 [--i:2]">{p.sub}</Lead>
         </div>
-      </Wrap>
+      </PageHero>
 
       {/* The packages; the recommended one carries an accent ring and the badge */}
       <Wrap>
@@ -33,11 +36,14 @@ export function EngagementsPage({ locale }: { locale: Locale }) {
           {pkgs.map((k, i) => {
             const pick = i === 1;
             return (
-              <article key={k.t} className={`rise relative flex flex-col rounded-3xl border bg-surface p-3 ${pick ? "border-accent shadow-[0_30px_70px_-40px_color-mix(in_srgb,var(--accent)_70%,transparent)] ring-1 ring-accent" : "border-line"}`} style={{ ["--i" as string]: i + 1 }}>
+              <article key={k.t} className={`rise relative flex flex-col overflow-hidden rounded-3xl border bg-surface p-3 ${pick ? "border-accent shadow-[0_30px_70px_-40px_color-mix(in_srgb,var(--accent)_70%,transparent)] ring-1 ring-accent" : "border-line"}`} style={{ ["--i" as string]: i + 1 }}>
                 <div className="illo relative aspect-[16/9] overflow-hidden rounded-[18px]">
                   <Image src={media[p.art[i].img]} alt={p.art[i].alt} fill sizes="(min-width: 1024px) 400px, 100vw" placeholder="blur" className="object-cover" />
                 </div>
-                <div className="flex flex-1 flex-col px-4 pt-5 pb-4 sm:px-5">
+                {/* the homepage package card's kolam, and its number as a Devanagari watermark */}
+                <CornerPattern kind="kolam" fx={0} fy={100} radius={300} className="inset-0 text-accent opacity-[.1]" />
+                <div className="relative flex flex-1 flex-col px-4 pt-5 pb-4 sm:px-5">
+                  <span aria-hidden="true" className="font-deva pointer-events-none absolute top-3 right-4 select-none text-[64px] leading-none font-bold text-accent opacity-[.09]">{deva(i + 1)}</span>
                   {/* every card keeps the badge's row, so the three titles line up */}
                   <p className={`mb-3 min-h-[26px] items-start ${pick ? "flex" : "hidden lg:flex"}`}>
                     {pick && <span className="rounded-full bg-leaf px-3 py-1 text-[12px] leading-snug font-semibold text-leaf-ink">{t.engage.pick}</span>}
@@ -70,8 +76,9 @@ export function EngagementsPage({ locale }: { locale: Locale }) {
       {/* What's included, side by side */}
       <section aria-labelledby="compare-title">
         <Wrap className="py-20 md:py-28">
-          <H2 id="compare-title">{p.compare.title}</H2>
-          <div className="reveal mt-10 overflow-x-auto rounded-3xl border border-line bg-surface">
+          <SectionHead kicker={p.compare.kicker} title={p.compare.title} id="compare-title" />
+          <div className="reveal relative mt-10 overflow-x-auto rounded-3xl border border-line bg-surface">
+            <Pattern kind="temple" className="sticky left-0 -mb-[14px] w-full -scale-y-100 text-accent opacity-25" />
             <table className="w-full min-w-[640px] border-collapse text-left text-[15px]">
               <caption className="sr-only">{p.compare.title}</caption>
               <thead>
@@ -102,35 +109,29 @@ export function EngagementsPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* How pricing works */}
-      <section aria-labelledby="pricing-title" className="border-y border-line bg-surface">
-        <Wrap className="grid gap-12 py-20 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-          <div>
-            <H2 id="pricing-title">{p.pricing.title}</H2>
-            <Lead className="mt-4">{p.pricing.body}</Lead>
-          </div>
-          <dl className="grid gap-x-10 gap-y-9 sm:grid-cols-2">
-            {p.pricing.items.map((x, i) => {
-              const Ico = PRICING_ICONS[i];
-              return (
-                <div key={x.t} className="reveal flex gap-4">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"><Ico size={20} aria-hidden /></span>
-                  <div>
-                    <dt className="text-[17px] font-semibold">{x.t}</dt>
-                    <dd className="mt-1 text-[15px] leading-snug text-muted">{x.d}</dd>
-                  </div>
+      <Band tone="ink" labelledBy="pricing-title">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+          <SectionHead kicker={p.pricing.kicker} title={p.pricing.title} id="pricing-title" lead={p.pricing.body} inverse />
+          <dl className="grid gap-x-10 gap-y-8 self-center sm:grid-cols-2">
+            {p.pricing.items.map((x, i) => (
+              <div key={x.t} className={`reveal ${TICK} flex gap-4 border-bg/15`}>
+                <IconTile icon={PRICING_ICONS[i]} className="h-12! w-12! rounded-[14px]!" />
+                <div>
+                  <dt className="text-[17px] font-semibold">{x.t}</dt>
+                  <dd className="mt-1 text-[15px] leading-snug text-bg/65">{x.d}</dd>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </dl>
-        </Wrap>
-      </section>
-
-      {/* Questions before choosing */}
-      <Wrap className="grid gap-10 py-20 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <div>
-          <H2>{p.faqTitle}</H2>
-          <TextLink href={href(locale, routes.faqs)} className="mt-5">{p.allFaqs}</TextLink>
         </div>
+      </Band>
+
+      {/* Questions before choosing, beside the homepage's FAQ panel */}
+      <Wrap className="grid gap-10 py-20 md:py-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+        <Panel className="self-start p-7 pt-9 lg:sticky lg:top-[calc(var(--header-h)+32px)]">
+          <SectionHead kicker={p.faqKicker} title={p.faqTitle} />
+          <TextLink href={href(locale, routes.faqs)} className="mt-5">{p.allFaqs}</TextLink>
+        </Panel>
         <Faqs items={p.faqs} />
       </Wrap>
     </>

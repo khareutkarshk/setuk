@@ -4,6 +4,7 @@ import type { Dictionary, Locale } from "@/content";
 import { site } from "@/content/site";
 import * as I from "@/components/icons";
 import { SetukMark } from "@/components/site/setuk-mark";
+import { Kicker } from "@/components/site/kicker";
 import { AshokaChakra, CornerPattern, Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
 import engage from "./engage.module.css";
@@ -16,15 +17,6 @@ import engage from "./engage.module.css";
 const bigJaali = { "--s": "64px", "--r": "45px", "--w": "1.6px" } as CSSProperties;
 const sadanWall = { "--s": "56px" } as CSSProperties;
 
-/* Section eyebrows follow the story's: a blue ornament and a leaf label */
-function Kicker({ children, className = "text-leaf", ornament = "text-accent" }: { children: ReactNode; className?: string; ornament?: string }) {
-  return (
-    <p className={`flex items-center gap-2.5 text-[13px] font-semibold uppercase tracking-[.08em] ${className}`}>
-      <Pattern kind="temple" className={`w-[24px] shrink-0 ${ornament}`} />
-      {children}
-    </p>
-  );
-}
 function Title({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <h2 className={`font-display-tight mt-3 text-balance text-[clamp(32px,4.2vw,52px)] leading-[1.04] ${className}`}>{children}</h2>;
 }

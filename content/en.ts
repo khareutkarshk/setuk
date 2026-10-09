@@ -240,6 +240,7 @@ export const en: Dictionary = {
       secondary: "See the modules",
       heroAlt: "A constituency office team working in Setuk on laptops, with the week's numbers on the wall screen",
       process: {
+        kicker: "The process",
         title: "From the first meeting to a running office in two to three weeks.",
         sub: "The same four steps for a ward office or an MP's three offices. Only the size of the work changes.",
         doLabel: "What we do",
@@ -264,6 +265,7 @@ export const en: Dictionary = {
         ]
       },
       modules: {
+        kicker: "Modules",
         title: "What we set up in your office.",
         sub: "Six modules are live today. Each one ships with an SOP for how your office should use it.",
         items: [
@@ -276,17 +278,20 @@ export const en: Dictionary = {
         ]
       },
       screen: {
+        kicker: "The product",
         title: "This is the screen your staff will open every morning.",
         body: "eLetter files every letter by where it stands, from follow-up to dispatch, with the department and the person handling it.",
         alt: "The eLetter screen in Setuk: letters grouped by follow-up, inbox, ongoing, issued and dispatched, with file number, date, department and status"
       },
       citizens: {
+        kicker: "For citizens",
         title: "Citizens can follow their own requests.",
         body: "Most political software only looks inward. In Setuk, citizens get their own login, and every update on their request reaches them without a phone call.",
         points: ["Book and track appointments", "Letter and PNR status updates", "SMS and WhatsApp alerts at every step"],
         alt: "A citizen checking an appointment and a letter update on their phone"
       },
       roadmap: {
+        kicker: "Roadmap",
         title: "What we're building next.",
         sub: "We ship each module when it's ready. The order follows what offices ask for most.",
         nowLabel: "In progress",
@@ -326,6 +331,7 @@ export const en: Dictionary = {
         { img: "lokSabha", alt: "The Lok Sabha chamber seen from the gallery" }
       ],
       compare: {
+        kicker: "Compare",
         title: "Compare what's included.",
         feature: "Included",
         included: "Included",
@@ -347,6 +353,7 @@ export const en: Dictionary = {
         ]
       },
       pricing: {
+        kicker: "Pricing",
         title: "How pricing works.",
         body: "We quote after the first conversation, once we know how many offices, staff and modules you need.",
         items: [
@@ -357,6 +364,7 @@ export const en: Dictionary = {
         ]
       },
       faqTitle: "Questions about engagements",
+      faqKicker: "Questions",
       faqs: [
         { q: "How long does it take to get started?", a: "Usually 2 to 3 weeks: 1 to 2 meetings to understand your office, a week to design and set up, and a week to train your staff." },
         { q: "Is there a trial?", a: "Yes, a trial is available on request. Ask for one when you request a demo." },
@@ -373,6 +381,7 @@ export const en: Dictionary = {
       sub: "We kept watching good offices lose track of citizens' requests. Setuk is the system we wished they had.",
       heroAlt: "A campaign war room at night: a team at laptops in front of maps and whiteboards",
       origin: {
+        kicker: "Our story",
         title: "Where it started",
         paras: [
           "I've worked with many representatives, aspiring politicians and people who genuinely wanted change.",
@@ -393,6 +402,7 @@ export const en: Dictionary = {
         alt: "The same office before and after: desks buried in files, then one clean desk with a laptop"
       },
       beliefs: {
+        kicker: "Beliefs",
         title: "What we believe",
         items: [
           "Effort isn't the problem. The system is.",
@@ -404,6 +414,7 @@ export const en: Dictionary = {
         ]
       },
       name: {
+        kicker: "The name",
         title: "Why सेतुक",
         paras: [
           "Setuk comes from the Sanskrit setu, a bridge: a path that lets people and work move across.",
@@ -480,6 +491,7 @@ export const en: Dictionary = {
         again: "Write another message"
       },
       expect: {
+        kicker: "After you write",
         title: "What to expect",
         items: [
           "We reply within two business days to most enquiries.",

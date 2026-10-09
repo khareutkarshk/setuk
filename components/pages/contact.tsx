@@ -1,9 +1,10 @@
 import { getDictionary, type Locale } from "@/content";
 import { site } from "@/content/site";
 import * as I from "@/components/icons";
+import { Kicker } from "@/components/site/kicker";
 import { href, routes } from "@/lib/paths";
 import { ContactForm } from "./contact-form";
-import { Figure, H1, Lead, Wrap } from "./ui";
+import { Figure, H1, H2, IconTile, Lead, PageHero, Panel, Wrap } from "./ui";
 
 /** Contact: the direct ways to reach the team beside the form, then what happens after you write */
 export function ContactPage({ locale }: { locale: Locale }) {
@@ -17,17 +18,19 @@ export function ContactPage({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <Wrap className="pt-10 pb-20 md:pt-16 md:pb-28">
+    <>
+    <PageHero className="pt-10 md:pt-16">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div>
-          <H1 className="rise">{p.title}</H1>
-          <Lead className="rise mt-5 [--i:1]">{p.sub}</Lead>
+          <Kicker className="rise text-leaf">{t.nav.labels.contact}</Kicker>
+          <H1 className="rise mt-4 [--i:1]">{p.title}</H1>
+          <Lead className="rise mt-5 [--i:2]">{p.sub}</Lead>
 
           <ul className="rise mt-10 divide-y divide-line border-y border-line [--i:2]">
             {channels.map(({ Ico, ...c }) => (
               <li key={c.t}>
                 <a href={c.href} className="group flex items-center gap-4 py-4">
-                  <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${c.leaf ? "bg-leaf-soft text-leaf" : "bg-accent-soft text-accent"}`}><Ico size={20} aria-hidden /></span>
+                  <IconTile icon={Ico} leaf={c.leaf} />
                   <span className="min-w-0 flex-1">
                     <span className="block text-[13px] text-muted">{c.t} <span aria-hidden>·</span> {c.note}</span>
                     <span className="block truncate text-[17px] font-semibold transition-colors group-hover:text-accent">{c.v}</span>
@@ -39,7 +42,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
           </ul>
 
           <div className="rise mt-8 flex gap-4 [--i:3]">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"><I.MapPin size={20} aria-hidden /></span>
+            <IconTile icon={I.MapPin} />
             <div>
               <p className="text-[13px] text-muted">{ch.office}</p>
               <address className="mt-0.5 text-[16px] leading-relaxed not-italic">{site.legalName}<br />{t.footer.address}</address>
@@ -47,16 +50,19 @@ export function ContactPage({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <div className="rise [--i:2]">
+        <Panel fx={100} fy={0} className="rise self-start [--i:2]">
           <ContactForm f={p.form} to={site.email} privacyHref={href(locale, routes.legalDoc("privacy"))} />
-        </div>
+        </Panel>
       </div>
+    </PageHero>
 
-      {/* After you write */}
-      <div className="mt-20 grid items-center gap-10 md:mt-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+    {/* After you write */}
+    <Wrap className="pt-20 pb-20 md:pt-28 md:pb-28">
+      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <Figure img="contactDesk" alt={p.alt} sizes="(min-width: 1024px) 500px, 100vw" className="reveal" />
         <div>
-          <h2 className="font-display-tight text-[clamp(26px,3vw,36px)] leading-tight">{p.expect.title}</h2>
+          <Kicker>{p.expect.kicker}</Kicker>
+          <H2 className="mt-3 text-[clamp(26px,3vw,36px)]!">{p.expect.title}</H2>
           <ul className="mt-6 space-y-5">
             {p.expect.items.map((x, i) => (
               <li key={x} className="flex gap-4 text-[16px] leading-relaxed">
@@ -70,5 +76,6 @@ export function ContactPage({ locale }: { locale: Locale }) {
         </div>
       </div>
     </Wrap>
+    </>
   );
 }

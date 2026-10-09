@@ -108,6 +108,7 @@ export interface Pages {
     secondary: string;
     heroAlt: string;
     process: {
+      kicker: string;
       title: string;
       sub: string;
       doLabel: string;
@@ -115,10 +116,10 @@ export interface Pages {
       /** Pairs with how.steps by index */
       steps: { does: string[]; needs: string }[];
     };
-    modules: { title: string; sub: string; items: { t: string; h: string; d: string; img: MediaKey; alt: string }[] };
-    screen: { title: string; body: string; alt: string };
-    citizens: { title: string; body: string; points: string[]; alt: string };
-    roadmap: { title: string; sub: string; nowLabel: string; nextLabel: string; now: TitledItem[]; next: TitledItem[] };
+    modules: { kicker: string; title: string; sub: string; items: { t: string; h: string; d: string; img: MediaKey; alt: string }[] };
+    screen: { kicker: string; title: string; body: string; alt: string };
+    citizens: { kicker: string; title: string; body: string; points: string[]; alt: string };
+    roadmap: { kicker: string; title: string; sub: string; nowLabel: string; nextLabel: string; now: TitledItem[]; next: TitledItem[] };
   };
   engagements: {
     meta: PageMeta;
@@ -126,9 +127,10 @@ export interface Pages {
     sub: string;
     /** Illustration per package, in package order */
     art: { img: MediaKey; alt: string }[];
-    compare: { title: string; feature: string; included: string; notIncluded: string; rows: { t: string; from: number }[] };
-    pricing: { title: string; body: string; items: TitledItem[] };
+    compare: { kicker: string; title: string; feature: string; included: string; notIncluded: string; rows: { t: string; from: number }[] };
+    pricing: { kicker: string; title: string; body: string; items: TitledItem[] };
     faqTitle: string;
+    faqKicker: string;
     faqs: QA[];
     allFaqs: string;
   };
@@ -137,10 +139,10 @@ export interface Pages {
     title: string;
     sub: string;
     heroAlt: string;
-    origin: { title: string; paras: string[] };
+    origin: { kicker: string; title: string; paras: string[] };
     moment: { quote: string; by: string; paras: string[]; alt: string };
-    beliefs: { title: string; items: string[] };
-    name: { title: string; paras: string[]; alt: string };
+    beliefs: { kicker: string; title: string; items: string[] };
+    name: { kicker: string; title: string; paras: string[]; alt: string };
     letter: { title: string; paras: string[]; by: string };
     company: { t: string; d: string }[];
   };
@@ -178,7 +180,7 @@ export interface Pages {
       sentBody: string;
       again: string;
     };
-    expect: { title: string; items: string[] };
+    expect: { kicker: string; title: string; items: string[] };
     alt: string;
   };
   legal: {

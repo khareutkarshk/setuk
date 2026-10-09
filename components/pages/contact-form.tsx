@@ -12,7 +12,8 @@ type Field = "name" | "email" | "message" | "consent";
  * The contact form. There is no form backend yet, so sending composes the email in the visitor's
  * own mail app (to contact@setuk.org, subject and body filled in); the page says so beside the button.
  * Fields validate on submit, then live once touched; errors sit under their field and are announced.
- * ?topic=0..4 preselects the topic (links from other pages).
+ * ?topic=0..4 preselects the topic (links from other pages). It draws no card of its own; the page
+ * sets it on a Panel.
  */
 export function ContactForm({ f, to, privacyHref }: { f: F; to: string; privacyHref: string }) {
   const id = useId();
@@ -61,7 +62,7 @@ export function ContactForm({ f, to, privacyHref }: { f: F; to: string; privacyH
 
   if (sent) {
     return (
-      <div ref={sentRef} tabIndex={-1} role="status" className="rounded-3xl border border-line bg-surface p-8 outline-none md:p-10">
+      <div ref={sentRef} tabIndex={-1} role="status" className="p-8 pt-10 outline-none md:p-10 md:pt-12">
         <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf-soft text-leaf"><I.EnvelopeSimpleOpen size={24} aria-hidden /></span>
         <h2 className="font-display-tight mt-6 text-[26px] leading-tight">{f.sentTitle}</h2>
         <p className="mt-3 max-w-[48ch] leading-relaxed text-muted">{f.sentBody}</p>
@@ -76,7 +77,7 @@ export function ContactForm({ f, to, privacyHref }: { f: F; to: string; privacyH
   const desc = (k: Field) => (errors[k] ? `${id}-${k}` : undefined);
 
   return (
-    <form ref={formRef} noValidate onSubmit={onSubmit} onInput={onInput} className="rounded-3xl border border-line bg-surface p-6 sm:p-8 md:p-10">
+    <form ref={formRef} noValidate onSubmit={onSubmit} onInput={onInput} className="p-6 pt-9 sm:p-8 sm:pt-10 md:p-10 md:pt-12">
       <h2 className="font-display-tight text-[24px]">{f.title}</h2>
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         <div>

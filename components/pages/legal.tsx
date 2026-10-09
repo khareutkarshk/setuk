@@ -5,7 +5,9 @@ import type { LegalDoc, LegalGroup } from "@/content/types";
 import * as I from "@/components/icons";
 import { href, routes } from "@/lib/paths";
 import { Prose } from "./prose";
-import { Crumbs, H1, Lead, Wrap } from "./ui";
+import { Kicker } from "@/components/site/kicker";
+import { Pattern } from "@/components/site/pattern";
+import { Crumbs, H1, Lead, PageHero } from "./ui";
 
 const GROUPS: LegalGroup[] = ["use", "data", "billing", "voterList"];
 const GROUP_ICONS = { use: I.Scales, data: I.IdentificationBadge, billing: I.CurrencyInr, voterList: I.FileXls };
@@ -19,10 +21,11 @@ export function LegalPage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const p = t.pages.legal;
   return (
-    <Wrap className="pt-10 pb-12 md:pt-16">
+    <PageHero className="pt-10 pb-12 md:pt-16">
       <div className="max-w-[760px]">
-        <H1 className="rise">{p.title}</H1>
-        <Lead className="rise mt-5 [--i:1]">{p.sub}</Lead>
+        <Kicker className="rise text-leaf">{t.footer.legal}</Kicker>
+        <H1 className="rise mt-4 [--i:1]">{p.title}</H1>
+        <Lead className="rise mt-5 [--i:2]">{p.sub}</Lead>
       </div>
       <div className="mt-14 grid gap-x-12 gap-y-12 md:grid-cols-2">
         {GROUPS.map((g, gi) => {
@@ -31,7 +34,10 @@ export function LegalPage({ locale }: { locale: Locale }) {
           return (
             <section key={g} aria-labelledby={`legal-${g}`} className="rise" style={{ ["--i" as string]: gi + 2 }}>
               <h2 id={`legal-${g}`} className="flex items-center gap-2.5 text-[15px] font-semibold">
-                <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent-soft text-accent"><Ico size={17} aria-hidden /></span>
+                <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-accent-soft text-accent">
+                  <Pattern kind="buti" className="absolute inset-0 opacity-[.18] [mask-size:24px_24px]" />
+                  <Ico size={17} className="relative" aria-hidden />
+                </span>
                 {p.groups[g]}
               </h2>
               <ul className="mt-4 divide-y divide-line border-y border-line">
@@ -51,7 +57,7 @@ export function LegalPage({ locale }: { locale: Locale }) {
           );
         })}
       </div>
-    </Wrap>
+    </PageHero>
   );
 }
 
@@ -61,7 +67,7 @@ export function LegalDocPage({ locale, doc }: { locale: Locale; doc: LegalDoc })
   const p = t.pages.legal;
   const c = t.pages.common;
   return (
-    <Wrap className="pt-8 pb-20 md:pt-12 md:pb-28">
+    <PageHero mandala={false} className="pt-8 pb-20 md:pt-12 md:pb-28">
       <Crumbs label={c.home} items={[{ t: c.home, href: href(locale, routes.home) }, { t: p.all, href: href(locale, routes.legal) }, { t: p.docs[doc.slug].t }]} />
       <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-16">
         <nav aria-label={p.all} className="order-last lg:order-none lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:self-start">
@@ -88,6 +94,6 @@ export function LegalDocPage({ locale, doc }: { locale: Locale; doc: LegalDoc })
           </p>
         </article>
       </div>
-    </Wrap>
+    </PageHero>
   );
 }

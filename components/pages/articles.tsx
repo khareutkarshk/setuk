@@ -6,11 +6,13 @@ import { media } from "@/content/media";
 import { site } from "@/content/site";
 import type { Article, TopicKey } from "@/content/types";
 import * as I from "@/components/icons";
+import { Kicker } from "@/components/site/kicker";
+import { CornerPattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
 import { ArticleFilter } from "./article-filter";
 import { ArticleToc } from "./article-toc";
 import { headingIds, Prose } from "./prose";
-import { Crumbs, H1, Lead, PrimaryLink, Wrap } from "./ui";
+import { Band, Crumbs, H1, Lead, PageHero, Panel, PrimaryLink, Wrap } from "./ui";
 
 const minRead = (tpl: string, n: number) => tpl.replace("{n}", String(n));
 
@@ -31,13 +33,14 @@ export function ArticlesPage({ locale }: { locale: Locale }) {
     .filter((x) => x.n > 0);
 
   return (
-    <Wrap className="pt-10 pb-12 md:pt-16">
+    <PageHero className="pt-10 pb-12 md:pt-16">
       <div className="max-w-[760px]">
-        <H1 className="rise">{p.title}</H1>
-        <Lead className="rise mt-5 [--i:1]">{p.sub}</Lead>
+        <Kicker className="rise text-leaf">{t.nav.labels.articles}</Kicker>
+        <H1 className="rise mt-4 [--i:1]">{p.title}</H1>
+        <Lead className="rise mt-5 [--i:2]">{p.sub}</Lead>
       </div>
 
-      <div className="rise mt-10 [--i:2]">
+      <div className="rise mt-10 [--i:3]">
         <ArticleFilter topics={topics} all={p.all} label={p.filterLabel} empty={p.empty}>
           {/* the most complete guide leads */}
           <Link href={href(locale, routes.article(featured.slug))} data-topic={featured.topic}
@@ -45,7 +48,8 @@ export function ArticlesPage({ locale }: { locale: Locale }) {
             <div className="illo relative aspect-[16/10] overflow-hidden lg:aspect-auto lg:min-h-[400px]">
               <Image src={media[featured.cover]} alt="" fill priority sizes="(min-width: 1024px) 720px, 100vw" placeholder="blur" className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]" />
             </div>
-            <div className="flex flex-col p-7 md:p-10">
+            <div className="relative flex flex-col p-7 md:p-10">
+              <CornerPattern kind="kolam" fx={100} fy={100} radius={340} className="inset-0 text-accent opacity-[.1]" />
               <Meta a={featured} topic={p.topics[featured.topic]} tpl={t.pages.common.minRead} />
               <h2 lang="en" className="font-display-tight mt-4 text-balance text-[clamp(26px,2.6vw,36px)] leading-[1.12] group-hover:text-accent">{featured.title}</h2>
               <p lang="en" className="mt-4 line-clamp-4 text-[16px] leading-relaxed text-muted">{featured.description}</p>
@@ -64,7 +68,7 @@ export function ArticlesPage({ locale }: { locale: Locale }) {
           </ul>
         </ArticleFilter>
       </div>
-    </Wrap>
+    </PageHero>
   );
 }
 
@@ -103,7 +107,7 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
 
   return (
     <>
-      <Wrap className="pt-8 md:pt-12">
+      <PageHero className="pt-8 md:pt-12">
         <Crumbs label={c.home} items={[{ t: c.home, href: href(locale, routes.home) }, { t: t.nav.labels.articles, href: href(locale, routes.articles) }, { t: a.title }]} />
         <div className="mt-8 max-w-[880px]">
           <Meta a={a} topic={p.topics[a.topic]} tpl={c.minRead} />
@@ -115,7 +119,7 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
         <div className="illo relative mt-10 aspect-[2/1] overflow-hidden rounded-3xl border border-line md:aspect-[21/9]">
           <Image src={media[a.cover]} alt="" fill priority sizes="(min-width: 1280px) 1216px, 100vw" placeholder="blur" className="object-cover" />
         </div>
-      </Wrap>
+      </PageHero>
 
       <Wrap className="grid grid-cols-[minmax(0,1fr)] gap-10 pt-12 pb-16 md:pt-16 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-16">
         <aside className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:max-h-[calc(100dvh-var(--header-h)-64px)] lg:self-start lg:overflow-y-auto">
@@ -133,28 +137,29 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
         <div>
           {c.englishOnly && <p className="mb-8 flex max-w-[68ch] items-center gap-2 rounded-xl bg-accent-soft px-4 py-3 text-[15px]"><I.Info className="shrink-0 text-accent" aria-hidden />{c.englishOnly}</p>}
           <div lang="en"><Prose blocks={a.blocks} className="[&>*:first-child]:mt-0" /></div>
-          <div className="mt-16 max-w-[68ch] rounded-3xl border border-line bg-surface p-7 md:p-9">
+          <Panel className="mt-16 max-w-[68ch] p-7 pt-10 md:p-9 md:pt-11">
             <p className="font-display-tight text-[clamp(22px,2.2vw,28px)] leading-tight">{c.demoTitle}</p>
             <p className="mt-3 text-[16px] leading-relaxed text-muted">{c.demoBody}</p>
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
               <PrimaryLink href={href(locale, routes.contact)}>{t.nav.demo}</PrimaryLink>
               <a href={site.whatsapp.href} className="inline-flex min-h-11 items-center gap-2 font-semibold hover:text-accent"><I.WhatsappLogo size={18} className="text-leaf" aria-hidden />{t.cta.secondary}</a>
             </div>
-          </div>
+          </Panel>
         </div>
       </Wrap>
 
-      <section aria-labelledby="related-title" className="border-t border-line bg-surface">
-        <Wrap className="py-16 md:py-20">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 id="related-title" className="font-display-tight text-[clamp(24px,2.6vw,32px)]">{c.related}</h2>
-            <Link href={href(locale, routes.articles)} className="inline-flex min-h-11 items-center gap-2 font-semibold text-accent hover:underline">{c.allArticles}<I.ArrowRight aria-hidden /></Link>
+      <Band tone="surface" labelledBy="related-title" corner={{ kind: "jaali", fx: 100, fy: 0 }}>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <Kicker>{t.nav.labels.articles}</Kicker>
+            <h2 id="related-title" className="font-display-tight mt-3 text-[clamp(24px,2.6vw,32px)]">{c.related}</h2>
           </div>
-          <ul className="mt-6 divide-y divide-line border-y border-line">
-            {related.map((r) => <li key={r.slug}><Row a={r} locale={locale} topic={p.topics[r.topic]} tpl={c.minRead} /></li>)}
-          </ul>
-        </Wrap>
-      </section>
+          <Link href={href(locale, routes.articles)} className="inline-flex min-h-11 items-center gap-2 font-semibold text-accent hover:underline">{c.allArticles}<I.ArrowRight aria-hidden /></Link>
+        </div>
+        <ul className="mt-6 divide-y divide-line border-y border-line">
+          {related.map((r) => <li key={r.slug}><Row a={r} locale={locale} topic={p.topics[r.topic]} tpl={c.minRead} /></li>)}
+        </ul>
+      </Band>
     </>
   );
 }
