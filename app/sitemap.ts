@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { articles } from "@/content/articles";
+import { getArticles } from "@/content/articles";
 import { legalDocs } from "@/content/legal";
 import { site } from "@/content/site";
 import { href, routes } from "@/lib/paths";
@@ -8,7 +8,7 @@ import { href, routes } from "@/lib/paths";
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [
     routes.home, routes.how, routes.engagements, routes.about, routes.articles, routes.faqs, routes.contact, routes.legal,
-    ...articles.map((a) => routes.article(a.slug)),
+    ...getArticles().map((a) => routes.article(a.slug)),
     ...legalDocs.map((d) => routes.legalDoc(d.slug))
   ];
   return paths.flatMap((p) => (["en", "hi"] as const).map((l) => ({

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { ArticlePage, findArticle } from "@/components/pages/articles";
+import { ArticlePage } from "@/components/pages/articles";
 import { PageShell } from "@/components/pages/page-shell";
-import { articles } from "@/content/articles";
+import { findArticle, getArticles } from "@/content/articles";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import { buildMetadata } from "@/lib/metadata";
@@ -12,7 +12,7 @@ type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return articles.map((a) => ({ slug: a.slug }));
+  return getArticles().map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({ params }: Props) {

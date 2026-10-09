@@ -1,5 +1,10 @@
+import { readdirSync } from "node:fs";
 import type { NextConfig } from "next";
-import { articles } from "./content/articles";
+
+/* the article slugs are the file names in content/articles (same rule as isArticleFile there) */
+const articleSlugs = readdirSync("content/articles")
+  .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
+  .map((f) => f.slice(0, -3));
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -16,7 +21,7 @@ const nextConfig: NextConfig = {
      keep those addresses (and their search ranking) working */
   async redirects() {
     return [
-      ...articles.map((a) => ({ source: `/${a.slug}`, destination: `/articles/${a.slug}`, permanent: true })),
+      ...articleSlugs.map((slug) => ({ source: `/${slug}`, destination: `/articles/${slug}`, permanent: true })),
       { source: "/features", destination: "/how-we-work#modules", permanent: true },
       { source: "/roadmap", destination: "/how-we-work#roadmap", permanent: true }
     ];

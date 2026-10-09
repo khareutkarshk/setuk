@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getDictionary, type Locale } from "@/content";
-import { articles } from "@/content/articles";
+import { getArticles } from "@/content/articles";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import type { Article, TopicKey } from "@/content/types";
@@ -20,12 +20,9 @@ const repeatsOpening = (a: Article) => {
   return !!first && "x" in first && first.x.slice(0, 40) === a.description.slice(0, 40);
 };
 
-export function findArticle(slug: string) {
-  return articles.find((a) => a.slug === slug);
-}
-
 /** Articles: one featured guide, then the rest as an editorial list, filterable by topic */
 export function ArticlesPage({ locale }: { locale: Locale }) {
+  const articles = getArticles();
   const t = getDictionary(locale);
   const p = t.pages.articles;
   const [featured, ...rest] = articles;
@@ -101,6 +98,7 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
   const c = t.pages.common;
   const p = t.pages.articles;
   const toc = headingIds(a.blocks);
+  const articles = getArticles();
   const related = [...articles.filter((x) => x.slug !== a.slug && x.topic === a.topic), ...articles.filter((x) => x.slug !== a.slug && x.topic !== a.topic)].slice(0, 3);
 
   return (
