@@ -4,7 +4,8 @@ import type { ComponentType, ReactNode } from "react";
 import { media, type MediaKey } from "@/content/media";
 import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
-import { AshokaChakra, CornerPattern, Mandala, Pattern, type PatternKind } from "@/components/site/pattern";
+import { AshokaChakra, CornerPattern, Pattern, type PatternKind } from "@/components/site/pattern";
+import { Routes } from "@/components/site/routes";
 
 /*
  * Shared pieces for the inner pages. One shape system everywhere: pictures and cards 24px
@@ -17,17 +18,17 @@ export function Wrap({ children, className = "" }: { children: ReactNode; classN
 
 /*
  * Ornament, after the homepage. Each page carries the same few patterns at the same strengths:
- * a sadan wall and a half-hidden mandala behind the title (the story's splash), temple borders
+ * a sadan wall and the animated routes (components/site/routes.tsx) behind the title, temple borders
  * hanging from the edges of feature bands, one corner pattern per plain band, and panels with the
  * FAQ panel's temple top edge. Patterns stay behind text and never above 0.18 opacity on a page tone.
  */
 
 /** The top of an inner page. It runs up under the header so the pattern starts at the very top */
-export function PageHero({ children, className = "", mandala = true }: { children: ReactNode; className?: string; mandala?: boolean }) {
+export function PageHero({ children, className = "", routes = true }: { children: ReactNode; className?: string; routes?: boolean }) {
   return (
     <section className="relative -mt-(--header-h) overflow-clip pt-(--header-h)">
       <CornerPattern kind="sadan" fx={100} fy={0} radius={640} cell={36} className="inset-0 text-accent opacity-[.08]" />
-      {mandala && <Mandala className="absolute -top-[120px] -right-[260px] w-[440px] text-accent opacity-[.1] md:-top-[170px] md:-right-[180px] md:w-[520px]" />}
+      {routes && <Routes className="text-accent" />}
       <Wrap className={`relative ${className}`}>{children}</Wrap>
     </section>
   );

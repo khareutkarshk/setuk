@@ -67,7 +67,7 @@ export function LegalDocPage({ locale, doc }: { locale: Locale; doc: LegalDoc })
   const p = t.pages.legal;
   const c = t.pages.common;
   return (
-    <PageHero mandala={false} className="pt-8 pb-20 md:pt-12 md:pb-28">
+    <PageHero routes={false} className="pt-8 pb-20 md:pt-12 md:pb-28">
       <Crumbs label={c.home} items={[{ t: c.home, href: href(locale, routes.home) }, { t: p.all, href: href(locale, routes.legal) }, { t: p.docs[doc.slug].t }]} />
       <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-16">
         <nav aria-label={p.all} className="order-last lg:order-none lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:self-start">
