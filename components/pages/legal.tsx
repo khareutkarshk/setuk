@@ -87,7 +87,7 @@ export function LegalDocPage({ locale, doc }: { locale: Locale; doc: LegalDoc })
           <H1 className="text-[clamp(32px,4vw,48px)]!">{p.docs[doc.slug].t}</H1>
           {c.englishOnly && <p className="mt-6 flex max-w-[68ch] items-center gap-2 rounded-xl bg-accent-soft px-4 py-3 text-[15px]"><I.Info className="shrink-0 text-accent" aria-hidden />{c.englishOnly}</p>}
           <div lang="en" className="mt-10">
-            <Prose blocks={doc.blocks} className="[&>*:first-child]:mt-0" />
+            <Prose blocks={doc.blocks} locale={locale} labels={c.prose} className="[&>*:first-child]:mt-0" />
           </div>
           <p className="mt-14 flex max-w-[68ch] items-center gap-3 border-t border-line pt-6 text-[15px] text-muted">
             <I.EnvelopeSimple className="shrink-0 text-accent" aria-hidden />{p.questions}

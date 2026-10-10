@@ -34,22 +34,43 @@ Put values with a colon in double quotes. The build stops with the file name if 
 ### Smaller heading
 
 A paragraph. Lines next to each other join into one paragraph; a blank line starts the next.
+Inside text: **bold**, [a page on the site](/how-we-work), [another article](/articles/file-name),
+[an outside page](https://example.gov.in) and a citation marker.[^source]
 
 > A quote.
+> — Who said it (optional last line, starting with — or --)
+
+> [!NOTE]
+> A callout. Use NOTE, TIP or WARNING; a title can follow on the first line: > [!TIP] Short title
 
 - A bullet
 - Another bullet
 
-1. A numbered step
-2. The next step
+1. A numbered item
+2. The next item
+
+::: steps
+1. **First step** What to do. Each step needs a bold title.
+2. **Second step** And so on.
+:::
 
 | Column | Column |
 | --- | --- |
 | Cell | Cell |
 
 ![Describe the picture for screen readers](eletter)
+
+@[Caption for the video](https://www.youtube.com/watch?v=VIDEO_ID)
+
+## Sources
+
+[^source]: Publisher. [Title of the source](https://example.gov.in/page).
 ```
 
-Text is plain: `**bold**`, `_italics_` and `[links](...)` show as typed. Pictures use keys from
-`content/media.ts`; to add a new one, put the `.webp` in `assets/media/` and add it there.
-Articles are English only.
+Site links start with `/` and are written without `/hi`; they keep Hindi readers on `/hi`. The
+build stops if one points at a page that doesn't exist. Outside links open in a new tab. Citations
+are numbered in the order their `[^id]:` lines are listed, so put those together at the end; every
+`[^id]` in the text needs one. Videos are YouTube only and load from youtube-nocookie.com.
+
+Pictures use keys from `content/media.ts`; to add a new one, put the `.webp` in `assets/media/`
+and add it there. `_italics_` shows as typed. Articles are English only.

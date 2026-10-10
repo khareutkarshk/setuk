@@ -55,11 +55,19 @@ export interface QA {
 }
 
 /** Long-form text (articles and legal documents), kept as structured blocks */
+export type CalloutKind = "note" | "tip" | "warning";
+
+/** Text in blocks may carry inline [links](/path or https://…), **bold** and [^id] citations */
 export type ArticleBlock =
-  | { t: "h2" | "h3" | "p" | "quote"; x: string }
+  | { t: "h2" | "h3" | "p"; x: string }
+  | { t: "quote"; x: string; by?: string }
+  | { t: "callout"; kind: CalloutKind; title?: string; x: string }
   | { t: "ul" | "ol"; items: string[] }
+  | { t: "steps"; items: { title: string; x: string }[] }
   | { t: "table"; rows: string[][] }
-  | { t: "img"; img: MediaKey; alt: string };
+  | { t: "img"; img: MediaKey; alt: string }
+  | { t: "video"; youtube: string; title: string }
+  | { t: "refs"; items: { id: string; x: string }[] };
 
 /** An article. English only for now; /hi shows it with Hindi navigation and a note */
 export interface Article {
@@ -95,6 +103,25 @@ export interface Pages {
     /** Shown on /hi above English-only text */
     englishOnly: string;
     related: string;
+    /** Labels inside article text: callouts without their own title, the video frame, citations */
+    /** Reader tools under an article: sharing, the helpful prompt and the newsletter sign-up */
+    engage: {
+      share: string;
+      /** "{name}" is replaced with the network, e.g. "Share on WhatsApp" */
+      shareOn: string;
+      email: string;
+      copy: string;
+      copied: string;
+      more: string;
+      helpful: string;
+      yes: string;
+      no: string;
+      thanksYes: string;
+      thanksNo: string;
+      tellUs: string;
+      newsletter: { kicker: string; title: string; body: string; label: string; placeholder: string; submit: string; note: string; error: string; sentTitle: string; sentBody: string; again: string };
+    };
+    prose: { note: string; tip: string; warning: string; video: string; cite: string; back: string; external: string };
     read: string;
     allArticles: string;
     demoTitle: string;

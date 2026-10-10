@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getDictionary, type Locale } from "@/content";
 import { getArticles } from "@/content/articles";
+import { plain } from "@/content/articles/markdown";
 import { media } from "@/content/media";
 import { site } from "@/content/site";
 import type { Article, TopicKey } from "@/content/types";
@@ -9,6 +10,7 @@ import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
 import { CornerPattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
+import { Feedback, Newsletter, ShareBar } from "./article-engage";
 import { ArticleFilter } from "./article-filter";
 import { ArticleToc } from "./article-toc";
 import { headingIds, Prose } from "./prose";
@@ -19,7 +21,7 @@ const minRead = (tpl: string, n: number) => tpl.replace("{n}", String(n));
 /** Some descriptions are the article's own first lines; then the lead would say it twice */
 const repeatsOpening = (a: Article) => {
   const first = a.blocks.find((b) => b.t === "p");
-  return !!first && "x" in first && first.x.slice(0, 40) === a.description.slice(0, 40);
+  return !!first && "x" in first && plain(first.x).slice(0, 40) === a.description.slice(0, 40);
 };
 
 /** Articles: one featured guide, then the rest as an editorial list, filterable by topic */
@@ -102,6 +104,7 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
   const c = t.pages.common;
   const p = t.pages.articles;
   const toc = headingIds(a.blocks);
+  const url = `${site.url}${href(locale, routes.article(a.slug))}`;
   const articles = getArticles();
   const related = [...articles.filter((x) => x.slug !== a.slug && x.topic === a.topic), ...articles.filter((x) => x.slug !== a.slug && x.topic !== a.topic)].slice(0, 3);
 
@@ -122,7 +125,7 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
       </PageHero>
 
       <Wrap className="grid grid-cols-[minmax(0,1fr)] gap-10 pt-12 pb-16 md:pt-16 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-16">
-        <aside className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:max-h-[calc(100dvh-var(--header-h)-64px)] lg:self-start lg:overflow-y-auto">
+        <aside className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:max-h-[calc(100dvh-var(--header-h)-64px)] lg:self-start lg:overflow-y-auto lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden">
           {/* on small screens the contents fold away above the text */}
           <details className="group rounded-xl border border-line bg-surface p-4 lg:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] font-semibold [&::-webkit-details-marker]:hidden">
@@ -133,10 +136,15 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
             </ol>
           </details>
           <div className="hidden lg:block" lang="en"><ArticleToc items={toc} label={c.onThisPage} /></div>
+          <div className="mt-8 hidden border-t border-line pt-6 lg:block"><ShareBar e={c.engage} url={url} title={a.title} compact /></div>
         </aside>
         <div>
           {c.englishOnly && <p className="mb-8 flex max-w-[68ch] items-center gap-2 rounded-xl bg-accent-soft px-4 py-3 text-[15px]"><I.Info className="shrink-0 text-accent" aria-hidden />{c.englishOnly}</p>}
-          <div lang="en"><Prose blocks={a.blocks} className="[&>*:first-child]:mt-0" /></div>
+          <div lang="en"><Prose blocks={a.blocks} locale={locale} labels={c.prose} className="[&>*:first-child]:mt-0" /></div>
+          <div className="mt-14 max-w-[68ch] divide-y divide-line border-y border-line">
+            <div className="py-6"><Feedback e={c.engage} slug={a.slug} contactHref={`${href(locale, routes.contact)}?topic=4`} /></div>
+            <div className="py-6"><ShareBar e={c.engage} url={url} title={a.title} /></div>
+          </div>
           <Panel className="mt-16 max-w-[68ch] p-7 pt-10 md:p-9 md:pt-11">
             <p className="font-display-tight text-[clamp(22px,2.2vw,28px)] leading-tight">{c.demoTitle}</p>
             <p className="mt-3 text-[16px] leading-relaxed text-muted">{c.demoBody}</p>
@@ -159,6 +167,14 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
         <ul className="mt-6 divide-y divide-line border-y border-line">
           {related.map((r) => <li key={r.slug}><Row a={r} locale={locale} topic={p.topics[r.topic]} tpl={c.minRead} /></li>)}
         </ul>
+        <div className="mt-16 grid gap-8 rounded-3xl border border-line bg-bg p-7 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:items-center md:gap-12 md:p-10">
+          <div>
+            <Kicker>{c.engage.newsletter.kicker}</Kicker>
+            <h2 className="font-display-tight mt-3 text-[clamp(22px,2.2vw,28px)] leading-tight">{c.engage.newsletter.title}</h2>
+            <p className="mt-3 max-w-[44ch] text-[16px] leading-relaxed text-muted">{c.engage.newsletter.body}</p>
+          </div>
+          <Newsletter e={c.engage} to={site.email} source={url} />
+        </div>
       </Band>
     </>
   );

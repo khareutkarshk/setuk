@@ -204,14 +204,48 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 .prose-setuk ol { list-style: decimal; }
 .prose-setuk ol > li::marker { color: var(--accent); font-weight: 600; }
 .prose-setuk li + li { margin-top: 0.45em; }
-.prose-setuk blockquote { border-left: 3px solid var(--accent); padding-left: 1.1em; font-size: 20px; font-weight: 500; }
-.prose-setuk figure { margin-block: 2em; overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--line); background: var(--surface); }
+.prose-setuk figure.illo { margin-block: 2em; overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--line); background: var(--surface); }
 .prose-table { overflow-x: auto; border: 1px solid var(--line); border-radius: 1.5rem; background: var(--surface); margin-block: 1.8em; }
 .prose-table table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 15px; line-height: 1.5; }
 .prose-table th, .prose-table td { text-align: left; vertical-align: top; padding: 12px 16px; border-top: 1px solid var(--line); }
 .prose-table thead th { border-top: 0; background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 .prose-table tbody th { font-weight: 600; }
 .prose-table td { color: var(--muted); }
+.prose-setuk a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.prose-setuk a:hover { text-decoration-color: currentColor; }
+.prose-setuk strong { color: var(--ink); font-weight: 600; }
+.prose-ext { display: inline; width: 0.8em; height: 0.8em; margin-left: 0.1em; vertical-align: 0.05em; }
+.prose-cite { font-size: 0.7em; line-height: 0; margin-left: 0.1em; }
+.prose-cite a { text-decoration: none; font-weight: 600; padding-inline: 0.15em; }
+.prose-cite a:hover { text-decoration: underline; }
+.prose-setuk [id^="cite-"], .prose-refs li { scroll-margin-top: calc(var(--header-h) + 24px); }
+.prose-quote blockquote { border-left: 3px solid var(--accent); padding-left: 1.1em; font-size: 20px; font-weight: 500; }
+.prose-quote figcaption { margin-top: 0.6em; padding-left: calc(1.1em + 3px); font-size: 15px; color: var(--muted); }
+.prose-quote figcaption::before { content: "— "; }
+.prose-callout { display: flex; gap: 14px; border-radius: 0.75rem; padding: 18px 20px; background: var(--accent-soft); font-size: 16px; line-height: 1.65; margin-block: 1.8em; }
+.prose-callout[data-kind="tip"] { background: var(--leaf-soft); }
+.prose-callout[data-kind="warning"] { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--ink); }
+.prose-callout-icon { flex: none; width: 24px; height: 24px; margin-top: 1px; color: var(--accent); }
+.prose-callout[data-kind="tip"] .prose-callout-icon { color: var(--leaf); }
+.prose-callout[data-kind="warning"] .prose-callout-icon { color: var(--ink); }
+.prose-setuk .prose-callout-title { font-weight: 600; color: var(--ink); }
+.prose-callout-title + p { margin-top: 0.25em; }
+.prose-setuk ol.prose-steps { list-style: none; padding-left: 0; counter-reset: none; margin-block: 1.8em; }
+.prose-steps > li { position: relative; padding-left: 52px; padding-bottom: 1.4em; }
+.prose-steps > li + li { margin-top: 0; }
+.prose-steps > li::marker { content: none; }
+.prose-steps > li:not(:last-child)::after { content: ""; position: absolute; left: 17px; top: 40px; bottom: 4px; width: 2px; border-radius: 2px; background: var(--line); }
+.prose-step-n { position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: 15px; font-weight: 600; }
+.prose-setuk .prose-step-title { padding-top: 4px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.prose-step-title + p { margin-top: 0.35em; }
+.prose-video { margin-block: 2em; }
+.prose-video > div { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 1.5rem; border: 1px solid var(--line); background: var(--surface); }
+.prose-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.prose-video figcaption { margin-top: 0.7em; font-size: 15px; color: var(--muted); }
+.prose-setuk ol.prose-refs { font-size: 15px; line-height: 1.6; padding-left: 1.5em; }
+.prose-setuk .prose-refs li { color: var(--muted); }
+.prose-refs li:target { background: var(--accent-soft); border-radius: 0.5rem; }
+.prose-setuk .prose-back { text-decoration: none; font-weight: 600; }
 .prose-setuk:lang(hi) { line-height: 1.85; }
 
 /* Tactile press */
