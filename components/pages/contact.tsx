@@ -4,9 +4,10 @@ import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
 import { href, routes } from "@/lib/paths";
 import { ContactForm } from "./contact-form";
-import { Figure, H1, H2, IconTile, Lead, PageHero, Panel, Wrap } from "./ui";
+import { Faqs } from "./faq-list";
+import { Band, Figure, H1, H2, IconTile, Lead, PageHero, Panel, SectionHead, TextLink, Wrap } from "./ui";
 
-/** Contact: the direct ways to reach the team beside the form, then what happens after you write */
+/** Contact: the direct ways to reach the team beside the form, what happens after you write, then questions about getting in touch */
 export function ContactPage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const p = t.pages.contact;
@@ -76,6 +77,16 @@ export function ContactPage({ locale }: { locale: Locale }) {
         </div>
       </div>
     </Wrap>
+
+    <Band tone="surface" labelledBy="contact-faq-title" corner={{ kind: "jaali", fx: 0, fy: 0 }}>
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+        <div className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:self-start">
+          <SectionHead kicker={p.faq.kicker} title={p.faq.title} id="contact-faq-title" lead={p.faq.lead} />
+          <TextLink href={href(locale, routes.faqs)} className="mt-6">{p.faq.all}</TextLink>
+        </div>
+        <Faqs items={p.faq.items} />
+      </div>
+    </Band>
     </>
   );
 }

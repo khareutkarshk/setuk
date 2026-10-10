@@ -527,6 +527,22 @@ export const en: Dictionary = {
           "Don't send passwords or sensitive citizen data through this form. For security disclosures, email us with a subject starting with [Security]."
         ]
       },
+      faq: {
+        kicker: "Good to know",
+        title: "Questions about getting in touch",
+        lead: "What happens after you reach out, and what helps us help you faster.",
+        items: [
+          { q: "How quickly will you reply?", a: "Within two business days for most enquiries. For a quick question, WhatsApp is usually the fastest way to reach us." },
+          { q: "What happens in a demo?", a: "We walk you through Setuk using the kind of work your office already does: letters, appointments and citizen requests. Then we show you how setup would go for your office." },
+          { q: "What should I tell you before the demo?", a: "Roughly how many staff you have, how many offices you run (constituency, residence, camp or capital), and the one or two things you'd most like to fix first." },
+          { q: "Can I get a price before the demo?", a: "Plans are monthly or annual, priced by the number of offices, staff and modules, so we'll give you a quote once we know your setup. Ask during the demo or mention it in your message." },
+          { q: "Is there a free trial?", a: "Yes, a trial is available on request. Ask for one when you book the demo." },
+          { q: "How long does it take to start once we decide?", a: "Usually two to three weeks: one or two meetings to understand your office, a week to design and set up, and a week to train your staff." },
+          { q: "We're already a customer. How do we get support?", a: "Choose \"Technical support\" as the topic, or email or call us, and include your office's name so we can route it to the right person straight away." },
+          { q: "How do we report a security issue?", a: "Email contact@setuk.org with a subject line starting with [Security]. Please don't include passwords or citizen data in any message." }
+        ],
+        all: "See all FAQs"
+      },
       alt: "A desk with a laptop showing the Setuk dashboard, a phone, files and a notebook"
     },
     legal: {

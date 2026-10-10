@@ -208,6 +208,8 @@ export interface Pages {
       again: string;
     };
     expect: { kicker: string; title: string; items: string[] };
+    /** Questions about getting in touch; the full list is on the FAQs page */
+    faq: { kicker: string; title: string; lead: string; items: QA[]; all: string };
     alt: string;
   };
   legal: {
