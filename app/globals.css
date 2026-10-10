@@ -187,31 +187,29 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 }
 @keyframes reveal { from { opacity: 0; translate: 0 22px; } }
 
-/* Inner-page hero backdrop (components/site/routes.tsx): routes between nodes, lights travelling
-   along them, a ping where they arrive, and a slow wash of light. Faded out towards the text side.
-   Every light runs 0 to 55% of its own cycle and the ping lands at 55%, so the two stay in step. */
-.routes { -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 92%), linear-gradient(to bottom, #000 60%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(to left, #000 35%, transparent 92%), linear-gradient(to bottom, #000 60%, transparent); mask-composite: intersect; }
-.routes-lines { opacity: 0.22; }
-.routes-nodes { opacity: 0.3; }
+/* Inner-page hero backdrop (components/site/routes.tsx): fine routes between nodes that draw in
+   once, then breathe on slow, staggered clocks (--d draw delay, --b breath length, --bd breath
+   offset), with a soft glow on each node and a slow wash of light. Faded out towards the text side. */
+.routes { -webkit-mask-image: linear-gradient(to left, #000 25%, transparent 62%), linear-gradient(to bottom, #000 60%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(to left, #000 25%, transparent 62%), linear-gradient(to bottom, #000 60%, transparent); mask-composite: intersect; }
 .routes-map { position: absolute; top: 0; right: 0; width: clamp(560px, 58vw, 1000px); height: auto; aspect-ratio: 5 / 4; }
 @media (max-width: 767px) { .routes-map { right: -30%; opacity: 0.7; } }
-/* a dot with a soft tail behind it, as dashes on a path 100 long */
-.routes-light, .routes-glow { stroke: var(--accent); stroke-linecap: round; animation-timing-function: linear; animation-iteration-count: infinite; }
-.routes-light { stroke-width: 5; opacity: 0.9; stroke-dasharray: 0.01 200; stroke-dashoffset: 0.01; animation-name: routes-dot; }
-.routes-glow { stroke-width: 3; opacity: 0.25; stroke-dasharray: 9 200; stroke-dashoffset: 9; animation-name: routes-tail; }
-.routes-reply .routes-light, .routes-reply .routes-glow { stroke: var(--leaf); }
-.routes-ping { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; animation-name: routes-ping; animation-timing-function: ease-out; animation-iteration-count: infinite; }
-.routes-reply .routes-ping { stroke: var(--leaf); }
-@keyframes routes-dot { 0% { stroke-dashoffset: 0.01; } 55%, 100% { stroke-dashoffset: -100; } }
-@keyframes routes-tail { 0% { stroke-dashoffset: 9; } 55%, 100% { stroke-dashoffset: -100; } }
-@keyframes routes-ping { 0%, 53% { opacity: 0; transform: scale(0.3); } 56% { opacity: 0.7; } 80%, 100% { opacity: 0; transform: scale(1.6); } }
+.routes-line { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0.12; animation: routes-draw 2.6s var(--ease-out) var(--d, 0s) forwards, routes-breathe var(--b, 10s) ease-in-out var(--bd, 0s) infinite alternate; }
+.routes-node { opacity: 0; animation: routes-in 1.2s var(--ease-out) calc(var(--d, 0s) + 0.9s) forwards; }
+.routes-node > circle:last-child { opacity: 0.3; }
+.routes-halo { opacity: 0.05; transform-box: fill-box; transform-origin: center; animation: routes-glow var(--b, 8s) ease-in-out var(--bd, 0s) infinite alternate; }
+@keyframes routes-draw { to { stroke-dashoffset: 0; } }
+@keyframes routes-breathe { from { opacity: 0.07; } to { opacity: 0.2; } }
+@keyframes routes-in { to { opacity: 1; } }
+@keyframes routes-glow { from { opacity: 0.05; transform: scale(0.7); } to { opacity: 0.22; transform: scale(1.2); } }
 .routes-wash { position: absolute; border-radius: 999px; pointer-events: none; }
 .routes-wash-a { width: 720px; height: 720px; right: -160px; top: -260px; background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 14%, transparent), transparent); animation: routes-drift-a 26s ease-in-out infinite alternate; }
 .routes-wash-b { width: 560px; height: 560px; right: 22%; top: 30%; background: radial-gradient(closest-side, color-mix(in srgb, var(--leaf) 10%, transparent), transparent); animation: routes-drift-b 32s ease-in-out infinite alternate; }
 @keyframes routes-drift-a { to { translate: -140px 90px; scale: 1.12; } }
 @keyframes routes-drift-b { to { translate: 160px -70px; scale: 0.9; } }
 @media (prefers-reduced-motion: reduce) {
-  .routes-light, .routes-glow, .routes-ping { display: none; }
+  .routes-line { stroke-dashoffset: 0; animation: none; }
+  .routes-node { opacity: 1; animation: none; }
+  .routes-halo, .routes-wash { animation: none; }
 }
 
 /* Setuk's illustrations are drawn on white; in dark mode they sit a step back */
