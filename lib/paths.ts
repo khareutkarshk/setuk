@@ -19,6 +19,9 @@ export const routes = {
   faqs: "/faqs",
   contact: "/contact",
   legal: "/legal",
+  voterList: "/voter-list-excel",
   article: (slug: string) => `/articles/${slug}`,
-  legalDoc: (slug: string) => `/legal/${slug}`
+  legalDoc: (slug: string) => `/legal/${slug}`,
+  /** ["bihar", "patna"] → "/voter-list-excel/bihar/patna" */
+  voterListArea: (slugs: string[]) => ["/voter-list-excel", ...slugs].join("/")
 } as const;

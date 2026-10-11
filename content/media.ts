@@ -18,6 +18,7 @@ import lokSabha from "@/assets/media/lok-sabha.webp";
 import rajyaSabha from "@/assets/media/rajya-sabha.webp";
 import vidhanSabha from "@/assets/media/vidhan-sabha.webp";
 import localBody from "@/assets/media/local-body.webp";
+import placeholder from "@/assets/media/placeholder.webp";
 
 /**
  * Setuk's own illustration set (blue duotone, from setuk.org) and one product screenshot.
@@ -27,7 +28,9 @@ import localBody from "@/assets/media/local-body.webp";
 export const media = {
   officeTeam, officeBeforeAfter, warRoom, commandCentre, contactDesk, officeNight,
   appointments, calendar, eletter, pnr, booths, citizens, citizenApp, setu, eletterScreen,
-  lokSabha, rajyaSabha, vidhanSabha, localBody
+  lokSabha, rajyaSabha, vidhanSabha, localBody,
+  /** Stand-in for modules still waiting on their illustration */
+  placeholder
 } satisfies Record<string, StaticImageData>;
 
 export type MediaKey = keyof typeof media;

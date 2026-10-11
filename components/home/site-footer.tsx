@@ -29,7 +29,7 @@ function Column({ title, links }: { title: string; links: { t: string; href: str
 export function SiteFooter({ t, locale, home = false }: { t: Dictionary; locale: Locale; home?: boolean }) {
   const company = [
     ...site.nav.filter((l) => l.key !== "home").map((l) => ({ t: t.nav.labels[l.key], href: href(locale, l.path) })),
-    { t: t.footer.voterList, href: site.voterListHref, external: true }
+    { t: t.footer.voterList, href: href(locale, routes.voterList) }
   ];
   const guides = t.footer.guideItems.map((g) => ({ t: g.t, href: href(locale, routes.article(g.slug)) }));
   const legal = [{ t: t.pages.legal.all, href: href(locale, routes.legal) }, ...t.footer.legalItems.map((g) => ({ t: g.t, href: href(locale, routes.legalDoc(g.slug)) }))];

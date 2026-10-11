@@ -12,8 +12,6 @@ export const site = {
   email: "contact@setuk.org",
   phone: { href: "tel:+917739039777", label: "+91 77390 39777" },
   whatsapp: { href: "https://wa.me/919155609667", label: "+91 91556 09667" },
-  /* Still served by the live site until it is migrated */
-  voterListHref: "https://setuk.org/voter-list-excel/",
   address: {
     street: "H.No. 413, Nehru Nagar, Patliputra, Phulwari",
     city: "Patna",

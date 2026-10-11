@@ -19,6 +19,13 @@ export interface TitledItem {
   d: string;
 }
 
+/** A card on How we work: name, headline, line, and its illustration */
+export interface ModuleItem extends TitledItem {
+  h: string;
+  img: MediaKey;
+  alt: string;
+}
+
 export interface Module {
   t: string;
   /** Not shipped yet; rendered as a dashed "Coming" chip */
@@ -143,10 +150,11 @@ export interface Pages {
       /** Pairs with how.steps by index */
       steps: { does: string[]; needs: string }[];
     };
-    modules: { kicker: string; title: string; sub: string; items: { t: string; h: string; d: string; img: MediaKey; alt: string }[] };
+    /** Grouped as the office, the election, and what's in progress (`soon`, badged with soonLabel) */
+    modules: { kicker: string; title: string; sub: string; soonLabel: string; groups: { t: string; d: string; soon?: boolean; items: ModuleItem[] }[] };
     screen: { kicker: string; title: string; body: string; alt: string };
     citizens: { kicker: string; title: string; body: string; points: string[]; alt: string };
-    roadmap: { kicker: string; title: string; sub: string; nowLabel: string; nextLabel: string; now: TitledItem[]; next: TitledItem[] };
+    roadmap: { kicker: string; title: string; sub: string; nextLabel: string; next: TitledItem[] };
   };
   engagements: {
     meta: PageMeta;
@@ -234,7 +242,58 @@ export interface Pages {
     still: string;
     stillBody: string;
   };
+  /**
+   * The voter list in Excel pages. Areas and their write-ups come from lib/voter-list (English); these
+   * are the labels around them. Placeholders in braces are filled per area: {name}, {state},
+   * {district}, {no}, {roll}, {booths}, {acs}, {states}, {n}, {price}, {rate}.
+   */
+  voterList: {
+    meta: PageMeta;
+    /** Title and description for an area's page, by level */
+    metaArea: Record<VoterListLevel, PageMeta>;
+    kicker: string;
+    title: string;
+    sub: string;
+    titleArea: Record<VoterListLevel, string>;
+    subArea: Record<VoterListLevel, string>;
+    enquire: string;
+    howLink: string;
+    crumbs: string;
+    root: string;
+    finder: { title: string; state: string; district: string; ac: string; allStates: string; allDistricts: string; allAcs: string; pickState: string; pickDistrict: string; reset: string };
+    stats: { states: string; districts: string; acs: string; pcs: string; booths: string; files: string };
+    /** Card eyebrows */
+    levels: Record<VoterListLevel, string>;
+    /** Badge on the chosen constituency's card */
+    selected: string;
+    preview: { title: string; summary: string; part: string; more: string; note: string };
+    cards: {
+      heading: Record<"all" | VoterListLevel, string>;
+      count: Record<"all" | VoterListLevel, string>;
+      roll: string;
+      order: string;
+      orderNote: string;
+      explore: { state: string; district: string };
+      perBooth: string;
+      total: string;
+      pc: string;
+      empty: { title: string; body: string; cta: string };
+    };
+    detail: {
+      kicker: string;
+      glance: string;
+      includes: string;
+      sample: string;
+      related: string;
+      faq: string;
+      faqTitle: string;
+      disclaimer: string;
+    };
+    order: { kicker: string; title: string; body: string; steps: TitledItem[]; cta: string };
+  };
 }
+
+export type VoterListLevel = "state" | "district" | "ac";
 
 /** Strings drawn onto the 3D scene's screens (canvas textures) */
 export interface SceneLabels {

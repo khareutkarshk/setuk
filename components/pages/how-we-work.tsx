@@ -1,22 +1,22 @@
 import Image from "next/image";
 import { getDictionary, type Locale } from "@/content";
 import { media } from "@/content/media";
+import type { ModuleItem } from "@/content/types";
 import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
-import { CornerPattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
 import { HowSteps } from "./how-steps";
 import { Band, deva, Figure, H1, Lead, PageHero, PrimaryLink, SectionHead, TextLink, TICK, Wrap } from "./ui";
 
 /**
  * How we work: the four-step process (from the homepage's "How we work" steps, with what we do and
- * what we need at each), the six live modules, the eLetter screen, the citizen side, and the roadmap.
+ * what we need at each), the modules grouped as office, election and in progress, the eLetter screen,
+ * the citizen side, and the planned roadmap.
  */
 export function HowWeWorkPage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const p = t.pages.how;
   const steps = t.how.steps.map((s, i) => ({ ...s, ...p.process.steps[i] }));
-  const [a, b, c, d, e, f] = p.modules.items;
 
   return (
     <>
@@ -87,29 +87,26 @@ export function HowWeWorkPage({ locale }: { locale: Locale }) {
         </HowSteps>
       </Band>
 
-      {/* The six live modules, as a bento with the module's own illustration */}
+      {/* The modules, grouped as the office, the election and what's in progress */}
       <section id="modules" aria-labelledby="modules-title" className="scroll-mt-20">
         <Wrap className="py-20 md:py-28">
           <SectionHead kicker={p.modules.kicker} title={p.modules.title} id="modules-title" lead={p.modules.sub} className="max-w-[720px]" />
-          <div className="mt-12 grid gap-4 md:grid-cols-6">
-            <ModuleCard m={a} className="md:col-span-4" ratio="16 / 9" sizes="(min-width: 768px) 820px, 100vw" />
-            <ModuleCard m={b} className="md:col-span-2" ratio="4 / 3" fill sizes="(min-width: 768px) 410px, 100vw" />
-            <ModuleCard m={c} className="md:col-span-2" ratio="4 / 3" sizes="(min-width: 768px) 410px, 100vw" />
-            <ModuleCard m={d} className="md:col-span-2" ratio="4 / 3" sizes="(min-width: 768px) 410px, 100vw" />
-            <ModuleCard m={e} className="md:col-span-2" ratio="4 / 3" sizes="(min-width: 768px) 410px, 100vw" />
-            {/* the last one runs the full width, picture beside the text */}
-            <article className="reveal grid overflow-hidden rounded-3xl border border-line bg-surface md:col-span-6 md:grid-cols-2">
-              <div className="illo relative aspect-[16/10] md:aspect-auto md:min-h-[320px]">
-                <Image src={media[f.img]} alt={f.alt} fill sizes="(min-width: 768px) 620px, 100vw" placeholder="blur" className="object-cover" />
+          {p.modules.groups.map((g, i) => (
+            <div key={g.t} className={`border-t border-line pt-10 ${i ? "mt-16" : "mt-12"}`}>
+              <div className="reveal flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+                <h3 className="font-display-tight flex items-center gap-3 text-[clamp(22px,2.2vw,28px)] leading-tight">
+                  {g.t}
+                  <span className="font-mono text-[14px] font-normal text-muted">{String(g.items.length).padStart(2, "0")}</span>
+                </h3>
+                <p className="max-w-[52ch] text-[15px] leading-snug text-muted">{g.d}</p>
               </div>
-              <div className="relative flex flex-col justify-center overflow-hidden p-7 md:p-10">
-                <CornerPattern kind="buti" fx={100} fy={100} radius={320} className="inset-0 text-accent opacity-[.14]" />
-                <p className="relative text-[14px] font-semibold text-accent">{f.t}</p>
-                <h3 className="font-display-tight relative mt-2 text-[clamp(24px,2.4vw,30px)] leading-tight">{f.h}</h3>
-                <p className="relative mt-3 max-w-[44ch] text-[16px] leading-relaxed text-muted">{f.d}</p>
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {g.items.map((m) => (
+                  <ModuleCard key={m.t} m={m} soon={g.soon ? p.modules.soonLabel : undefined} />
+                ))}
               </div>
-            </article>
-          </div>
+            </div>
+          ))}
         </Wrap>
       </section>
 
@@ -146,45 +143,33 @@ export function HowWeWorkPage({ locale }: { locale: Locale }) {
       {/* What's next */}
       <Band tone="surface" id="roadmap" labelledBy="roadmap-title" corner={{ kind: "jaali", fx: 0, fy: 100 }} className="scroll-mt-20">
         <SectionHead kicker={p.roadmap.kicker} title={p.roadmap.title} id="roadmap-title" lead={p.roadmap.sub} className="max-w-[680px]" />
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-          <div>
-            <h3 className="flex items-center gap-2 text-[15px] font-semibold"><I.Clock className="text-accent" aria-hidden />{p.roadmap.nowLabel}</h3>
-            <ul className="mt-5 grid gap-3">
-              {p.roadmap.now.map((x) => (
-                <li key={x.t} className="relative overflow-hidden rounded-xl border border-line bg-bg p-5 pl-6 before:absolute before:inset-y-4 before:left-0 before:w-0.5 before:rounded-full before:bg-leaf-mark">
-                  <p className="text-[17px] font-semibold">{x.t}</p>
-                  <p className="mt-1 text-[15px] leading-snug text-muted">{x.d}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="flex items-center gap-2 text-[15px] font-semibold"><I.CalendarDots className="text-accent" aria-hidden />{p.roadmap.nextLabel}</h3>
-            <ul className="mt-5 grid gap-x-8 sm:grid-cols-2">
-              {p.roadmap.next.map((x) => (
-                <li key={x.t} className={`${TICK} border-line pb-4`}>
-                  <p className="text-[15px] font-semibold">{x.t}</p>
-                  <p className="mt-1 text-[14px] leading-snug text-muted">{x.d}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <h3 className="mt-12 flex items-center gap-2 text-[15px] font-semibold"><I.CalendarDots className="text-accent" aria-hidden />{p.roadmap.nextLabel}</h3>
+        <ul className="mt-5 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+          {p.roadmap.next.map((x) => (
+            <li key={x.t} className={`${TICK} border-line pb-4`}>
+              <p className="text-[15px] font-semibold">{x.t}</p>
+              <p className="mt-1 text-[14px] leading-snug text-muted">{x.d}</p>
+            </li>
+          ))}
+        </ul>
       </Band>
     </>
   );
 }
 
-/** `fill`: the picture grows to the row's height (set by its wider neighbour) instead of keeping its ratio */
-function ModuleCard({ m, className, ratio, sizes, fill = false }: { m: { t: string; h: string; d: string; img: keyof typeof media; alt: string }; className: string; ratio: string; sizes: string; fill?: boolean }) {
+/** `soon`: the label badged on the picture of a module still in progress */
+function ModuleCard({ m, soon }: { m: ModuleItem; soon?: string }) {
   return (
-    <article className={`reveal flex flex-col overflow-hidden rounded-3xl border border-line bg-surface ${className}`}>
-      <div className={`illo relative ${fill ? "md:aspect-auto! md:flex-1" : ""}`} style={{ aspectRatio: ratio }}>
-        <Image src={media[m.img]} alt={m.alt} fill sizes={sizes} placeholder="blur" className="object-cover" />
+    <article className="reveal flex flex-col overflow-hidden rounded-3xl border border-line bg-surface">
+      <div className="illo relative aspect-[4/3]">
+        <Image src={media[m.img]} alt={m.alt} fill sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw" placeholder="blur" className="object-cover" />
+        {soon && (
+          <span className="absolute top-3 left-3 inline-flex h-7 items-center gap-1.5 rounded-full bg-surface/90 px-3 text-[13px] font-medium text-accent backdrop-blur-sm"><I.Clock aria-hidden />{soon}</span>
+        )}
       </div>
-      <div className={`flex flex-col p-6 md:p-7 ${fill ? "" : "flex-1"}`}>
+      <div className="flex flex-1 flex-col p-6">
         <p className="text-[14px] font-semibold text-accent">{m.t}</p>
-        <h3 className="font-display-tight mt-2 text-[22px] leading-tight">{m.h}</h3>
+        <h4 className="font-display-tight mt-2 text-[20px] leading-tight">{m.h}</h4>
         <p className="mt-2 text-[15px] leading-relaxed text-muted">{m.d}</p>
       </div>
     </article>

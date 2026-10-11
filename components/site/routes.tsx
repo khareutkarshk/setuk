@@ -2,10 +2,15 @@ import type { CSSProperties } from "react";
 
 /**
  * The inner pages' hero backdrop: Setuk as a setu. A few nodes (offices, booths, citizens) joined by
- * fine curved routes. The routes draw in once, then breathe: each brightens and settles on its own
- * slow clock, and every node carries a soft glow that swells and fades. Nothing travels across the
+ * fine curved routes. The routes draw in once, then breathe: they brighten and settle on slow clocks
+ * of their own, and every node carries a soft glow that swells and fades. Nothing travels across the
  * screen. A slow wash of light drifts behind. SVG and CSS only (the routes-* rules in
  * app/globals.css), no script; reduced motion leaves it drawn and still. Colour is currentColor.
+ *
+ * Everything that loops animates only opacity and scale on whole boxes (an <svg> layer of routes, a
+ * glow span), so the compositor runs it without layout or paint. Animating the paths and circles
+ * inside one SVG instead made Chrome lay out and repaint the hero every frame, for as long as the
+ * page stayed open.
  */
 
 type P = readonly [number, number];
@@ -36,31 +41,35 @@ function curve(i: number) {
 const clock = (i: number, base: number, spread: number) =>
   ({ "--d": `${(i * 0.14).toFixed(2)}s`, "--b": `${base + ((i * 7) % spread)}s`, "--bd": `${-((i * 3.7) % base).toFixed(1)}s` }) as CSSProperties;
 
+/* The routes breathe in three layers, each on its own clock; route i sits in layer i % 3 */
+const LAYERS = 3;
+const VIEW = { x: 660, y: 40, w: 800, h: 640 };
+
 export function Routes({ className = "" }: { className?: string }) {
   return (
     <div aria-hidden="true" className={`routes pointer-events-none absolute inset-0 ${className}`}>
       <span className="routes-wash routes-wash-a" />
       <span className="routes-wash routes-wash-b" />
-      <svg viewBox="660 40 800 640" fill="none" className="routes-map">
-        <defs>
-          {/* a glow that fades to nothing at its edge, so halos read as light rather than discs */}
-          <radialGradient id="routes-glow">
-            <stop offset="0" stopColor="currentColor" stopOpacity="1" />
-            <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <g stroke="currentColor" strokeWidth="1.1" strokeLinecap="round">
-          {ROUTES.map((_, i) => <path key={i} d={curve(i)} pathLength={1} className="routes-line" style={clock(i, 9, 6)} />)}
-        </g>
-        <g fill="currentColor">
-          {NODES.map(([x, y], i) => (
-            <g key={i} className="routes-node" style={clock(i, 7, 5)}>
-              <circle cx={x} cy={y} r="26" fill="url(#routes-glow)" className="routes-halo" />
-              <circle cx={x} cy={y} r={i % 3 ? 2.6 : 3.8} />
+      <div className="routes-map">
+        {Array.from({ length: LAYERS }, (_, k) => (
+          <svg key={k} viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`} fill="none" className="routes-layer" style={clock(k, 9, 6)}>
+            <g stroke="currentColor" strokeWidth="1.1" strokeLinecap="round">
+              {ROUTES.map((_, i) => i % LAYERS === k && <path key={i} d={curve(i)} pathLength={1} className="routes-line" style={clock(i, 9, 6)} />)}
             </g>
+          </svg>
+        ))}
+        {/* each node's glow, a gradient disc over its dot (52 units across, as the old r=26 halo) */}
+        {NODES.map(([x, y], i) => (
+          <span key={i} className="routes-node routes-glow" style={{ ...clock(i, 7, 5), left: `${((x - VIEW.x) / VIEW.w) * 100}%`, top: `${((y - VIEW.y) / VIEW.h) * 100}%`, width: `${(52 / VIEW.w) * 100}%` }}>
+            <span className="routes-halo" />
+          </span>
+        ))}
+        <svg viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`} fill="currentColor" className="routes-layer routes-dots">
+          {NODES.map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r={i % 3 ? 2.6 : 3.8} className="routes-node" style={clock(i, 7, 5)} />
           ))}
-        </g>
-      </svg>
+        </svg>
+      </div>
     </div>
   );
 }

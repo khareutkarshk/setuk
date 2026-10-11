@@ -295,14 +295,44 @@ export const en: Dictionary = {
       modules: {
         kicker: "Modules",
         title: "What we set up in your office.",
-        sub: "Six modules are live today. Each one ships with an SOP for how your office should use it.",
-        items: [
-          { t: "Appointments", h: "No more missed meetings.", d: "Requests, slots and visitors tracked end to end, so the right people get the right time.", img: "appointments", alt: "A citizen greeted at a constituency office reception desk" },
-          { t: "Program calendar", h: "Every commitment in one calendar.", d: "Inaugurations, public meetings, party events and visits, shared with the whole team.", img: "calendar", alt: "A staff member briefing the representative on the day's schedule from a tablet" },
-          { t: "eLetter", h: "Letters that don't get lost.", d: "Every letter in or out is logged and tracked until the right action is taken.", img: "eletter", alt: "An office assistant reviewing the eLetter list in Setuk" },
-          { t: "PNR letters", h: "Railway requests, kept apart.", d: "A dedicated queue for PNR letters, so urgent travel requests never sit in the general pile.", img: "pnr", alt: "A citizen handing over a railway ticket request at a help desk" },
-          { t: "Booth management", h: "Win from the booth up.", d: "Map, staff and track every booth in your constituency, ready for polling day.", img: "booths", alt: "Booth workers checking voter details on phones outside a polling station" },
-          { t: "Citizen management", h: "Know the people you serve.", d: "Who they are, what they asked for and what was done, searchable in seconds.", img: "citizens", alt: "A representative meeting citizens at a public gathering" }
+        sub: "Twelve modules are live today, for the office and for the election, and four more are on the way. Each one ships with an SOP for how your office should use it.",
+        soonLabel: "In progress",
+        groups: [
+          {
+            t: "Office management",
+            d: "The day-to-day work of the office: letters, meetings, visitors and the people you serve.",
+            items: [
+              { t: "Letter management", h: "Letters that don't get lost.", d: "Every letter in or out is logged and tracked until the right action is taken.", img: "eletter", alt: "An office assistant reviewing the eLetter list in Setuk" },
+              { t: "Appointment management", h: "No more missed meetings.", d: "Requests, slots and visitors tracked end to end, so the right people get the right time.", img: "appointments", alt: "A citizen greeted at a constituency office reception desk" },
+              { t: "Visitor logs", h: "Everyone who walked in.", d: "Every visitor recorded with the reason they came, even if they didn't get a meeting.", img: "placeholder", alt: "Placeholder for the visitor logs illustration" },
+              { t: "Program calendar", h: "Every commitment in one calendar.", d: "Inaugurations, public meetings, party events and visits, shared with the whole team.", img: "calendar", alt: "A staff member briefing the representative on the day's schedule from a tablet" },
+              { t: "PNR letters", h: "Railway requests, kept apart.", d: "A dedicated queue for PNR letters, so urgent travel requests never sit in the general pile.", img: "pnr", alt: "A citizen handing over a railway ticket request at a help desk" },
+              { t: "Citizen management", h: "Know the people you serve.", d: "Who they are, what they asked for and what was done, searchable in seconds.", img: "citizens", alt: "A representative meeting citizens at a public gathering" },
+              { t: "WhatsApp management", h: "Reach people where they read.", d: "Updates, greetings and notices to citizens and workers, in bulk or one by one.", img: "placeholder", alt: "Placeholder for the WhatsApp management illustration" },
+              { t: "Reports", h: "The office at a glance.", d: "What came in, what was handled and what is pending, by staff, department and area.", img: "placeholder", alt: "Placeholder for the reports illustration" }
+            ]
+          },
+          {
+            t: "Election management",
+            d: "The ground game, from the voter list to the booth.",
+            items: [
+              { t: "Booth management", h: "Win from the booth up.", d: "Map, staff and track every booth in your constituency, ready for polling day.", img: "booths", alt: "Booth workers checking voter details on phones outside a polling station" },
+              { t: "Voter list reports", h: "Read the voter list properly.", d: "Break the roll down by booth, age, gender and area, and spot what has changed.", img: "placeholder", alt: "Placeholder for the voter list reports illustration" },
+              { t: "Karyakarta management", h: "Every worker, accounted for.", d: "Assignments, communication and tracking for your ground workers, booth by booth.", img: "placeholder", alt: "Placeholder for the karyakarta management illustration" },
+              { t: "Survey management", h: "Ask, then act.", d: "Run surveys in the field and see what your constituency thinks, area by area.", img: "placeholder", alt: "Placeholder for the survey management illustration" }
+            ]
+          },
+          {
+            t: "In progress",
+            d: "Being built now, in the order offices ask for them.",
+            soon: true,
+            items: [
+              { t: "Event management", h: "Events that run on time.", d: "Plan and run political events and public programs, from the guest list to the stage.", img: "placeholder", alt: "Placeholder for the event management illustration" },
+              { t: "LADs management", h: "Every rupee of the fund, tracked.", d: "Local area development funds: allocation, works, tracking and reports.", img: "placeholder", alt: "Placeholder for the LADs management illustration" },
+              { t: "Influential voters", h: "Know who moves opinion.", d: "Identify and engage the people whose word carries weight locally.", img: "placeholder", alt: "Placeholder for the influential voters illustration" },
+              { t: "Image and video management", h: "Every photo from the field, found.", d: "Fast uploads from the field, even on a weak network, sorted by event and place.", img: "placeholder", alt: "Placeholder for the image and video management illustration" }
+            ]
+          }
         ]
       },
       screen: {
@@ -321,23 +351,11 @@ export const en: Dictionary = {
       roadmap: {
         kicker: "Roadmap",
         title: "What we're building next.",
-        sub: "We ship each module when it's ready. The order follows what offices ask for most.",
-        nowLabel: "In progress",
+        sub: "After the four in progress, this is what's planned. We ship each module when it's ready, in the order offices ask for most.",
         nextLabel: "Planned",
-        now: [
-          { t: "Visitor management", d: "Everyone who came to the office, even if they didn't get a meeting." },
-          { t: "WhatsApp and SMS sender", d: "Reach citizens and workers directly, in bulk or one by one." },
-          { t: "Event management", d: "Plan and run political events and public programs." },
-          { t: "Karyakarta management", d: "Assignments, communication and tracking for ground workers." }
-        ],
         next: [
-          { t: "LADs management", d: "Local area development funds: allocation, tracking and reports." },
           { t: "Digital call center", d: "Run the office call center remotely, with memos and support." },
-          { t: "Image and video management", d: "Fast uploads from the field, even on a weak network." },
           { t: "Social media management", d: "Profiles, inbox and comment moderation in one place." },
-          { t: "Influential voters", d: "Identify and engage the people who move opinion locally." },
-          { t: "Election management", d: "Planning from strategy to polling day." },
-          { t: "Citizen surveys", d: "Ask constituents what they think, then act on it." },
           { t: "Resume maker for ticket applications", d: "Help aspirants present their work when applying for a ticket." },
           { t: "Party and office management", d: "Tools for the wider party office, beyond one representative." },
           { t: "Constituency analytics", d: "Dashboards and reports on the constituency." },
@@ -619,6 +637,69 @@ export const en: Dictionary = {
       ],
       still: "Still have a question?",
       stillBody: "Write to us or call. We reply within two business days."
+    },
+    voterList: {
+      meta: { title: "Voter List in Excel: Booth-wise, Every State | Setuk", description: "Booth-wise voter list Excel files for every state, district and assembly constituency, with every name in English and Hindi." },
+      metaArea: {
+        state: { title: "{name} Voter List in Excel, Booth-wise | Setuk", description: "The {roll} voter list for {name} in searchable Excel: {acs} constituencies, {booths} booths, names in English and Hindi." },
+        district: { title: "{name} District Voter List in Excel, {state} | Setuk", description: "The {roll} voter list for {name} district, {state}: {acs} constituencies and {booths} booths in searchable Excel." },
+        ac: { title: "{name} Voter List in Excel, All {booths} Booths | Setuk", description: "The {roll} voter list for {name} (AC {no}), {district}, {state}: every booth in one Excel workbook." }
+      },
+      kicker: "Voter list in Excel",
+      title: "Every voter list, as a spreadsheet you can search.",
+      sub: "Booth-wise voter lists in Excel for {states} states, covering {acs} assembly constituencies. One booth per sheet, one voter per row, every name in English and Hindi.",
+      titleArea: {
+        state: "{name} voter list in Excel",
+        district: "{name} district voter list in Excel",
+        ac: "{name} voter list in Excel"
+      },
+      subArea: {
+        state: "The {roll} roll for {name}: {acs} assembly constituencies and {booths} booths, one workbook per constituency.",
+        district: "{name} district, {state}: {acs} constituencies and {booths} booths, from the {roll} roll.",
+        ac: "AC {no}, {district}, {state}: all {booths} booths in one workbook, from the {roll} roll."
+      },
+      enquire: "Enquire on WhatsApp",
+      howLink: "What's in the file",
+      crumbs: "Breadcrumb",
+      root: "Voter list in Excel",
+      finder: { title: "Find a voter list", state: "State", district: "District", ac: "Assembly constituency", allStates: "All states", allDistricts: "All districts", allAcs: "All constituencies", pickState: "Choose a state first", pickDistrict: "Choose a district first", reset: "Start over" },
+      stats: { states: "States", districts: "Districts", acs: "Assembly seats", pcs: "Lok Sabha seats", booths: "Polling booths", files: "Excel sheets" },
+      levels: { state: "State", district: "District", ac: "Assembly constituency" },
+      selected: "Selected",
+      preview: { title: "What you get", summary: "Summary", part: "Part {n}", more: "+{n} more", note: "One workbook, one sheet per booth." },
+      cards: {
+        heading: { all: "Choose a state", state: "Districts in {name}", district: "Constituencies in {name}", ac: "{name} and the rest of {district}" },
+        count: { all: "{n} states", state: "{n} districts", district: "{n} constituencies", ac: "{n} constituencies" },
+        roll: "Roll",
+        order: "Get the {name} list",
+        orderNote: "Opens WhatsApp with the order filled in",
+        explore: { state: "See districts", district: "See constituencies" },
+        perBooth: "{rate} per booth",
+        total: "{price} in all",
+        pc: "Lok Sabha",
+        empty: { title: "Nothing listed here yet.", body: "The lists for this area aren't on the page yet. Ask on WhatsApp and we'll tell you what's available.", cta: "Ask on WhatsApp" }
+      },
+      detail: {
+        kicker: "About this list",
+        glance: "At a glance",
+        includes: "What's in the file",
+        sample: "How a sheet looks",
+        related: "More voter lists",
+        faq: "Questions",
+        faqTitle: "Questions about this list.",
+        disclaimer: "Read the voter list Excel disclaimer"
+      },
+      order: {
+        kicker: "How to order",
+        title: "From the list you need to a file in your inbox.",
+        body: "{price} for this list at {rate} per booth. Ask for a quote on district and state orders.",
+        steps: [
+          { t: "Pick the list", d: "A constituency, a district, a Lok Sabha seat or a whole state." },
+          { t: "Check a sample", d: "Ask for a free sample booth and check the English and Hindi columns." },
+          { t: "Get the file", d: "Files arrive within 24 hours, often instantly." }
+        ],
+        cta: "Order on WhatsApp"
+      }
     }
   },
   scene: {
