@@ -23,23 +23,29 @@ export function Wrap({ children, className = "" }: { children: ReactNode; classN
  * FAQ panel's temple top edge. Patterns stay behind text and never above 0.18 opacity on a page tone.
  */
 
-/** The top of an inner page. It runs up under the header so the pattern starts at the very top */
-export function PageHero({ children, className = "", routes = true }: { children: ReactNode; className?: string; routes?: boolean }) {
+/**
+ * The top of an inner page. It runs up under the header so the pattern starts at the very top.
+ * `pattern` swaps the sadan wall for another (the role pages each carry their own).
+ */
+export function PageHero({ children, className = "", routes = true, pattern = "sadan" }: { children: ReactNode; className?: string; routes?: boolean; pattern?: PatternKind }) {
   return (
     <section className="relative -mt-(--header-h) overflow-clip pt-(--header-h)">
-      <CornerPattern kind="sadan" fx={100} fy={0} radius={640} cell={36} className="inset-0 text-accent opacity-[.08]" />
+      <CornerPattern kind={pattern} fx={100} fy={0} radius={640} cell={pattern === "sadan" ? 36 : undefined} className="inset-0 text-accent opacity-[.08]" />
       {routes && <Routes className="text-accent" />}
       <Wrap className={`relative ${className}`}>{children}</Wrap>
     </section>
   );
 }
 
-/** Kicker, title and lead, the way every homepage section opens. `inverse` for the ink band */
-export function SectionHead({ kicker, title, id, lead, inverse = false, className = "" }: { kicker: string; title: ReactNode; id?: string; lead?: ReactNode; inverse?: boolean; className?: string }) {
+/**
+ * Kicker, title and lead, the way every homepage section opens. `inverse` for the ink band.
+ * The kicker is optional: the role pages keep to about one in three sections, so the label stays a signal.
+ */
+export function SectionHead({ kicker, title, id, lead, inverse = false, className = "" }: { kicker?: string; title: ReactNode; id?: string; lead?: ReactNode; inverse?: boolean; className?: string }) {
   return (
     <div className={className}>
-      <Kicker className={inverse ? "text-leaf-inverse" : "text-leaf"} ornament={inverse ? "text-accent-soft" : "text-accent"}>{kicker}</Kicker>
-      <H2 id={id} className="mt-3">{title}</H2>
+      {kicker && <Kicker className={`mb-3 ${inverse ? "text-leaf-inverse" : "text-leaf"}`} ornament={inverse ? "text-accent-soft" : "text-accent"}>{kicker}</Kicker>}
+      <H2 id={id}>{title}</H2>
       {lead && <Lead className={`mt-4 ${inverse ? "text-bg/70!" : ""}`}>{lead}</Lead>}
     </div>
   );

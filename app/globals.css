@@ -215,6 +215,40 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
   .routes-layer, .routes-halo, .routes-wash { animation: none; }
 }
 
+/* Hairline figures (components/site/hairline.tsx, public/hairline/v1): the kernel's five-tone palette
+   in Lok Navy. The one bright stroke is the accent; silhouette, crease and guides step down from ink
+   toward the plate, so they follow the theme. The drawing fades in once it has mounted. */
+[data-hairline] {
+  --hairline-plate: var(--surface);
+  --hairline-hi: var(--accent);
+  --hairline-edge: color-mix(in srgb, var(--ink) 52%, var(--surface));
+  --hairline-mid: color-mix(in srgb, var(--ink) 30%, var(--surface));
+  --hairline-lo: color-mix(in srgb, var(--ink) 14%, var(--surface));
+  --hairline-stroke: 1;
+}
+.hairline-stage { position: relative; aspect-ratio: 5 / 4; }
+.hairline-stage > svg { opacity: 0; transition: opacity 0.9s var(--ease-out); }
+.hairline-stage[data-ready] > svg { opacity: 1; }
+.hairline-read { position: absolute; top: 18px; right: 20px; font: 500 12px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--muted); font-variant-numeric: tabular-nums; pointer-events: none; transition: color 0.3s; }
+.hairline-read[data-live] { color: var(--accent); }
+
+/* Role pages (components/pages/roles): the flow's rail draws in, an MP's offices send a request down
+   to the record on a slow clock, an assembly seat's rings light outward and a city's wards take their
+   complaints, each on the scroll timeline. Reduced motion shows them at rest. */
+.office-pulse { position: absolute; top: 0; left: -2.5px; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); opacity: 0; animation: office-pulse 4.2s var(--ease-out) infinite; animation-delay: calc(var(--i, 0) * 1.4s); }
+@keyframes office-pulse { 0% { translate: 0 -3px; opacity: 0; } 12% { opacity: 1; } 60% { translate: 0 45px; opacity: 1; } 72%, 100% { translate: 0 45px; opacity: 0; } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .flow-rail { animation: flow-rail linear both; animation-timeline: view(); animation-range: entry 20% cover 45%; }
+    .ground-card { view-timeline-name: --ground; }
+    .ground-dot { transform-box: fill-box; transform-origin: center; animation: ground-dot linear both; animation-timeline: --ground; animation-range: entry calc(10% + var(--i) * 12%) cover calc(25% + var(--i) * 8%); }
+    .ward-pop { animation: ward-pop linear both; animation-timeline: view(); animation-range: entry calc(30% + var(--i) * 10%) entry 100%; }
+  }
+}
+@keyframes flow-rail { from { scale: 0 1; } }
+@keyframes ground-dot { from { scale: 0; } }
+@keyframes ward-pop { from { scale: 0.6; opacity: 0; } }
+
 /* Setuk's illustrations are drawn on white; in dark mode they sit a step back */
 :root[data-theme="dark"] .illo img { filter: brightness(0.84) contrast(1.04) saturate(0.95); }
 

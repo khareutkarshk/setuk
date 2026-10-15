@@ -10,6 +10,8 @@ import type { MediaKey } from "./media";
 export type Locale = "en" | "hi";
 
 export type NavKey = "home" | "how" | "engagements" | "about" | "articles" | "faqs" | "contact";
+/** The role pages under "By role" in the header: /for-mps, /for-mlas, /for-mayors, /for-consultants */
+export type RoleKey = "mps" | "mlas" | "mayors" | "consultants";
 export type TopicKey = "office" | "constituency" | "party" | "appointments" | "governance";
 export type LegalGroup = "use" | "data" | "billing" | "voterList";
 export type LegalSlug = "terms" | "privacy" | "consent" | "declaration-accuracy" | "disclaimer" | "data-retention" | "dpa" | "refund" | "voter-list-excel-disclaimer";
@@ -291,9 +293,97 @@ export interface Pages {
     };
     order: { kicker: string; title: string; body: string; steps: TitledItem[]; cta: string };
   };
+  roles: Roles;
 }
 
 export type VoterListLevel = "state" | "district" | "ac";
+
+/**
+ * The role pages. Each opens with its own line figure (public/hairline/v1) and carries one section
+ * no other role has; the rest share shapes so the four read as one family.
+ */
+export interface RoleHead {
+  meta: PageMeta;
+  /** The header's "By role" menu: the page's name and one line under it */
+  menu: TitledItem;
+  kicker: string;
+  title: string;
+  sub: string;
+  primary: string;
+  secondary: string;
+  /** Set large and faint in Devanagari behind the figure */
+  word: string;
+  /**
+   * The hero figure: what it shows (its accessible name), the hint shown until the pointer arrives,
+   * and the read-out's nouns, by the word the figure writes ("seat 3·12" → read.seat + " 3·12")
+   */
+  figure: { label: string; hint: string; read: Record<string, string> };
+  faq: { title: string; items: QA[] };
+  cta: { title: string; body: string };
+}
+
+/** One of Setuk's modules put in a role's words. `img` when it has an illustration; `soon` while it's being built */
+export interface RoleModule {
+  t: string;
+  d: string;
+  img?: MediaKey;
+  alt?: string;
+  soon?: boolean;
+}
+
+/** The shared body of an office's page (MPs, MLAs, Mayors) */
+export interface OfficeRole extends RoleHead {
+  challenges: { title: string; items: TitledItem[] };
+  modules: { title: string; sub: string; items: RoleModule[] };
+  /** Four steps with one real case running through them (`eg`) */
+  flow: { title: string; sub: string; steps: { t: string; d: string; eg: string }[] };
+  oversight: { kicker: string; title: string; body: string; items: string[]; alt: string };
+  team: { title: string; sub: string; rows: TitledItem[] };
+}
+
+/** MPs: the offices an MP runs at once, around one record */
+export interface MpRole extends OfficeRole {
+  offices: { kicker: string; title: string; body: string; centre: TitledItem; items: TitledItem[] };
+}
+
+/** MLAs: from the constituency office down to the booth and the karyakarta */
+export interface MlaRole extends OfficeRole {
+  ground: { kicker: string; title: string; body: string; levels: TitledItem[] };
+}
+
+/** Mayors: civic issues by ward and kind, and where the Mayor's office ends */
+export interface MayorRole extends OfficeRole {
+  wards: { kicker: string; title: string; body: string; categories: string[]; note: string };
+}
+
+/** Political consultants: a partnership page, not an office's */
+export interface ConsultantRole extends RoleHead {
+  tribute: { kicker: string; title: string; paras: string[]; alt: string };
+  challenges: { title: string; items: TitledItem[] };
+  /** Your practice, Setuk's platform, your clients' offices */
+  model: { title: string; sub: string; parts: TitledItem[] };
+  offer: { title: string; sub: string; items: RoleModule[] };
+  /** The ways to partner. Terms are agreed per partner; `note` says so */
+  paths: { kicker: string; title: string; sub: string; items: TitledItem[]; note: string };
+  steps: { title: string; items: TitledItem[] };
+  data: { title: string; body: string; items: TitledItem[] };
+  who: { title: string; items: TitledItem[] };
+}
+
+export interface Roles {
+  /** Shared by the office pages: setup (with the homepage's four steps) and data */
+  common: {
+    eg: string;
+    soon: string;
+    setup: { title: string; sub: string; link: string };
+    trust: { title: string; items: TitledItem[]; link: string };
+    allFaqs: string;
+  };
+  mps: MpRole;
+  mlas: MlaRole;
+  mayors: MayorRole;
+  consultants: ConsultantRole;
+}
 
 /** Strings drawn onto the 3D scene's screens (canvas textures) */
 export interface SceneLabels {
@@ -364,7 +454,7 @@ export interface Dictionary {
   brand: { name: string; line: string };
   skip: string;
   chapters: string[];
-  nav: { labels: Record<NavKey, string>; demo: string; menu: string; close: string; language: string; chapters: string; toDark: string; toLight: string };
+  nav: { labels: Record<NavKey, string>; byRole: string; demo: string; menu: string; close: string; language: string; chapters: string; toDark: string; toLight: string };
   hero: { eyebrow: string; titleA: string; titleB: string; sub: string; primary: string; secondary: string };
   proof: { label: string; note: string; items: string[] };
   serve: {

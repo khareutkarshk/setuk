@@ -5,6 +5,7 @@ import { EnvelopeSimple, FacebookLogo, InstagramLogo, MapPin, Phone, WhatsappLog
 import { SetukMark } from "@/components/site/setuk-mark";
 import { Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
+import { ROLE_KEYS } from "@/components/pages/roles/look";
 
 const SOCIAL_ICONS: Record<(typeof site.social)[number]["key"], Icon> = { x: XLogo, facebook: FacebookLogo, instagram: InstagramLogo, youtube: YoutubeLogo };
 
@@ -31,13 +32,14 @@ export function SiteFooter({ t, locale, home = false }: { t: Dictionary; locale:
     ...site.nav.filter((l) => l.key !== "home").map((l) => ({ t: t.nav.labels[l.key], href: href(locale, l.path) })),
     { t: t.footer.voterList, href: href(locale, routes.voterList) }
   ];
+  const roles = ROLE_KEYS.map((k) => ({ t: t.pages.roles[k].menu.t, href: href(locale, routes.roles[k]) }));
   const guides = t.footer.guideItems.map((g) => ({ t: g.t, href: href(locale, routes.article(g.slug)) }));
   const legal = [{ t: t.pages.legal.all, href: href(locale, routes.legal) }, ...t.footer.legalItems.map((g) => ({ t: g.t, href: href(locale, routes.legalDoc(g.slug)) }))];
   return (
     <footer className="relative z-10 overflow-hidden border-t border-line bg-bg">
       <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent opacity-70" />
       <div className="relative mx-auto max-w-page px-5 pt-16 pb-12 text-[14px] md:px-8">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.3fr_.7fr_1fr_1fr]">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.3fr_.7fr_.7fr_1fr_1fr]">
           <div className="col-span-2 lg:col-span-1">
             <Link href={href(locale, routes.home)} className="flex items-center gap-2.5" aria-label={t.brand.name}>
               <span className="w-9"><SetukMark /></span>
@@ -62,6 +64,7 @@ export function SiteFooter({ t, locale, home = false }: { t: Dictionary; locale:
             </div>
           </div>
           <Column title={t.footer.company} links={company} />
+          <Column title={t.nav.byRole} links={roles} />
           <Column title={t.footer.guides} links={guides} />
           <Column title={t.footer.legal} links={legal} />
         </div>

@@ -11,6 +11,7 @@ export const en: Dictionary = {
   chapters: ["Welcome", "Who we serve", "The problem", "With Setuk", "Products", "Discuss", "Design", "Train", "Run"],
   nav: {
     labels: { home: "Home", how: "How we work", engagements: "Engagements", about: "About", articles: "Articles", faqs: "FAQs", contact: "Contact" },
+    byRole: "By role",
     demo: "Request demo",
     menu: "Menu",
     close: "Close menu",
@@ -699,6 +700,434 @@ export const en: Dictionary = {
           { t: "Get the file", d: "Files arrive within 24 hours, often instantly." }
         ],
         cta: "Order on WhatsApp"
+      }
+    },
+    roles: {
+      common: {
+        eg: "For example",
+        soon: "In progress",
+        setup: {
+          title: "Set up with your office in two to three weeks.",
+          sub: "We study how your office runs, configure Setuk around it, train each role, then stay on.",
+          link: "How we work"
+        },
+        trust: {
+          title: "Your office's records stay yours.",
+          items: [
+            { t: "Access by role", d: "Each person sees only the work their role needs." },
+            { t: "Stored in India", d: "Data is stored primarily in India. We don't sell it." },
+            { t: "Yours to export", d: "Export your records at any time. They are kept for 60 days after you stop." },
+            { t: "Breaches reported fast", d: "If a breach affects your data, we tell you within 72 hours." }
+          ],
+          link: "Read the privacy policy"
+        },
+        allFaqs: "See all FAQs"
+      },
+      mps: {
+        meta: {
+          title: "MP Office Management Software | Setuk",
+          description: "Setuk runs an MP's offices in one system: citizen requests, letters, PNR, appointments and programs, from Delhi to the constituency, set up with your staff."
+        },
+        menu: { t: "For MPs", d: "Delhi, constituency and camp offices in one record." },
+        kicker: "For Members of Parliament",
+        title: "Run your MP office from one clear record.",
+        sub: "Citizen requests, letters, PNR, appointments and programs, tracked across Delhi and the constituency, and set up with your staff.",
+        primary: "Request demo",
+        secondary: "See the modules",
+        word: "सांसद",
+        figure: {
+          label: "The Lok Sabha chamber drawn in fine lines. Point at a bench and it rises, like a member standing to speak.",
+          hint: "Point at a bench",
+          read: { seat: "seat" }
+        },
+        challenges: {
+          title: "An MP's office carries more than one register can hold.",
+          items: [
+            { t: "Letters in many registers", d: "Citizen applications, PNR requests and replies from ministries sit in different files and inboxes." },
+            { t: "Two cities, one team", d: "Work moves between Delhi and the constituency, and a request can stall in the handover." },
+            { t: "Follow-ups without an owner", d: "Staff need to know who has each request, what was done and what is still pending." },
+            { t: "No single view for the MP", d: "A picture of pending work means asking several people and waiting for answers." }
+          ]
+        },
+        offices: {
+          kicker: "Many offices, one record",
+          title: "Delhi, the constituency and home, working from the same record.",
+          body: "An MP's work runs through several offices at once. Each gets its own staff and permissions, and every request keeps one shared history.",
+          centre: { t: "One record", d: "Every request, letter and visit" },
+          items: [
+            { t: "Delhi office", d: "Letters to ministries, the session calendar and PNR requests to the railways." },
+            { t: "Constituency office", d: "Citizen requests, visitors and the programs where the MP meets people." },
+            { t: "Residence and camp offices", d: "Requests taken at home or on tour, logged on a phone and passed to the right desk." }
+          ]
+        },
+        modules: {
+          title: "What we set up in an MP's office.",
+          sub: "Live Setuk modules, configured around how your office already works. Each comes with an SOP for your staff.",
+          items: [
+            { t: "Letter management", d: "Applications, ministry replies and departmental letters, each with a reference, an owner and a status.", img: "eletter", alt: "An office assistant reviewing the eLetter list in Setuk" },
+            { t: "PNR letters", d: "Railway requests in a queue of their own, so urgent travel never waits in the general pile.", img: "pnr", alt: "A citizen handing over a railway ticket request at a help desk" },
+            { t: "Appointments and visitors", d: "Meeting requests, slots and every visitor recorded, in Delhi and at home.", img: "appointments", alt: "A citizen greeted at a constituency office reception desk" },
+            { t: "Program calendar", d: "Sessions, inaugurations, public meetings and tours in one calendar the team shares." },
+            { t: "Citizen management", d: "Who asked, what they asked for and what was done, searchable in seconds.", img: "citizens", alt: "A representative meeting citizens at a public gathering" },
+            { t: "Reports", d: "Pending and completed work by staff member, department and area." },
+            { t: "LADs management", d: "Local area development works, from recommendation to completion.", soon: true }
+          ]
+        },
+        flow: {
+          title: "From a citizen's request to a recorded action.",
+          sub: "The same four steps for every request. Here is one PNR case running through them.",
+          steps: [
+            { t: "Record", d: "Staff log the request with the citizen's details and documents.", eg: "A family in the constituency needs confirmed berths to Delhi for a hospital visit on Friday." },
+            { t: "Assign", d: "It goes to the right person, with a due date.", eg: "The PNR desk in the Delhi office gets it, marked urgent." },
+            { t: "Follow up", d: "Every call, letter and reply joins the same history.", eg: "A letter goes to the railway division the same day. Its reply is attached to the case." },
+            { t: "Close and inform", d: "The citizen hears back, and the case closes.", eg: "The family gets an SMS when the berths are confirmed." }
+          ]
+        },
+        oversight: {
+          kicker: "Oversight",
+          title: "Know what is pending without asking around.",
+          body: "The MP and the office manager see the office's work in one place, from today's appointments to the oldest open letter.",
+          items: [
+            "Requests and letters received, pending and closed",
+            "Follow-ups waiting on each staff member",
+            "Today's appointments and the week's programs",
+            "PNR requests by status",
+            "Work by department and area"
+          ],
+          alt: "The eLetter list in Setuk, with received, ongoing and dispatched letters and their status"
+        },
+        team: {
+          title: "Everyone in the office works in the same system.",
+          sub: "Access is set by role, so each person sees their own part of the work.",
+          rows: [
+            { t: "The MP", d: "Reviews pending work and the week ahead, from anywhere." },
+            { t: "Personal secretary", d: "Runs the calendar, appointments and correspondence." },
+            { t: "Office manager", d: "Assigns work and keeps follow-ups moving." },
+            { t: "Staff in Delhi and the constituency", d: "Log requests, update statuses and close cases." }
+          ]
+        },
+        faq: {
+          title: "Questions MP offices ask",
+          items: [
+            { q: "Can our Delhi and constituency offices use one account?", a: "Yes. Constituency, residence, camp and Delhi offices work from one system, with role-based access for every staff member." },
+            { q: "Are PNR requests kept apart from other letters?", a: "Yes. PNR letters have their own queue, so urgent railway requests are tracked separately from general correspondence." },
+            { q: "Can we bring in our existing registers?", a: "Yes. Paper registers and Excel sheets are imported during setup, so you keep your history." },
+            { q: "Can the MP see pending work while travelling?", a: "Yes. Setuk is cloud-based and works on a phone, so the MP and authorised staff can review the office's work from anywhere." },
+            { q: "Is MPLADS work tracked?", a: "A module for local area development works is being built now. Until it ships, works can be followed as letters and requests." },
+            { q: "What does it cost?", a: "Monthly or annual plans, priced by the number of offices, staff and modules. Request a demo for a quote." }
+          ]
+        },
+        cta: {
+          title: "Bring every office you run into one record.",
+          body: "See how Setuk would run your offices, from Delhi to the constituency."
+        }
+      },
+      mlas: {
+        meta: {
+          title: "MLA Office Management Software | Setuk",
+          description: "Setuk runs an MLA's constituency office in one system: citizen requests, letters, programs, booths and karyakartas, set up and trained with your team."
+        },
+        menu: { t: "For MLAs", d: "Constituency office, booths and karyakartas." },
+        kicker: "For Members of Legislative Assembly",
+        title: "Run your constituency from one connected office.",
+        sub: "Citizen requests, letters, programs, booths and karyakartas in one system, so every action in the constituency is tracked.",
+        primary: "Request demo",
+        secondary: "See the modules",
+        word: "विधायक",
+        figure: {
+          label: "An assembly constituency drawn in fine lines, with polling booths across it. Point at the map and the booths nearby rise.",
+          hint: "Point at the map",
+          read: { booth: "booth" }
+        },
+        challenges: {
+          title: "A constituency asks a lot of one office.",
+          items: [
+            { t: "Requests from every direction", d: "Applications, complaints and calls arrive at the office, at home and in the field." },
+            { t: "Teams spread across villages", d: "Office staff and karyakartas need a shared view of who is doing what, and where." },
+            { t: "Letters that go quiet", d: "Requests sent to departments need a reference, a follow-up and a clear status." },
+            { t: "Local work without a record", d: "Programs, visits and development work happen every week and are hard to show later." }
+          ]
+        },
+        ground: {
+          kicker: "From the office to every booth",
+          title: "One system from the constituency office to the last booth.",
+          body: "Setuk follows the way an assembly seat is organised. Work is filed by area and booth, so the office knows where each request came from and who on the ground can help.",
+          levels: [
+            { t: "Constituency office", d: "Requests, letters, appointments and the program calendar." },
+            { t: "Areas and wards", d: "Work grouped by block, panchayat or ward, the way your office divides it." },
+            { t: "Booths", d: "Every booth mapped and staffed, ready for polling day." },
+            { t: "Karyakartas", d: "Assignments and updates for every worker, booth by booth." }
+          ]
+        },
+        modules: {
+          title: "What we set up in an MLA's office.",
+          sub: "Live Setuk modules for the office and the ground, each with an SOP for the people who use it.",
+          items: [
+            { t: "Citizen management", d: "Who came, what they needed and what was done, searchable by village and booth.", img: "citizens", alt: "A representative meeting citizens at a public gathering" },
+            { t: "Letter management", d: "Letters to departments, each with a reference, an owner and a status until the reply comes.", img: "eletter", alt: "An office assistant reviewing the eLetter list in Setuk" },
+            { t: "Booth management", d: "Map, staff and track every booth in the constituency.", img: "booths", alt: "Booth workers checking voter details on phones outside a polling station" },
+            { t: "Karyakarta management", d: "Assignments, communication and tracking for your ground workers." },
+            { t: "Appointments and programs", d: "Visits, meetings and public programs in one calendar for the whole team.", img: "calendar", alt: "A staff member briefing the representative on the day's schedule from a tablet" },
+            { t: "WhatsApp management", d: "Updates and notices to citizens and workers, in bulk or one by one." },
+            { t: "LADs management", d: "Local area development works, from recommendation to completion.", soon: true }
+          ]
+        },
+        flow: {
+          title: "From a village request to a closed case.",
+          sub: "The same four steps for every request. Here is one from a village running through them.",
+          steps: [
+            { t: "Record", d: "Staff log the request with where it came from.", eg: "Residents report that the handpump near the primary school has stopped working." },
+            { t: "Assign", d: "It goes to the right person, filed under its area and booth.", eg: "It is filed under the village's booth and sent to the staff member who handles water." },
+            { t: "Follow up", d: "Letters, calls and visits join the same history.", eg: "A letter goes to the PHED office. The booth's karyakarta confirms when the repair team arrives." },
+            { t: "Close and inform", d: "The citizen hears back, and the case closes.", eg: "The residents get an SMS when the repair is recorded." }
+          ]
+        },
+        oversight: {
+          kicker: "Oversight",
+          title: "See the constituency's work at a glance.",
+          body: "The MLA and the office manager see what came in, what is moving and what is stuck, by area, booth and staff member.",
+          items: [
+            "Requests received and closed, by area and booth",
+            "Letters waiting on a department's reply",
+            "The week's programs and visits",
+            "Work assigned to each staff member and karyakarta",
+            "Booth coverage ahead of polling day"
+          ],
+          alt: "The eLetter list in Setuk, with received, ongoing and dispatched letters and their status"
+        },
+        team: {
+          title: "From the MLA to the booth, one system.",
+          sub: "Access is set by role, so each person sees their own part of the work.",
+          rows: [
+            { t: "The MLA", d: "Sees the constituency's work by area, and what needs a call." },
+            { t: "Personal secretary", d: "Runs appointments, letters and the program calendar." },
+            { t: "Office staff", d: "Log requests, write letters and update statuses." },
+            { t: "Karyakartas and booth teams", d: "Get assignments and report back, limited to their own booths." }
+          ]
+        },
+        faq: {
+          title: "Questions MLA offices ask",
+          items: [
+            { q: "Does Setuk handle booths and karyakartas?", a: "Yes. Booth management maps and staffs every booth, and karyakarta management handles assignments and tracking, booth by booth." },
+            { q: "Can requests be filed by village, ward or booth?", a: "Yes. During setup we create the areas your office uses, so every request carries where it came from." },
+            { q: "Can karyakartas use Setuk on their phones?", a: "Yes. Setuk works on a phone, and each worker sees only the booths and tasks assigned to them." },
+            { q: "What about requests that come on WhatsApp?", a: "Staff log them into Setuk, so they are tracked like every other request." },
+            { q: "Can we bring in our existing records?", a: "Yes. Paper registers and Excel sheets are imported during setup, so you keep your history." },
+            { q: "What does it cost?", a: "Monthly or annual plans, priced by the number of offices, staff and modules. Request a demo for a quote." }
+          ]
+        },
+        cta: {
+          title: "Bring your constituency office into one system.",
+          body: "See how Setuk would run your office, from the first request to the last booth."
+        }
+      },
+      mayors: {
+        meta: {
+          title: "Mayor's Office Management Software | Setuk",
+          description: "Setuk runs a Mayor's office in one system: civic complaints by ward, letters to departments, hearings, programs and public works, set up with your staff."
+        },
+        menu: { t: "For Mayors", d: "Civic complaints, wards and municipal follow-ups." },
+        kicker: "For Mayors and their offices",
+        title: "Keep your city's work in view, ward by ward.",
+        sub: "Civic complaints, letters to departments, hearings and public works, tracked from the Mayor's office in one system.",
+        primary: "Request demo",
+        secondary: "See the modules",
+        word: "महापौर",
+        figure: {
+          label: "A city drawn in fine lines, divided into wards. Point at a ward and its buildings rise.",
+          hint: "Point at a ward",
+          read: { ward: "ward" }
+        },
+        challenges: {
+          title: "A city reaches the Mayor's office in many pieces.",
+          items: [
+            { t: "Complaints on every channel", d: "Roads, drains, garbage and streetlights are reported by phone, letter and in person." },
+            { t: "Many departments, one question", d: "An issue may need engineering, sanitation and the zonal office. Who has it now?" },
+            { t: "Public works without a shared record", d: "Works, inspections and progress updates are spread across files and conversations." },
+            { t: "A crowded calendar", d: "Council meetings, hearings, inaugurations and ward visits compete for the same days." }
+          ]
+        },
+        wards: {
+          kicker: "Ward by ward",
+          title: "Every complaint filed by ward and kind, so patterns show.",
+          body: "Setuk files each issue by ward and category. The office sees where complaints cluster and which department each one is waiting on.",
+          categories: ["Roads", "Drainage", "Sanitation", "Streetlights", "Water supply", "Encroachment"],
+          note: "Setuk runs the Mayor's office. It works alongside the municipal corporation's own systems and does not replace them."
+        },
+        modules: {
+          title: "What we set up in a Mayor's office.",
+          sub: "Live Setuk modules, configured for civic work. Each comes with an SOP for your staff.",
+          items: [
+            { t: "Citizen and complaint management", d: "Every complaint with its ward, category, owner and history.", img: "citizens", alt: "A representative meeting citizens at a public gathering" },
+            { t: "Letter management", d: "Letters to departments and the corporation, each with a reference and a status.", img: "eletter", alt: "An office assistant reviewing the eLetter list in Setuk" },
+            { t: "Appointments and hearings", d: "Citizen meetings, delegations and visitors, recorded and scheduled.", img: "appointments", alt: "A citizen greeted at an office reception desk" },
+            { t: "Program calendar", d: "Council meetings, inaugurations and ward visits in one shared calendar.", img: "calendar", alt: "A staff member briefing the representative on the day's schedule from a tablet" },
+            { t: "Reports", d: "What came in, what was handled and what is pending, by ward, department and staff." },
+            { t: "WhatsApp management", d: "Notices and updates to citizens, in bulk or one by one." },
+            { t: "Event management", d: "Public programs planned and run, from the guest list to the stage.", soon: true }
+          ]
+        },
+        flow: {
+          title: "From a reported pothole to a recorded repair.",
+          sub: "The same four steps for every complaint. Here is one from a ward running through them.",
+          steps: [
+            { t: "Record", d: "Staff log the complaint with its ward and photos.", eg: "A resident of Ward 14 reports a broken road outside the vegetable market." },
+            { t: "Assign", d: "It is filed by ward and category, with an owner.", eg: "It is filed as Roads, Ward 14, and assigned to the staff member who follows up with engineering." },
+            { t: "Follow up", d: "Letters, site visits and replies join the same history.", eg: "A letter goes to the executive engineer. The site visit and the reply are added to the case." },
+            { t: "Close and inform", d: "The citizen hears back, and the case closes.", eg: "The resident gets an SMS when the repair is recorded." }
+          ]
+        },
+        oversight: {
+          kicker: "Oversight",
+          title: "See what needs attention across the city.",
+          body: "The Mayor and the office manager see open complaints by ward and category, the letters waiting on departments, and the week ahead.",
+          items: [
+            "Open and closed complaints, by ward",
+            "Issues by category: roads, drains, sanitation, lights",
+            "Letters waiting on a department's reply",
+            "This week's hearings, meetings and programs",
+            "Work assigned to each staff member"
+          ],
+          alt: "The eLetter list in Setuk, with received, ongoing and dispatched letters and their status"
+        },
+        team: {
+          title: "The Mayor's office, working as one team.",
+          sub: "Access is set by role, so each person sees their own part of the work.",
+          rows: [
+            { t: "The Mayor", d: "Sees open issues by ward, and the week ahead." },
+            { t: "Mayor's secretary", d: "Runs appointments, hearings and correspondence." },
+            { t: "Office manager", d: "Assigns complaints and keeps follow-ups moving." },
+            { t: "Staff and ward coordinators", d: "Log complaints, update statuses and report back." }
+          ]
+        },
+        faq: {
+          title: "Questions Mayors' offices ask",
+          items: [
+            { q: "Does Setuk replace the corporation's grievance system?", a: "No. Setuk runs the Mayor's office. It works alongside the municipal corporation's systems, and staff can record the reference numbers those systems give." },
+            { q: "Can complaints be organised by ward?", a: "Yes. Each complaint carries its ward and category, so the office can see where issues cluster." },
+            { q: "Can we track public works?", a: "Yes, as tracked items with letters, site visits and updates attached. A module for development fund works is being built." },
+            { q: "Can citizens check the status of a complaint?", a: "Yes. Citizens can check the status of their requests, with SMS and WhatsApp alerts when something changes." },
+            { q: "Can several staff use it?", a: "Yes. Every staff member gets a login, and access is set by role." },
+            { q: "What does it cost?", a: "Monthly or annual plans, priced by the number of offices, staff and modules. Request a demo for a quote." }
+          ]
+        },
+        cta: {
+          title: "Bring your city's work into one record.",
+          body: "See how Setuk would run the Mayor's office, from the first complaint to the closed case."
+        }
+      },
+      consultants: {
+        meta: {
+          title: "Partner Program for Political Consultants | Setuk",
+          description: "Political consultants bring strategy and execution. Setuk brings the office platform. Partner with Setuk to set up organised offices for the MPs, MLAs and Mayors you advise."
+        },
+        menu: { t: "For consultants", d: "One platform for every client you advise." },
+        kicker: "For political consultants",
+        title: "Give every client you advise an office that runs on Setuk.",
+        sub: "Partner with Setuk to set up organised offices for the MPs, MLAs and Mayors you work with.",
+        primary: "Become a partner",
+        secondary: "See ways to partner",
+        word: "सलाहकार",
+        figure: {
+          label: "A turntable carrying four kinds of office. Push it round and each client's office comes to the front.",
+          hint: "Push the turntable",
+          read: { client: "client" }
+        },
+        tribute: {
+          kicker: "Why consultants matter",
+          title: "You do more than advise. You turn strategy into work on the ground.",
+          paras: [
+            "Political consultants bring research, planning, communication and organisation to Indian politics. From the first survey to the last booth, they help leaders turn priorities into practical work.",
+            "Much of that work continues long after the results: setting up offices, building teams, understanding local issues and keeping follow-ups moving. In a country this diverse, every client has a different team, geography and way of working.",
+            "Good advice needs a system people can act on. Setuk is that system, so the offices you advise stay organised after you hand over."
+          ],
+          alt: "A campaign war room at night: a team at laptops in front of maps and whiteboards"
+        },
+        challenges: {
+          title: "Your strategy deserves an office that can carry it out.",
+          items: [
+            { t: "Every client works differently", d: "Each office handles requests, letters and appointments its own way, so each engagement starts from scratch." },
+            { t: "Little visibility after handover", d: "Once the plan is delivered, it is hard to see whether the office is following it." },
+            { t: "Advice that stays on paper", d: "Recommendations need a system the client's staff use every day, or they fade." },
+            { t: "More clients, more setup", d: "Onboarding, training and support grow with every office you take on." }
+          ]
+        },
+        model: {
+          title: "You bring the expertise. Setuk brings the technology.",
+          sub: "A partnership that adds to what you already do, and replaces none of it.",
+          parts: [
+            { t: "Your practice", d: "Client relationships, strategy, political judgement and the advice your clients come to you for." },
+            { t: "Setuk's platform", d: "The office system: citizen records, letters, appointments, booths, karyakartas and reports, with SOPs." },
+            { t: "Your clients' offices", d: "MPs, MLAs, Mayors and other offices that run their daily work on Setuk." }
+          ]
+        },
+        offer: {
+          title: "What you can deliver to clients with Setuk.",
+          sub: "Add a working office system to your engagements, set up the way each client works.",
+          items: [
+            { t: "A digital office, set up", d: "Workflows for requests, letters, appointments and staff roles, designed with the client.", img: "officeTeam", alt: "A constituency office team working in Setuk on laptops" },
+            { t: "Booths and karyakartas, organised", d: "Areas, booths and ground workers in one system, ready before polling day.", img: "booths", alt: "Booth workers checking voter details on phones outside a polling station" },
+            { t: "Citizen service that holds", d: "Citizen records, letters and follow-ups the client's staff run every day.", img: "eletter", alt: "An office assistant reviewing the eLetter list in Setuk" },
+            { t: "Training and adoption", d: "Role-by-role training and written SOPs, delivered as part of your engagement.", img: "contactDesk", alt: "A desk with a laptop, a notebook and printed reports" },
+            { t: "Regular reviews", d: "Monthly reviews of pending and completed work, from the reports Setuk produces.", img: "commandCentre", alt: "A team reviewing maps and numbers on large screens in a command centre" }
+          ]
+        },
+        paths: {
+          kicker: "Ways to partner",
+          title: "Choose how you want to work with us.",
+          sub: "Four ways to partner. We agree the terms with each partner, in writing, before the first client.",
+          items: [
+            { t: "Referral", d: "You introduce a client. Setuk handles the sale, the setup and the support." },
+            { t: "Implementation", d: "You configure workflows, train staff and support adoption, with Setuk behind you." },
+            { t: "Reseller", d: "You offer Setuk to your clients on agreed resale terms." },
+            { t: "Consulting-led", d: "You combine Setuk with your own advisory and implementation services." }
+          ],
+          note: "Commissions, partner pricing and branding are agreed with each partner. Nothing on this page is a published rate."
+        },
+        steps: {
+          title: "From your first client to a service you can repeat.",
+          items: [
+            { t: "Talk to us", d: "Tell us about your practice, your clients and the offices you serve." },
+            { t: "Pick a client", d: "Choose the office to start with and the modules it needs." },
+            { t: "Set it up together", d: "Agree who configures, who trains and the timeline, then do it." },
+            { t: "Support the client", d: "Help the office adopt Setuk while you deliver your own advice." },
+            { t: "Repeat", d: "Use what worked as the template for your next client." }
+          ]
+        },
+        data: {
+          title: "Each client's records stay with the client.",
+          body: "Consultants often advise several offices, sometimes on opposite sides. Setuk keeps them apart.",
+          items: [
+            { t: "An account per office", d: "Each client office has its own account and its own records." },
+            { t: "Access by permission", d: "You see a client's records only if that office grants access, and only for the agreed scope." },
+            { t: "The office owns its data", d: "Clients can export their records at any time and keep them if an engagement ends." },
+            { t: "Stored in India", d: "Data is stored primarily in India, and breaches are reported within 72 hours." }
+          ]
+        },
+        who: {
+          title: "Who partners with Setuk",
+          items: [
+            { t: "Political consulting firms", d: "Strategy, research and organisation for representatives and parties." },
+            { t: "Election and campaign teams", d: "Professionals who want a system that outlasts the campaign." },
+            { t: "Political technology agencies", d: "Teams that help offices adopt software and new ways of working." },
+            { t: "Independent advisors", d: "Consultants who want to offer clients a structured service." }
+          ]
+        },
+        faq: {
+          title: "Questions consultants ask",
+          items: [
+            { q: "Can I offer Setuk to my clients?", a: "Yes, that is what the partnership is for. Together we agree whether you refer, implement, resell or combine Setuk with your own services." },
+            { q: "Who owns the client relationship?", a: "That is agreed per partnership, in writing, before the first client. Each client office always owns its own data." },
+            { q: "Can I work across several client offices?", a: "Each client has its own account. With each office's permission, you can work in several, within the access they grant." },
+            { q: "Who trains the client's staff?", a: "Setuk or you, depending on the way you partner. Training and SOPs are part of every setup." },
+            { q: "What are the partner terms?", a: "Commissions, partner pricing and branding are agreed with each partner. Tell us about your practice and we will propose terms." },
+            { q: "Can I offer Setuk under my own brand?", a: "Branding is discussed per partner. We don't offer white-labelling by default." }
+          ]
+        },
+        cta: {
+          title: "Bring Setuk into your consulting practice.",
+          body: "Tell us about your practice and the offices you serve, and we will show you what you can deliver with Setuk."
+        }
       }
     }
   },

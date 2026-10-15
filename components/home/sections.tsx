@@ -202,7 +202,8 @@ export function Faq({ t, locale }: { t: Dictionary; locale: Locale }) {
 }
 
 /** The closing call to action, shared by every page */
-export function Cta({ t, locale }: { t: Dictionary; locale: Locale }) {
+/** The closing call to action. A page may put its own title, body and button label in it (`own`) */
+export function Cta({ t, locale, own }: { t: Dictionary; locale: Locale; own?: { title: string; body: string; primary?: string } }) {
   return (
     <section aria-labelledby="cta-title" className="relative z-10 bg-bg">
       <div className="mx-auto max-w-page px-5 pb-20 md:px-8 md:pb-28">
@@ -213,12 +214,12 @@ export function Cta({ t, locale }: { t: Dictionary; locale: Locale }) {
           <span aria-hidden="true" className="font-deva pointer-events-none absolute right-[3vw] bottom-[0.06em] select-none text-[26vw] leading-none font-bold opacity-[.12] lg:text-[230px]">सेतुक</span>
           <div className="relative max-w-[640px]">
             <span className="block w-14 [--mark-arch:var(--accent-ink)] [--mark-dot-mid:var(--accent-ink)]"><SetukMark /></span>
-            <Title className="mt-8"><span id="cta-title">{t.cta.title}</span></Title>
-            <p className="mt-5 max-w-[52ch] text-[17px] leading-relaxed opacity-80">{t.cta.body}</p>
+            <Title className="mt-8"><span id="cta-title">{own?.title ?? t.cta.title}</span></Title>
+            <p className="mt-5 max-w-[52ch] text-[17px] leading-relaxed opacity-80">{own?.body ?? t.cta.body}</p>
           </div>
           <div className="relative flex flex-wrap gap-3">
             <Link href={href(locale, routes.contact)} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent-ink px-6 font-semibold text-accent focus-visible:outline-accent-ink hover:brightness-95">
-              {t.cta.primary}
+              {own?.primary ?? t.cta.primary}
               <I.ArrowRight weight="bold" aria-hidden />
             </Link>
             <a href={site.whatsapp.href} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full border border-accent-ink/40 px-6 font-semibold focus-visible:outline-accent-ink hover:border-accent-ink">
