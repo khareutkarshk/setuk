@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setuk Proposal: Letter Routing, Tracking and Advisory System</title>
+<!--
+  HOW TO EDIT (full notes in README.txt)
+  - Open this file in Chrome or Edge. Click "Edit text", type on the page, then "Download PDF".
+  - "Save HTML" writes your changes back into a copy of this file so they are not lost.
+  - Each <section class="page"> is one A4 page. Page numbers fill in by themselves.
+  - Look and colours: assets/proposal.css. Editor buttons: assets/editor.js (not part of the PDF).
+-->
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="assets/proposal.css">
+<link rel="stylesheet" href="assets/editor.css">
+<script src="assets/editor.js" defer></script>
+</head>
+<body>
+
+<!-- Logo, defined once -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 949 405">
+    <path d="M15 305 Q474 -15 934 305" stroke="var(--mark-arch)" stroke-width="34" fill="none"/>
+    <path fill="var(--mark-arch)" d="M60 330 Q474 50 888 330 L868 348 L868 392 L811 392 L811 355 A85 85 0 0 0 641 355 L641 392 L590 392 L590 350 A115 115 0 0 0 360 350 L360 392 L307 392 L307 355 A85 85 0 0 0 137 355 L137 392 L80 392 L80 348 Z"/>
+    <circle cx="225" cy="92" r="38" fill="var(--mark-dot-side)"/>
+    <circle cx="474" cy="56" r="41" fill="var(--mark-dot-mid)"/>
+    <circle cx="723" cy="92" r="38" fill="var(--mark-dot-side)"/>
+  </symbol>
+  <symbol id="tick" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="info" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 7v4.2M8 4.6v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+</svg>
+
+<!-- ============ COVER ============ -->
+<section class="page cover">
+  <div class="top">
+    <div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK <small>PVT. LTD.</small></div>
+    <div class="draft">DRAFT v2.0 · OCTOBER 2026</div>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Project Proposal</div>
+    <h1>AI-Enabled Letter Routing, Tracking <em>&amp;</em> Advisory System</h1>
+    <p class="sub">Every letter received by the office registered, routed to the competent officer, tracked against its time limit, and placed before the District Magistrate with options when it stalls.</p>
+  </div>
+
+  <div class="flow">
+    <div class="track">
+      <div class="stp"><div class="dot"></div><div class="num">01</div><div class="nm">Upload</div></div>
+      <div class="stp"><div class="dot"></div><div class="num">02</div><div class="nm">Extract</div></div>
+      <div class="stp"><div class="dot"></div><div class="num">03</div><div class="nm">Assign</div></div>
+      <div class="stp"><div class="dot"></div><div class="num">04</div><div class="nm">Dispatch</div></div>
+      <div class="stp"><div class="dot"></div><div class="num">05</div><div class="nm">Reply</div></div>
+      <div class="stp"><div class="dot"></div><div class="num">06</div><div class="nm">Status</div></div>
+      <div class="stp"><div class="dot"></div><div class="num">07</div><div class="nm">Advise</div></div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div><div class="label">Prepared for</div>Office of the District Magistrate<span>Sheikhpura, Bihar</span></div>
+    <div><div class="label">Prepared by</div>Setuk Pvt. Ltd.<span>Patliputra, Patna</span></div>
+    <div><div class="label">Document</div>Draft v2.0<span>October 2026</span></div>
+  </div>
+</section>
+
+<!-- ============ 01 INTRODUCTION ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 01</div>
+  <h2><span class="n">1</span>Introduction and Objective</h2>
+  <p class="lede">The Office of the District Magistrate receives a large volume of correspondence from citizens, public representatives and government departments. At present, each communication is examined, forwarded to the concerned department and followed up manually. This results in avoidable delay, difficulty in tracing the status of a communication and limited supervisory visibility.</p>
+
+  <blockquote class="pull">From files followed up by hand to a single traceable record for every letter.</blockquote>
+
+  <p>Setuk Pvt. Ltd. proposes a web-based application through which every letter received by the office is uploaded, interpreted, assigned to the competent officer and tracked until disposal. The system will also place delayed and problematic matters before the District Magistrate, accompanied by a decision-support note setting out possible courses of action.</p>
+
+  <h3 style="margin-top:9mm">The objectives of the system are</h3>
+  <div class="objectives">
+    <div><span class="n">01</span><span>To ensure that every letter received is <b>registered, assigned and traceable</b>.</span></div>
+    <div><span class="n">02</span><span>To ensure that each letter is routed to the <b>appropriate officer</b> without manual triage.</span></div>
+    <div><span class="n">03</span><span>To <b>monitor compliance</b> against prescribed timelines (SLA) and highlight non-compliance.</span></div>
+    <div><span class="n">04</span><span>To assist the District Magistrate in <b>deciding the way forward</b> on matters that remain unresolved.</span></div>
+  </div>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">02 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 02 WORKFLOW ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 02</div>
+  <h2><span class="n">2</span>Proposed Workflow</h2>
+  <p class="lede">Seven steps take a letter from the receiving desk to disposal. Each step can run with staff approval or, where the office so decides, automatically.</p>
+
+  <div class="steps">
+    <div class="step"><div class="nb">01</div><div><div class="hd"><h4>Upload</h4><span class="label">Office staff</span></div><p>Authorised office staff upload the scanned or photographed letter, whether handwritten or typed, in Hindi, Punjabi, English or another Indian language.</p></div></div>
+    <div class="step"><div class="nb">02</div><div><div class="hd"><h4>Extraction</h4><span class="label">OCR + AI</span></div><p>The system extracts the text and the principal particulars of the letter, namely the sender, date, subject, location and the relief sought. It identifies whether the letter is new, or a repeat or revision of an earlier communication and links it to the existing case.</p></div></div>
+    <div class="step"><div class="nb">03</div><div><div class="hd"><h4>Assignment</h4><span class="label">Confirm or automatic</span></div><p>On the basis of the officer directory furnished by the office (name, designation, department, email ID and SLA days), the system identifies the competent officer and records the reasoning. The dealing staff confirm or modify the assignment. Alternatively, the office may set the assignment to automatic, in which case the email is dispatched without staff confirmation.</p></div></div>
+    <div class="step"><div class="nb">04</div><div><div class="hd"><h4>Dispatch</h4><span class="label">Email</span></div><p>The system sends an email to the assigned officer from the office's designated email address. The email contains the letter, a summary, the due date (SLA days from the date of dispatch) and a unique reference number in the subject line.</p></div></div>
+    <div class="step"><div class="nb">05</div><div><div class="hd"><h4>Receipt of reply</h4><span class="label">Mapped by reference</span></div><p>The officer replies to the same email, or sends a fresh email or letter quoting the reference number. The system receives the communication, maps it to the case and appends it to the case file.</p></div></div>
+    <div class="step"><div class="nb">06</div><div><div class="hd"><h4>Status determination</h4><span class="label">Automatic</span></div><p>Where the reply states that the work is complete, the case is marked <span class="chip c-ok">Solved</span>. Where the reply states that the work cannot be done, the case is marked <span class="chip c-issue">Issue Reported by Department</span> and the reason given is recorded. Where no reply is received within the SLA period, the case is marked <span class="chip c-fail">SLA Failed</span>.</p></div></div>
+    <div class="step"><div class="nb">07</div><div><div class="hd"><h4>Advisory</h4><span class="label">For the District Magistrate</span></div><p>For each case marked Issue Reported by Department or SLA Failed, the District Magistrate is presented with the case history, the possible options for resolution and examples of how comparable matters have been resolved elsewhere.</p></div></div>
+  </div>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">03 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 03 STATUS MODEL ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 03</div>
+  <h2><span class="n">3</span>Case Status Model</h2>
+  <p class="lede">Every case carries exactly one status at a time. Statuses change on upload, on dispatch, on a mapped reply or on expiry of the SLA period, and each change is logged.</p>
+
+  <div class="diagram">
+    <svg viewBox="0 0 640 300" font-family="Inter, sans-serif">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1b46a1"/></marker>
+        <marker id="arv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5a3fb0"/></marker>
+      </defs>
+      <!-- edges -->
+      <path d="M118 160 H170" stroke="#1b46a1" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <text x="144" y="150" font-size="9" fill="#6b7686" text-anchor="middle">dispatch</text>
+      <path d="M298 150 C 340 150, 340 62, 392 62" stroke="#1b46a1" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <text x="332" y="88" font-size="9" fill="#6b7686" text-anchor="end">reply: done</text>
+      <path d="M298 160 H392" stroke="#1b46a1" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <text x="345" y="152" font-size="9" fill="#6b7686" text-anchor="middle">reply: cannot</text>
+      <path d="M298 170 C 340 170, 340 258, 392 258" stroke="#b42a2f" stroke-width="1.5" stroke-dasharray="4 4" fill="none" marker-end="url(#ar)"/>
+      <text x="332" y="240" font-size="9" fill="#6b7686" text-anchor="end">no reply in SLA</text>
+      <path d="M520 46 C 600 10, 120 0, 66 128" stroke="#5a3fb0" stroke-width="1.3" stroke-dasharray="3 4" fill="none" marker-end="url(#arv)"/>
+      <rect x="236" y="10" width="140" height="20" rx="10" fill="#f2eefc"/>
+      <text x="306" y="24" font-size="9" font-weight="600" fill="#5a3fb0" text-anchor="middle">Reopened · follow-up letter</text>
+
+      <!-- nodes -->
+      <rect x="14" y="134" width="104" height="52" rx="10" fill="#fff" stroke="#cfd6df"/>
+      <circle cx="30" cy="153" r="3.5" fill="#4b5563"/>
+      <text x="40" y="157" font-size="12" font-weight="600" fill="#0e1a2b" font-family="Inter Tight, Inter">New</text>
+      <text x="40" y="173" font-size="9" fill="#6b7686">On upload</text>
+
+      <rect x="174" y="134" width="124" height="52" rx="10" fill="#1b46a1"/>
+      <circle cx="190" cy="153" r="3.5" fill="#9fbaf0"/>
+      <text x="200" y="157" font-size="12" font-weight="600" fill="#fff" font-family="Inter Tight, Inter">Awaiting Reply</text>
+      <text x="200" y="173" font-size="9" fill="#c9d7f6">SLA clock running</text>
+
+      <rect x="396" y="38" width="200" height="48" rx="10" fill="#ebf6ef" stroke="#cfe8d7"/>
+      <circle cx="412" cy="56" r="3.5" fill="#2b8a4c"/>
+      <text x="422" y="60" font-size="12" font-weight="600" fill="#2b8a4c" font-family="Inter Tight, Inter">Solved</text>
+      <text x="422" y="75" font-size="9" fill="#4d6b58">Completion confirmed</text>
+
+      <rect x="396" y="136" width="230" height="48" rx="10" fill="#fdf4e6" stroke="#f3e0bf"/>
+      <circle cx="412" cy="154" r="3.5" fill="#a35d06"/>
+      <text x="422" y="158" font-size="12" font-weight="600" fill="#a35d06" font-family="Inter Tight, Inter">Issue Reported by Department</text>
+      <text x="422" y="173" font-size="9" fill="#7a5a33">Reason recorded → Advisory Note</text>
+
+      <rect x="396" y="234" width="200" height="48" rx="10" fill="#fcedee" stroke="#f3d3d5"/>
+      <circle cx="412" cy="252" r="3.5" fill="#b42a2f"/>
+      <text x="422" y="256" font-size="12" font-weight="600" fill="#b42a2f" font-family="Inter Tight, Inter">SLA Failed</text>
+      <text x="422" y="271" font-size="9" fill="#7d4a4c">Automatic → Advisory Note</text>
+    </svg>
+  </div>
+
+  <table>
+    <thead><tr><th style="width:36%">Status</th><th style="width:32%">Meaning</th><th>Basis of determination</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip c-new">New</span></td><td>Letter uploaded; not yet dispatched</td><td>On upload</td></tr>
+      <tr><td><span class="chip c-wait">Awaiting Reply</span></td><td>Email dispatched; SLA period running</td><td>On dispatch</td></tr>
+      <tr><td><span class="chip c-ok">Solved</span></td><td>Department confirms completion of work</td><td>Reply mapped by reference number; content confirms completion</td></tr>
+      <tr><td><span class="chip c-issue">Issue Reported by Department</span></td><td>Department states that the work cannot be done, with the reason</td><td>Reply mapped; content states the impediment, which is recorded as the reason</td></tr>
+      <tr><td><span class="chip c-fail">SLA Failed</span></td><td>SLA period expired without a reply</td><td>Automatic; displayed on the dashboard</td></tr>
+      <tr><td><span class="chip c-re">Reopened</span></td><td>Follow-up or revised letter received from the citizen</td><td>Linked to the existing case</td></tr>
+    </tbody>
+  </table>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">04 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 04 FUNCTIONAL (1) ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 04</div>
+  <h2 style="margin-bottom:8mm"><span class="n">4</span>Functional Description</h2>
+
+  <div class="block">
+    <h3><span class="n">4.1</span>Letter Intake and Optical Character Recognition</h3>
+    <ul class="dash">
+      <li>Upload of one or more files, in the form of scans, photographs or PDF files, relating to a single case. The letter and its attachments are saved separately and each attachment remains linked to the case.</li>
+      <li>Text extraction from handwritten and printed letters using <b>Chandra 2.0</b>, an OCR model, followed by LLM-based structuring of the extracted particulars.</li>
+      <li>Side-by-side display of the original image and the extracted text, permitting correction by staff before assignment. This review may be set to automatic, in which case the extracted particulars are accepted without staff review.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3><span class="n">4.2</span>Assignment and Email Dispatch</h3>
+    <ul class="dash">
+      <li>The officer directory (name, designation, department, email ID and SLA days) is maintained by the office and may be updated through the application.</li>
+      <li>The system proposes an officer; the dealing staff confirm the assignment prior to dispatch. This step may be set to automatic by the office, in which case the email is dispatched on the system's own assignment.</li>
+      <li>Outgoing emails follow a standard format and carry the reference number and the due date.</li>
+    </ul>
+    <div class="mail">
+      <div class="bar"><i></i><i></i><i></i><span class="label">Illustrative dispatch email</span></div>
+      <dl>
+        <dt>From</dt><dd>dm-letters@&lt;office domain&gt;</dd>
+        <dt>To</dt><dd>Assigned officer, as per directory</dd>
+        <dt>Subject</dt><dd><code>[REF-2026-000123]</code> Letter for action · Due 25 Oct 2026</dd>
+        <dt>Body</dt><dd>Summary of the letter, original attached, due date (SLA days from dispatch).</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3><span class="n">4.3</span>Reply Tracking and Mapping</h3>
+    <ul class="dash">
+      <li>A dedicated office mailbox is monitored continuously.</li>
+      <li>Replies are mapped primarily through the reference number. Where no reference number is quoted, mapping is attempted using the sender, the email thread and the content of the letter. <b>Doubtful matches are placed in a queue for staff verification</b> and are not mapped automatically.</li>
+      <li>All emails, letters and notes relating to a case are maintained in a single chronological case file.</li>
+    </ul>
+  </div>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">05 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 04 FUNCTIONAL (2) ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="block">
+    <h3><span class="n">4.4</span>Dashboard</h3>
+    <p>The dashboard presents three principal views to the District Magistrate:</p>
+    <div class="views">
+      <div class="view ok"><div class="label">View 1</div><h4>Solved Cases</h4><p>Matters in which the department has confirmed completion, with the reply and any supporting document attached.</p></div>
+      <div class="view fail"><div class="label">View 2</div><h4>SLA Failed Cases</h4><p>Matters in which no reply has been received within the prescribed period, in order of delay.</p></div>
+      <div class="view issue"><div class="label">View 3</div><h4>Issues Reported by Department</h4><p>Matters in which the department has stated that the work cannot be done, together with the reason given.</p></div>
+    </div>
+    <ul class="dash">
+      <li>Summary counts of cases by status, with filters for department, officer, date and area.</li>
+      <li>Reminders to officers before expiry of the SLA period and escalation upon expiry.</li>
+    </ul>
+  </div>
+
+  <div class="block" style="padding-top:7mm">
+    <h3><span class="n">4.5</span>Advisory Support to the District Magistrate</h3>
+    <p>For each case in the SLA Failed and Issues Reported by Department views, the system will prepare an <b>Advisory Note</b> setting out what can be done and what is being done elsewhere in the world on similar issues. The note contains:</p>
+    <div class="note-grid">
+      <div><span class="label">A · Problem</span><p>A concise statement of the problem and the reason furnished by the department.</p></div>
+      <div><span class="label">B · Options</span><p>Reassignment to another department, escalation to a higher authority, an alternative source of funds, a joint inspection, or a formal reminder.</p></div>
+      <div><span class="label">C · Rules check</span><p>A check of each option against the Government Orders, Acts and circulars loaded into the system, with the source cited.</p></div>
+      <div><span class="label">D · Precedents</span><p>How similar issues have been addressed in other districts, States and countries, each with a reference to its source.</p></div>
+    </div>
+    <div class="callout"><svg><use href="#info"/></svg><div><b>Note.</b> The Advisory Note is intended solely to support decision-making. The decision rests with the District Magistrate. Each suggestion will indicate its source and any item that could not be verified will be marked as such. The quality of the advisory depends on the legal and precedent material made available to the system.</div></div>
+  </div>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">06 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 05 RBAC ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 05</div>
+  <h2><span class="n">5</span>Role-Based Access Control</h2>
+  <p class="lede">Access to the system will be governed by roles. Each user is assigned one or more roles and may additionally be restricted to specified departments or case categories. Permissions are <b>enforced at the server level</b> and not merely hidden on the screen.</p>
+
+  <table class="rbac">
+    <thead><tr><th style="width:30%">Role</th><th>Upload<br>letters</th><th>Approve<br>assignment</th><th>View all<br>cases</th><th>Advisory<br>note</th><th>Admin</th></tr></thead>
+    <tbody>
+      <tr><td>System Administrator</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+      <tr><td>District Magistrate</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+      <tr><td>Supervisory Officer <small>(ADM / SDM)</small></td><td class="yes">✓</td><td class="yes">✓</td><td><span class="tag">Own area</span></td><td class="yes">✓</td><td class="no">—</td></tr>
+      <tr><td>Dealing Staff / Operator</td><td class="yes">✓</td><td><span class="tag">Propose only</span></td><td><span class="tag">Own entries</span></td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Auditor <small>(read-only)</small></td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+    </tbody>
+  </table>
+  <div class="legend"><span><span class="yes">✓</span> permitted</span><span><span class="no">—</span> not permitted</span></div>
+
+  <div class="quad">
+    <div><span class="label">Departments</span>Officers of the departments communicate by email and are not required to hold a login in the first phase. A department-level portal login may be added at a later stage.</div>
+    <div><span class="label">Administration</span>The System Administrator manages users, roles and the officer directory but <b>cannot view case content</b>.</div>
+    <div><span class="label">Sign-in</span>Secure login with multi-factor authentication and automatic session timeout. Access is withdrawn on the transfer or retirement of a user, for which the office is requested to give Setuk one week's prior intimation.</div>
+    <div><span class="label">Audit</span>Every action, including viewing, approval, modification and closure, is recorded in an audit log against the user's identity.</div>
+  </div>
+
+  <div class="callout blue"><svg><use href="#info"/></svg><div>The roles listed above are proposed and will be finalised with the office during the requirements study.</div></div>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">07 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 06 TECH ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 06</div>
+  <h2><span class="n">6</span>Technology Stack</h2>
+  <p class="lede">Established, widely supported components, with the AI layer kept replaceable so the office is not tied to a single model provider.</p>
+
+  <div class="stack">
+    <div><span class="label">Front end</span><h4>React</h4><p>Responsive web interface for staff, supervisory officers and the District Magistrate</p></div>
+    <div><span class="label">Back end</span><h4>Node.js</h4><p>REST APIs, workflow engine, email integration, scheduled SLA checks</p></div>
+    <div><span class="label">Database</span><h4>MongoDB</h4><p>Case records, directory, audit log; indexed for search</p></div>
+    <div><span class="label">OCR</span><h4>Chandra 2.0</h4><p>Handwritten and printed text; requires GPU-enabled hosting if self-hosted</p></div>
+    <div class="w4 ai"><span class="label">AI reasoning</span><h4>Multiple LLMs, such as Claude, ChatGPT and others</h4><p>Through a service layer maintained by Setuk, used for assignment, status determination and advisory. The model may be selected or replaced without change to the application.</p></div>
+    <div class="w4"><span class="label">Knowledge base</span><h4>Vector search over Government Orders, Acts, circulars and past cases</h4><p>Grounds the advisory in the material supplied by the office</p></div>
+    <div><span class="label">File storage</span><h4>Object storage</h4><p>Original letters, attachments and generated documents (see Section 7)</p></div>
+    <div class="w4"><span class="label">Email</span><h4>Dedicated mailbox via IMAP / SMTP or the Microsoft 365 / Google Workspace API</h4><p>Sending, receiving and thread tracking</p></div>
+    <div><span class="label">Hosting</span><h4>Cloud infrastructure within India</h4><p>Data to remain within the country</p></div>
+  </div>
+
+  <div class="flowmap">
+    <div class="chart-cap"><span class="label">How the components connect</span><span class="label">Hosted in India</span></div>
+    <svg viewBox="0 0 640 200" font-family="Inter, sans-serif">
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="#1b46a1"/></marker></defs>
+      <g stroke="#1b46a1" stroke-width="1.4" fill="none" stroke-linejoin="round">
+        <path d="M112 38 H137" marker-end="url(#ar2)"/>
+        <path d="M236 38 H250 Q258 38 258 46 V70 H265" marker-end="url(#ar2)"/>
+        <path d="M112 114 H250 Q258 114 258 106 V70"/>
+        <path d="M408 70 H517" marker-end="url(#ar2)"/>
+        <path d="M338 110 V147" marker-end="url(#ar2)"/>
+        <path d="M202 147 V136 Q202 128 210 128 H466 Q474 128 474 136 V147" marker-start="url(#ar2)" marker-end="url(#ar2)"/>
+      </g>
+      <text x="463" y="63" font-size="8" fill="#6b7686" text-anchor="middle">status · advisory</text>
+      <g font-size="10.5" font-weight="600" fill="#0e1a2b" font-family="Inter Tight, Inter">
+        <rect x="0" y="16" width="112" height="44" rx="8" fill="#fff" stroke="#cfd6df"/><text x="12" y="35">Letter upload</text><text x="12" y="49" font-size="8.5" font-weight="400" fill="#6b7686" font-family="Inter">React · staff desk</text>
+        <rect x="140" y="16" width="96" height="44" rx="8" fill="#fff" stroke="#cfd6df"/><text x="152" y="35">OCR</text><text x="152" y="49" font-size="8.5" font-weight="400" fill="#6b7686" font-family="Inter">Chandra 2.0</text>
+        <rect x="0" y="92" width="112" height="44" rx="8" fill="#fff" stroke="#cfd6df"/><text x="12" y="111">Office mailbox</text><text x="12" y="125" font-size="8.5" font-weight="400" fill="#6b7686" font-family="Inter">IMAP / SMTP</text>
+        <rect x="268" y="30" width="140" height="80" rx="8" fill="#1b46a1"/><text x="280" y="55" fill="#fff">Workflow engine</text><text x="280" y="70" font-size="8.5" font-weight="400" fill="#c9d7f6" font-family="Inter">Node.js · SLA checks</text><text x="280" y="83" font-size="8.5" font-weight="400" fill="#c9d7f6" font-family="Inter">status · reminders</text>
+        <rect x="520" y="30" width="120" height="80" rx="8" fill="#ebf6ef" stroke="#cfe8d7"/><text x="532" y="55" fill="#2b8a4c">Dashboard</text><text x="532" y="70" font-size="8.5" font-weight="400" fill="#4d6b58" font-family="Inter">District Magistrate</text><text x="532" y="83" font-size="8.5" font-weight="400" fill="#4d6b58" font-family="Inter">solved · failed · issues</text>
+        <rect x="142" y="150" width="120" height="44" rx="8" fill="#eef3fc" stroke="#d5e0f6"/><text x="154" y="169">AI service layer</text><text x="154" y="183" font-size="8.5" font-weight="400" fill="#6b7686" font-family="Inter">Claude, ChatGPT…</text>
+        <rect x="278" y="150" width="120" height="44" rx="8" fill="#fff" stroke="#cfd6df"/><text x="290" y="169">Knowledge base</text><text x="290" y="183" font-size="8.5" font-weight="400" fill="#6b7686" font-family="Inter">GOs · Acts · cases</text>
+        <rect x="414" y="150" width="120" height="44" rx="8" fill="#fff" stroke="#cfd6df"/><text x="426" y="169">Records</text><text x="426" y="183" font-size="8.5" font-weight="400" fill="#6b7686" font-family="Inter">MongoDB · files</text>
+      </g>
+    </svg>
+  </div>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">08 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 07 STORAGE ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 07</div>
+  <h2><span class="n">7</span>Storage Requirements and Cost</h2>
+  <p class="lede" style="margin-bottom:4mm; font-size:9.6pt">Storage is a recurring cost that grows with the volume of correspondence and the period for which records are retained. It will be charged by the hosting provider on a per-gigabyte, per-month basis and will be shown as a separate line item in the commercial proposal.</p>
+
+  <h3><span class="n">7.1</span>Data to be stored</h3>
+  <table class="tight" style="margin-bottom:6mm">
+    <thead><tr><th style="width:26%">Data</th><th>Description</th><th style="width:22%">Storage type</th></tr></thead>
+    <tbody>
+      <tr><td>Letters</td><td>Scanned images and PDFs of the letters as uploaded; the largest component</td><td>Object storage</td></tr>
+      <tr><td>Case attachments</td><td>Documents attached to a case, stored separately from the letter</td><td>Object storage</td></tr>
+      <tr><td>Emails and replies</td><td>Outgoing emails and replies received, with any files attached to them</td><td>Object storage</td></tr>
+      <tr><td>Extracted text and case data</td><td>OCR text, particulars, status history, directory</td><td>MongoDB</td></tr>
+      <tr><td>Knowledge base index</td><td>Embeddings of Government Orders, Acts, circulars and precedents</td><td>Vector index</td></tr>
+      <tr><td>Audit logs</td><td>Record of every user and system action</td><td>MongoDB / archive</td></tr>
+      <tr><td>Backups</td><td>Periodic copies of database and files, held separately</td><td>Backup storage</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="n">7.2</span>Illustrative Estimate</h3>
+  <p class="muted" style="font-size:8.8pt">The figures below are illustrative and are intended only to indicate the order of magnitude. They will be revised on the basis of the office's actual daily volume.</p>
+
+  <div class="kpis">
+    <div><div class="v">100</div><div class="k">Letters received per day</div></div>
+    <div><div class="v">3<small>MB</small></div><div class="k">Average per letter, incl. attachments and replies</div></div>
+    <div><div class="v">~110<small>GB</small></div><div class="k">Growth per year (~36,500 letters)</div></div>
+    <div><div class="v">~220<small>GB</small></div><div class="k">Per year including one backup copy</div></div>
+    <div><div class="v">~1.1<small>TB</small></div><div class="k">Retention of five years</div></div>
+  </div>
+
+  <div class="chart-cap"><span class="label">Cumulative storage incl. backup</span><span class="label">Illustrative</span></div>
+  <div class="bars">
+    <div class="b"><div class="v">220 GB</div><div class="fill" style="height:16%"></div></div>
+    <div class="b"><div class="v">440 GB</div><div class="fill" style="height:33%"></div></div>
+    <div class="b"><div class="v">660 GB</div><div class="fill" style="height:49%"></div></div>
+    <div class="b"><div class="v">880 GB</div><div class="fill" style="height:66%"></div></div>
+    <div class="b"><div class="v">1.1 TB</div><div class="fill" style="height:82%"></div></div>
+  </div>
+  <div class="bars-x label"><span>Year 1</span><span>Year 2</span><span>Year 3</span><span>Year 4</span><span>Year 5</span></div>
+
+  <ul class="dash notes3" style="margin-top:4mm; font-size:8pt; line-height:1.5">
+    <li>Retention period and archival policy (for example, moving records older than two years to lower-cost storage) are to be decided by the office.</li>
+    <li>If Chandra 2.0 is hosted by Setuk or on cloud GPU servers, the cost of that hosting is separate from storage and will also be itemised.</li>
+    <li>Charges for email-sending service and for LLM usage depend on volume and will likewise be itemised.</li>
+  </ul>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">09 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 08 SECURITY + 09 SCHEDULE ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 08</div>
+  <h2 style="margin-bottom:6mm"><span class="n">8</span>Security and Oversight</h2>
+  <div class="checks">
+    <div><svg><use href="#tick"/></svg><span>Data will be <b>encrypted in storage and in transit</b> and hosted within India.</span></div>
+    <div><svg><use href="#tick"/></svg><span>Personal details such as telephone numbers and addresses may be <b>masked before text is sent</b> to an external AI service. The choice of AI provider and its data terms will be agreed with the office.</span></div>
+    <div><svg><use href="#tick"/></svg><span>Each of the review, assignment and dispatch steps may be operated <b>with staff approval or in automatic mode</b>, as decided by the office. Statuses are open to review and correction by the District Magistrate and authorised staff, and all such changes are logged.</span></div>
+    <div><svg><use href="#tick"/></svg><span><b>A complete audit log</b> will be maintained of the actions of users and the suggestions made by the AI.</span></div>
+  </div>
+
+  <div class="kicker" style="margin-top:6mm">Section 09</div>
+  <h2><span class="n">9</span>Implementation Schedule</h2>
+  <p class="lede" style="margin-bottom:5mm">Twenty weeks from the start of the requirements study to handover.</p>
+
+  <div class="gantt">
+    <div class="g-axis"><div></div><div class="ticks"><span style="left:0">Wk 0</span><span style="left:25%">5</span><span style="left:50%">10</span><span style="left:75%">15</span><span style="left:100%">20</span></div></div>
+    <div class="g-row"><div class="nm"><span>1</span>Requirements study</div><div class="lane"><div class="g-bar p1" style="left:0;width:10%"><em>2 wks</em></div></div></div>
+    <div class="g-row"><div class="nm"><span>2</span>Core development</div><div class="lane"><div class="g-bar" style="left:10%;width:40%"><em>8 wks</em></div></div></div>
+    <div class="g-row"><div class="nm"><span>3</span>Advisory module</div><div class="lane"><div class="g-bar p3" style="left:50%;width:20%"><em>4 wks</em></div></div></div>
+    <div class="g-row"><div class="nm"><span>4</span>Pilot</div><div class="lane"><div class="g-bar p4" style="left:70%;width:20%"><em>4 wks</em></div></div></div>
+    <div class="g-row"><div class="nm"><span>5</span>Handover</div><div class="lane"><div class="g-bar p5" style="left:90%;width:10%"></div></div></div>
+  </div>
+
+  <table>
+    <thead><tr><th style="width:26%">Phase</th><th>Deliverables</th><th style="width:14%">Duration</th></tr></thead>
+    <tbody>
+      <tr><td>1. Requirements study</td><td>Sample letters, officer directory, SLA rules, roles, mailbox access</td><td>2 weeks</td></tr>
+      <tr><td>2. Core development</td><td>Upload, OCR, assignment, email dispatch, reply mapping, dashboard, RBAC</td><td>8 weeks</td></tr>
+      <tr><td>3. Advisory module</td><td>Knowledge base, Advisory Note, search for comparable examples</td><td>4 weeks</td></tr>
+      <tr><td>4. Pilot</td><td>Live use in the office, staff training, accuracy review</td><td>4 weeks</td></tr>
+      <tr><td>5. Handover</td><td>Corrections, documentation, support arrangements</td><td>2 weeks</td></tr>
+    </tbody>
+  </table>
+  <p class="muted" style="font-size:8.4pt; margin-top:3mm">The durations are indicative and will be confirmed at the conclusion of Phase 1.</p>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">10 <span>/ 11</span></div></footer>
+</section>
+
+<!-- ============ 10 INPUTS + 11 CONFIRMATION ============ -->
+<section class="page">
+  <header class="run-head"><div class="brand"><svg viewBox="0 0 949 405"><use href="#mark"/></svg>SETUK</div><div>AI-Enabled Letter Routing, Tracking &amp; Advisory System</div></header>
+
+  <div class="kicker">Section 10</div>
+  <h2 style="margin-bottom:5mm"><span class="n">10</span>Inputs Required from the Office</h2>
+  <ol class="numlist" style="margin-bottom:9mm">
+    <li>The officer directory (name, designation, department, email ID and SLA days) in spreadsheet form.</li>
+    <li>Thirty to fifty sample letters of varied types, including handwritten letters.</li>
+    <li>A dedicated email address for the system.</li>
+    <li>Government Orders, Acts and circulars relevant to the advisory knowledge base.</li>
+    <li>A nodal officer to provide approvals and clarifications during the project.</li>
+  </ol>
+
+  <div class="kicker">Section 11</div>
+  <h2 style="margin-bottom:5mm"><span class="n">11</span>Matters for Confirmation</h2>
+  <ol class="numlist q">
+    <li>Which of the review, assignment and dispatch steps are to be set to automatic from the outset and which only after the pilot.</li>
+    <li>Whether the SLA is to be computed in calendar days or working days and whether it varies by department or type of letter.</li>
+    <li>Whether a single letter may be assigned to more than one department.</li>
+    <li>Whether acknowledgement and status updates are to be sent to the citizen by SMS or email.</li>
+    <li>The email platform in use at the office and the expected daily volume of letters.</li>
+    <li>Commercial terms, which will be furnished after the scope is finalised.</li>
+  </ol>
+
+  <div class="contact" style="margin-bottom:8mm">
+    <div>
+      <div class="label">For clarifications</div>
+      <h4>Rinku Kumar</h4>
+      <div class="muted" style="font-size:8.8pt">Director, Setuk Pvt. Ltd.</div>
+      <div class="lines">+91 91556 09667 · +91 82920 03148<br>contact@setuk.org · setukindia@gmail.com<br>H.No. 413, Nehru Nagar, Patliputra, Patna – 800013</div>
+    </div>
+    <div class="end"><svg viewBox="0 0 949 405"><use href="#mark"/></svg><div class="brand" style="justify-content:flex-end; font-size:9pt">SETUK</div><div class="label" style="margin-top:1mm">Draft v2.0 · Oct 2026</div></div>
+  </div>
+
+  <footer class="run-foot"><div>Prepared for the Office of the District Magistrate, Sheikhpura · Draft v2.0</div><div class="pg">11 <span>/ 11</span></div></footer>
+</section>
+
+</body>
+</html>

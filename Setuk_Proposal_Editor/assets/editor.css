@@ -1,0 +1,83 @@
+/* Editor controls. Shown on screen only; nothing here reaches the PDF. */
+
+@media screen {
+  body { padding-top: 64px; }
+
+  .ed-bar {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    height: 56px; padding: 0 20px;
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    font: 500 13px/1 "Inter", system-ui, sans-serif; color: var(--ink);
+  }
+  .ed-bar .ed-title { display: flex; align-items: center; gap: 10px; font-weight: 600; min-width: 0; }
+  .ed-bar .ed-title svg { width: 28px; height: auto; flex: none; }
+  .ed-bar .ed-title span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ed-status { margin-left: auto; color: var(--muted); font-weight: 400; font-size: 12px; white-space: nowrap; }
+  .ed-status.warn { color: var(--red); font-weight: 500; cursor: pointer; }
+  .ed-btn {
+    display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px;
+    border: 1px solid var(--line-strong); border-radius: 99px; background: #fff; color: var(--ink);
+    font: inherit; cursor: pointer; white-space: nowrap;
+  }
+  .ed-btn:hover { border-color: var(--ink); }
+  .ed-btn svg { width: 15px; height: 15px; }
+  .ed-btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .ed-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ed-btn.primary:hover { background: #163a87; }
+  .ed-btn.quiet { border-color: transparent; color: var(--muted); padding: 0 10px; }
+  .ed-btn.quiet:hover { color: var(--ink); border-color: var(--line); }
+
+  /* editing state */
+  body.is-editing .page [contenteditable="true"] { outline: none; }
+  body.is-editing .page { cursor: text; }
+  body.is-editing .page:focus-within { box-shadow: 0 0 0 2px var(--accent-soft), 0 8px 30px rgba(14,26,43,.08); }
+  body.is-editing .page *:hover:not(svg *):not(svg) { outline: 1px dashed rgba(27,70,161,.25); outline-offset: 2px; }
+
+  /* page tools */
+  .page { position: relative; }
+  .ed-pagetools {
+    position: absolute; top: 3mm; right: 3mm; z-index: 5; display: none; gap: 4px;
+    font: 500 11px/1 "Inter", sans-serif;
+  }
+  body.is-editing .page:hover .ed-pagetools { display: flex; }
+  .ed-pagetools button {
+    height: 26px; padding: 0 10px; border-radius: 99px; border: 1px solid var(--line-strong);
+    background: #fff; color: var(--body); font: inherit; cursor: pointer;
+  }
+  .ed-pagetools button:hover { border-color: var(--ink); color: var(--ink); }
+  .ed-pagetools button.danger:hover { border-color: var(--red); color: var(--red); }
+
+  /* overflow warning */
+  .page.is-overflowing { box-shadow: 0 0 0 2px var(--red), 0 8px 30px rgba(180,42,47,.12) !important; }
+  .page.is-overflowing::after {
+    content: "This page is too long: shorten the text or move a block to the next page";
+    position: absolute; left: 50%; bottom: 2mm; transform: translateX(-50%); z-index: 6;
+    background: var(--red); color: #fff; border-radius: 99px; padding: 5px 12px;
+    font: 500 11px/1.2 "Inter", sans-serif; white-space: nowrap;
+  }
+
+  .ed-toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); z-index: 60;
+    max-width: min(560px, calc(100vw - 32px));
+    background: var(--ink); color: #fff; border-radius: 12px; padding: 12px 16px;
+    font: 400 13px/1.45 "Inter", sans-serif; box-shadow: 0 10px 30px rgba(14,26,43,.25);
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .ed-toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .ed-toast button { background: none; border: 0; color: #9fbaf0; font: 600 13px "Inter", sans-serif; cursor: pointer; white-space: nowrap; }
+
+  @media (max-width: 760px) {
+    .ed-bar .ed-title span, .ed-status { display: none; }
+    .ed-btn .ed-label-long { display: none; }
+  }
+}
+
+@media print {
+  .ed-bar, .ed-pagetools, .ed-toast { display: none !important; }
+  body { padding-top: 0 !important; }
+  .page.is-overflowing::after { content: none !important; }
+  .page { box-shadow: none !important; }
+}
