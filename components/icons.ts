@@ -82,6 +82,8 @@ export { ThumbsDown } from "@phosphor-icons/react/dist/ssr/ThumbsDown";
 export { ThumbsUp } from "@phosphor-icons/react/dist/ssr/ThumbsUp";
 export { Train } from "@phosphor-icons/react/dist/ssr/Train";
 export { Translate } from "@phosphor-icons/react/dist/ssr/Translate";
+export { Camera } from "@phosphor-icons/react/dist/ssr/Camera";
+export { User } from "@phosphor-icons/react/dist/ssr/User";
 export { UserCirclePlus } from "@phosphor-icons/react/dist/ssr/UserCirclePlus";
 export { UserGear } from "@phosphor-icons/react/dist/ssr/UserGear";
 export { UserList } from "@phosphor-icons/react/dist/ssr/UserList";

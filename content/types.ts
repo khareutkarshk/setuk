@@ -180,7 +180,8 @@ export interface Pages {
     moment: { quote: string; by: string; paras: string[]; alt: string };
     beliefs: { kicker: string; title: string; items: string[] };
     name: { kicker: string; title: string; paras: string[]; alt: string };
-    letter: { title: string; paras: string[]; by: string };
+    /** `photoAlt` names the founder's portrait; `placeholder` stands in its frame until it arrives, saying what to shoot */
+    letter: { title: string; paras: string[]; by: string; photoAlt: string; placeholder: { title: string; note: string; specs: { t: string; d: string }[] } };
     company: { t: string; d: string }[];
   };
   articles: {
