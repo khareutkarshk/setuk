@@ -265,8 +265,10 @@ export interface Pages {
     root: string;
     finder: { title: string; state: string; district: string; ac: string; allStates: string; allDistricts: string; allAcs: string; pickState: string; pickDistrict: string; reset: string };
     stats: { states: string; districts: string; acs: string; pcs: string; booths: string; files: string };
-    /** Card eyebrows */
+    /** Card eyebrows, and the hero kicker of each page */
     levels: Record<VoterListLevel, string>;
+    /** The tabs over a state's cards, each to one of its lists */
+    tabs: { label: string; districts: string; acs: string; pcs: string };
     /** Badge on the chosen constituency's card */
     selected: string;
     preview: { title: string; summary: string; part: string; more: string; note: string };
@@ -275,14 +277,20 @@ export interface Pages {
       count: Record<"all" | VoterListLevel, string>;
       roll: string;
       order: string;
-      orderNote: string;
-      explore: { state: string; district: string };
+      explore: { state: string; district: string; pc: string };
+      /** A Lok Sabha card's list of its assembly segments */
+      segments: string;
       perBooth: string;
-      total: string;
       pc: string;
+      /** The order dialog a card's button opens: the price lives here, not on the card */
+      dialog: { title: string; from: string; price: string; buy: string; buyNote: string; or: string; chat: string; close: string };
       empty: { title: string; body: string; cta: string };
     };
+    /** The index at the foot of every page: a state's districts, assembly and Lok Sabha constituencies */
+    index: { kicker: string; title: string; titleState: string; districts: string; acs: string; pcs: string; open: string };
     detail: {
+      /** Over a state's own article */
+      article: string;
       kicker: string;
       glance: string;
       includes: string;
@@ -297,7 +305,8 @@ export interface Pages {
   roles: Roles;
 }
 
-export type VoterListLevel = "state" | "district" | "ac";
+/** Every voter list page but the landing one: an area (state, district, assembly or Lok Sabha constituency) or one of a state's three lists */
+export type VoterListLevel = "state" | "district" | "ac" | "pc" | "districts" | "acs" | "pcs";
 
 /**
  * The role pages. Each opens with its own line figure (public/hairline/v1) and carries one section

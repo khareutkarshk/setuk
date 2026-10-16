@@ -656,7 +656,11 @@ export const en: Dictionary = {
       metaArea: {
         state: { title: "{name} Voter List in Excel, Booth-wise | Setuk", description: "The {roll} voter list for {name} in searchable Excel: {acs} constituencies, {booths} booths, names in English and Hindi." },
         district: { title: "{name} District Voter List in Excel, {state} | Setuk", description: "The {roll} voter list for {name} district, {state}: {acs} constituencies and {booths} booths in searchable Excel." },
-        ac: { title: "{name} Voter List in Excel, All {booths} Booths | Setuk", description: "The {roll} voter list for {name} (AC {no}), {district}, {state}: every booth in one Excel workbook." }
+        ac: { title: "{name} Voter List in Excel, All {booths} Booths | Setuk", description: "The {roll} voter list for {name} (AC {no}), {district}, {state}: every booth in one Excel workbook." },
+        pc: { title: "{name} Lok Sabha Voter List in Excel, {state} | Setuk", description: "The {roll} voter list for {name} (PC {no}), {state}: {acs} assembly segments and {booths} booths in searchable Excel." },
+        districts: { title: "All Districts in {state}: Voter List in Excel | Setuk", description: "Every district of {state} with its {roll} voter list in Excel: {districts} districts, {booths} booths." },
+        acs: { title: "All Assembly Constituencies in {state}: Voter List in Excel | Setuk", description: "Every assembly constituency of {state} with its {roll} voter list in Excel: {acs} constituencies, {booths} booths." },
+        pcs: { title: "All Lok Sabha Seats in {state}: Voter List in Excel | Setuk", description: "Every Lok Sabha constituency of {state} with its {roll} voter list in Excel: {pcs} seats, {booths} booths." }
       },
       kicker: "Voter list in Excel",
       title: "Every voter list, as a spreadsheet you can search.",
@@ -664,12 +668,20 @@ export const en: Dictionary = {
       titleArea: {
         state: "{name} voter list in Excel",
         district: "{name} district voter list in Excel",
-        ac: "{name} voter list in Excel"
+        ac: "{name} voter list in Excel",
+        pc: "{name} Lok Sabha voter list in Excel",
+        districts: "Every district in {state}",
+        acs: "Every assembly constituency in {state}",
+        pcs: "Every Lok Sabha seat in {state}"
       },
       subArea: {
         state: "The {roll} roll for {name}: {acs} assembly constituencies and {booths} booths, one workbook per constituency.",
         district: "{name} district, {state}: {acs} constituencies and {booths} booths, from the {roll} roll.",
-        ac: "AC {no}, {district}, {state}: all {booths} booths in one workbook, from the {roll} roll."
+        ac: "AC {no}, {district}, {state}: all {booths} booths in one workbook, from the {roll} roll.",
+        pc: "PC {no}, {state}: {acs} assembly segments and {booths} booths, one workbook per segment, from the {roll} roll.",
+        districts: "{districts} districts and {booths} booths, from the {roll} roll. Each district is its own set of workbooks.",
+        acs: "{acs} assembly constituencies and {booths} booths, from the {roll} roll. Each constituency is one workbook.",
+        pcs: "{pcs} Lok Sabha seats, from the {roll} roll. Each seat is its assembly segments' workbooks together."
       },
       enquire: "Enquire on WhatsApp",
       howLink: "What's in the file",
@@ -677,22 +689,34 @@ export const en: Dictionary = {
       root: "Voter list in Excel",
       finder: { title: "Find a voter list", state: "State", district: "District", ac: "Assembly constituency", allStates: "All states", allDistricts: "All districts", allAcs: "All constituencies", pickState: "Choose a state first", pickDistrict: "Choose a district first", reset: "Start over" },
       stats: { states: "States", districts: "Districts", acs: "Assembly seats", pcs: "Lok Sabha seats", booths: "Polling booths", files: "Excel sheets" },
-      levels: { state: "State", district: "District", ac: "Assembly constituency" },
+      levels: { state: "State", district: "District", ac: "Assembly constituency", pc: "Lok Sabha constituency", districts: "All districts", acs: "All assembly constituencies", pcs: "All Lok Sabha seats" },
+      tabs: { label: "Lists in {name}", districts: "Districts", acs: "Assembly constituencies", pcs: "Lok Sabha seats" },
       selected: "Selected",
       preview: { title: "What you get", summary: "Summary", part: "Part {n}", more: "+{n} more", note: "One workbook, one sheet per booth." },
       cards: {
-        heading: { all: "Choose a state", state: "Districts in {name}", district: "Constituencies in {name}", ac: "{name} and the rest of {district}" },
-        count: { all: "{n} states", state: "{n} districts", district: "{n} constituencies", ac: "{n} constituencies" },
+        heading: { all: "Choose a state", state: "Districts in {name}", district: "Constituencies in {name}", ac: "{name} and the rest of {district}", pc: "{name} and its assembly segments", districts: "Every district in {state}", acs: "Every assembly constituency in {state}", pcs: "Every Lok Sabha seat in {state}" },
+        count: { all: "{n} states", state: "{n} districts", district: "{n} constituencies", ac: "{n} constituencies", pc: "{n} segments", districts: "{n} districts", acs: "{n} constituencies", pcs: "{n} seats" },
         roll: "Roll",
         order: "Get the {name} list",
-        orderNote: "Opens WhatsApp with the order filled in",
-        explore: { state: "See districts", district: "See constituencies" },
+        explore: { state: "See districts", district: "See constituencies", pc: "See its segments" },
+        segments: "Assembly segments",
         perBooth: "{rate} per booth",
-        total: "{price} in all",
         pc: "Lok Sabha",
+        dialog: {
+          title: "Complete {name} voter list",
+          from: "Generated from",
+          price: "Price",
+          buy: "Buy via WhatsApp now",
+          buyNote: "Send your request on WhatsApp. We'll confirm availability and help you get the Excel voter list.",
+          or: "or",
+          chat: "WhatsApp us at {number}",
+          close: "Close"
+        },
         empty: { title: "Nothing listed here yet.", body: "The lists for this area aren't on the page yet. Ask on WhatsApp and we'll tell you what's available.", cta: "Ask on WhatsApp" }
       },
+      index: { kicker: "Every list", title: "Every district, constituency and Lok Sabha seat.", titleState: "Every list in {name}.", districts: "Districts", acs: "Assembly constituencies", pcs: "Lok Sabha constituencies", open: "See all" },
       detail: {
+        article: "On this roll",
         kicker: "About this list",
         glance: "At a glance",
         includes: "What's in the file",

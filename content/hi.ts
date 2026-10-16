@@ -657,7 +657,11 @@ export const hi: Dictionary = {
       metaArea: {
         state: { title: "{name} मतदाता सूची Excel में, बूथ-वार | सेतुक", description: "{name} की {roll} मतदाता सूची खोजने लायक Excel में: {acs} क्षेत्र, {booths} बूथ, नाम अंग्रेज़ी और हिंदी में।" },
         district: { title: "{name} ज़िला मतदाता सूची Excel में, {state} | सेतुक", description: "{name} ज़िला, {state} की {roll} मतदाता सूची: {acs} क्षेत्र और {booths} बूथ, खोजने लायक Excel में।" },
-        ac: { title: "{name} मतदाता सूची Excel में, सभी {booths} बूथ | सेतुक", description: "{name} (AC {no}), {district}, {state} की {roll} मतदाता सूची: हर बूथ एक Excel वर्कबुक में।" }
+        ac: { title: "{name} मतदाता सूची Excel में, सभी {booths} बूथ | सेतुक", description: "{name} (AC {no}), {district}, {state} की {roll} मतदाता सूची: हर बूथ एक Excel वर्कबुक में।" },
+        pc: { title: "{name} लोकसभा मतदाता सूची Excel में, {state} | सेतुक", description: "{name} (PC {no}), {state} की {roll} मतदाता सूची: {acs} विधानसभा खंड और {booths} बूथ, खोजने लायक Excel में।" },
+        districts: { title: "{state} के सभी ज़िले: मतदाता सूची Excel में | सेतुक", description: "{state} का हर ज़िला, उसकी {roll} मतदाता सूची Excel में: {districts} ज़िले, {booths} बूथ।" },
+        acs: { title: "{state} के सभी विधानसभा क्षेत्र: मतदाता सूची Excel में | सेतुक", description: "{state} का हर विधानसभा क्षेत्र, उसकी {roll} मतदाता सूची Excel में: {acs} क्षेत्र, {booths} बूथ।" },
+        pcs: { title: "{state} की सभी लोकसभा सीटें: मतदाता सूची Excel में | सेतुक", description: "{state} की हर लोकसभा सीट, उसकी {roll} मतदाता सूची Excel में: {pcs} सीटें, {booths} बूथ।" }
       },
       kicker: "Excel में मतदाता सूची",
       title: "हर मतदाता सूची, ऐसी स्प्रेडशीट में जिसमें खोज सकें।",
@@ -665,12 +669,20 @@ export const hi: Dictionary = {
       titleArea: {
         state: "{name} मतदाता सूची Excel में",
         district: "{name} ज़िला मतदाता सूची Excel में",
-        ac: "{name} मतदाता सूची Excel में"
+        ac: "{name} मतदाता सूची Excel में",
+        pc: "{name} लोकसभा मतदाता सूची Excel में",
+        districts: "{state} के सभी ज़िले",
+        acs: "{state} के सभी विधानसभा क्षेत्र",
+        pcs: "{state} की सभी लोकसभा सीटें"
       },
       subArea: {
         state: "{name} की {roll} सूची: {acs} विधानसभा क्षेत्र और {booths} बूथ, हर क्षेत्र की एक वर्कबुक।",
         district: "{name} ज़िला, {state}: {acs} क्षेत्र और {booths} बूथ, {roll} सूची से।",
-        ac: "AC {no}, {district}, {state}: सभी {booths} बूथ एक वर्कबुक में, {roll} सूची से।"
+        ac: "AC {no}, {district}, {state}: सभी {booths} बूथ एक वर्कबुक में, {roll} सूची से।",
+        pc: "PC {no}, {state}: {acs} विधानसभा खंड और {booths} बूथ, हर खंड की एक वर्कबुक, {roll} सूची से।",
+        districts: "{districts} ज़िले और {booths} बूथ, {roll} सूची से। हर ज़िले की अपनी वर्कबुक।",
+        acs: "{acs} विधानसभा क्षेत्र और {booths} बूथ, {roll} सूची से। हर क्षेत्र की एक वर्कबुक।",
+        pcs: "{pcs} लोकसभा सीटें, {roll} सूची से। हर सीट उसके विधानसभा खंडों की वर्कबुक मिलाकर।"
       },
       enquire: "WhatsApp पर पूछें",
       howLink: "फ़ाइल में क्या है",
@@ -678,22 +690,34 @@ export const hi: Dictionary = {
       root: "Excel में मतदाता सूची",
       finder: { title: "मतदाता सूची खोजें", state: "राज्य", district: "ज़िला", ac: "विधानसभा क्षेत्र", allStates: "सभी राज्य", allDistricts: "सभी ज़िले", allAcs: "सभी क्षेत्र", pickState: "पहले राज्य चुनें", pickDistrict: "पहले ज़िला चुनें", reset: "फिर से शुरू करें" },
       stats: { states: "राज्य", districts: "ज़िले", acs: "विधानसभा सीटें", pcs: "लोकसभा सीटें", booths: "मतदान बूथ", files: "Excel शीट" },
-      levels: { state: "राज्य", district: "ज़िला", ac: "विधानसभा क्षेत्र" },
+      levels: { state: "राज्य", district: "ज़िला", ac: "विधानसभा क्षेत्र", pc: "लोकसभा क्षेत्र", districts: "सभी ज़िले", acs: "सभी विधानसभा क्षेत्र", pcs: "सभी लोकसभा सीटें" },
+      tabs: { label: "{name} की सूचियाँ", districts: "ज़िले", acs: "विधानसभा क्षेत्र", pcs: "लोकसभा सीटें" },
       selected: "चुना हुआ",
       preview: { title: "आपको क्या मिलता है", summary: "सारांश", part: "भाग {n}", more: "+{n} और", note: "एक वर्कबुक, हर बूथ की एक शीट।" },
       cards: {
-        heading: { all: "राज्य चुनें", state: "{name} के ज़िले", district: "{name} के विधानसभा क्षेत्र", ac: "{name} और {district} के बाकी क्षेत्र" },
-        count: { all: "{n} राज्य", state: "{n} ज़िले", district: "{n} क्षेत्र", ac: "{n} क्षेत्र" },
+        heading: { all: "राज्य चुनें", state: "{name} के ज़िले", district: "{name} के विधानसभा क्षेत्र", ac: "{name} और {district} के बाकी क्षेत्र", pc: "{name} और इसके विधानसभा खंड", districts: "{state} का हर ज़िला", acs: "{state} का हर विधानसभा क्षेत्र", pcs: "{state} की हर लोकसभा सीट" },
+        count: { all: "{n} राज्य", state: "{n} ज़िले", district: "{n} क्षेत्र", ac: "{n} क्षेत्र", pc: "{n} खंड", districts: "{n} ज़िले", acs: "{n} क्षेत्र", pcs: "{n} सीटें" },
         roll: "सूची",
         order: "{name} की सूची लें",
-        orderNote: "WhatsApp पर ऑर्डर भरा हुआ खुलता है",
-        explore: { state: "ज़िले देखें", district: "क्षेत्र देखें" },
+        explore: { state: "ज़िले देखें", district: "क्षेत्र देखें", pc: "इसके खंड देखें" },
+        segments: "विधानसभा खंड",
         perBooth: "{rate} प्रति बूथ",
-        total: "कुल {price}",
+        dialog: {
+          title: "{name} की पूरी मतदाता सूची",
+          from: "किस सूची से बनी",
+          price: "कीमत",
+          buy: "WhatsApp पर अभी ख़रीदें",
+          buyNote: "WhatsApp पर अपना अनुरोध भेजें। हम उपलब्धता की पुष्टि करेंगे और Excel मतदाता सूची पाने में मदद करेंगे।",
+          or: "या",
+          chat: "WhatsApp करें {number} पर",
+          close: "बंद करें"
+        },
         pc: "लोकसभा",
         empty: { title: "यहाँ अभी कुछ नहीं है।", body: "इस क्षेत्र की सूचियाँ अभी पेज पर नहीं हैं। WhatsApp पर पूछें, हम बता देंगे कि क्या उपलब्ध है।", cta: "WhatsApp पर पूछें" }
       },
+      index: { kicker: "हर सूची", title: "हर ज़िला, क्षेत्र और लोकसभा सीट।", titleState: "{name} की हर सूची।", districts: "ज़िले", acs: "विधानसभा क्षेत्र", pcs: "लोकसभा क्षेत्र", open: "सभी देखें" },
       detail: {
+        article: "इस सूची पर",
         kicker: "इस सूची के बारे में",
         glance: "एक नज़र में",
         includes: "फ़ाइल में क्या है",

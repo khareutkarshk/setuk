@@ -6,8 +6,9 @@ import { buildMetadata } from "@/lib/metadata";
 import { routes } from "@/lib/paths";
 import { getVoterListView } from "@/lib/voter-list/api";
 
-/* /voter-list-excel, then /[state], /[state]/[district] and /[state]/[district]/[ac]; the data
-   comes from lib/voter-list/api.ts, so unknown areas 404 */
+/* /voter-list-excel, then /[state], its lists (/[state]/all-districts, all-assembly-constituencies,
+   all-parliamentary-constituencies), /[state]/[pc], /[state]/[district] and /[state]/[district]/[ac],
+   as on the live site; the data comes from lib/voter-list/api.ts, so unknown areas 404 */
 type Props = { params: Promise<{ slug?: string[] }> };
 
 export async function generateMetadata({ params }: Props) {
@@ -15,8 +16,7 @@ export async function generateMetadata({ params }: Props) {
   const view = await getVoterListView(slugs);
   const p = getDictionary("hi").pages.voterList;
   if (!view) return {};
-  const area = view.trail.ac ?? view.trail.district ?? view.trail.state;
-  const meta = area ? p.metaArea[area.level] : p.meta;
+  const meta = view.level === "all" ? p.meta : p.metaArea[view.level];
   const vars = areaVars(view);
   return buildMetadata("hi", routes.voterListArea(slugs), { title: fill(meta.title, vars), description: fill(meta.description, vars) });
 }

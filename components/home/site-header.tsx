@@ -200,7 +200,7 @@ export function SiteHeader({ t, roles, locale, path = routes.home }: { t: Pick<D
           </button>
         </div>
       </div>
-      <div id="site-menu" hidden={!open} className="max-h-[calc(100dvh-var(--header-h))] overflow-y-auto overscroll-contain border-t border-line/60 lg:hidden">
+      <div id="site-menu" hidden={!open} data-lenis-prevent className="max-h-[calc(100dvh-var(--header-h))] overflow-y-auto overscroll-contain border-t border-line/60 lg:hidden">
         <nav className="mx-auto grid max-w-page gap-1 px-5 py-4 text-[16px] md:px-8" aria-label={t.nav.menu}>
           <SheetLink l={home} onClose={() => setOpen(false)} />
           <div className="border-b border-line/60 py-3">
