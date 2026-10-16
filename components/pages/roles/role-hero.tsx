@@ -41,9 +41,9 @@ function Body({ r, locale, anchor, center = false, className = "" }: { r: RoleHe
 
 const SHELL: Record<RoleWindow, string> = {
   dome: "pt-8 pb-16 md:pt-14 lg:pb-24",
-  circle: "grid gap-10 pt-8 pb-16 md:pt-14 lg:grid-cols-[minmax(0,10fr)_minmax(0,11fr)] lg:gap-6 lg:pb-24",
+  circle: "grid gap-10 pt-8 pb-16 md:pt-14 lg:grid-cols-[minmax(0,9fr)_minmax(0,12fr)] lg:gap-6 lg:pb-24",
   jharokha: "pt-8 pb-16 md:pt-14 lg:pb-24",
-  pool: "grid items-center gap-10 pt-8 pb-16 md:pt-14 lg:grid-cols-[minmax(0,10fr)_minmax(0,11fr)] lg:gap-14 lg:pb-24"
+  pool: "grid items-center gap-10 pt-8 pb-16 md:pt-14 lg:grid-cols-[minmax(0,12fr)_minmax(0,9fr)] lg:gap-10 lg:pb-24"
 };
 
 export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHead; locale: Locale; anchor: string }) {
@@ -55,11 +55,9 @@ export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHe
       figure={look.figure}
       stops={look.stops}
       label={r.figure.label}
-      hint={r.figure.hint}
       nouns={r.figure.read}
       word={r.word}
       kase={r.case}
-      replay={c.hero.replay}
       more={role === "consultants" ? undefined : { href: "#flow", t: c.hero.more }}
     />
   );

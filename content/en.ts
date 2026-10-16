@@ -706,7 +706,7 @@ export const en: Dictionary = {
       common: {
         eg: "For example",
         soon: "In progress",
-        hero: { replay: "Play again", more: "See every step" },
+        hero: { more: "See every step" },
         setup: {
           title: "Set up with your office in two to three weeks.",
           sub: "We study how your office runs, configure Setuk around it, train each role, then stay on.",
@@ -738,7 +738,6 @@ export const en: Dictionary = {
         word: "सांसद",
         figure: {
           label: "The Lok Sabha chamber drawn in fine lines. Point at a bench and it rises, like a member standing to speak.",
-          hint: "Point at a bench",
           read: { seat: "seat" }
         },
         case: {
@@ -849,7 +848,6 @@ export const en: Dictionary = {
         word: "विधायक",
         figure: {
           label: "An assembly constituency drawn in fine lines, with polling booths across it. Point at the map and the booths nearby rise.",
-          hint: "Point at the map",
           read: { booth: "booth" }
         },
         case: {
@@ -960,7 +958,6 @@ export const en: Dictionary = {
         word: "महापौर",
         figure: {
           label: "A city drawn in fine lines, divided into wards. Point at a ward and its buildings rise.",
-          hint: "Point at a ward",
           read: { ward: "ward" }
         },
         case: {
@@ -1067,7 +1064,6 @@ export const en: Dictionary = {
         word: "सलाहकार",
         figure: {
           label: "A turntable carrying four kinds of office. Push it round and each client's office comes to the front.",
-          hint: "Push the turntable",
           read: { client: "client" }
         },
         case: {

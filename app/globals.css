@@ -258,9 +258,9 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
   --dome-hi: color-mix(in srgb, var(--accent) 40%, var(--accent-soft)); --dome-leaf: var(--leaf-inverse);
 }
 :root[data-theme="dark"] .role-stage[data-window="dome"] { --dome: var(--accent-soft); --dome-ink: var(--ink); --dome-hi: var(--accent); --dome-leaf: var(--leaf); }
-.role-stage[data-window="dome"] .role-window { padding: 7% 4% 44px; }
+.role-stage[data-window="dome"] .role-window { padding: 5% 2% 44px; }
 .role-stage[data-window="dome"] .role-bg { background: var(--dome); color: var(--dome-ink); border-radius: 50% 50% 24px 24px / 30% 30% 24px 24px; }
-.role-stage[data-window="dome"] .role-figure { max-width: 660px; }
+.role-stage[data-window="dome"] .role-figure { max-width: 860px; }
 .role-stage[data-window="dome"] .role-word { top: 6%; left: 50%; translate: -50% 0; font-size: min(13cqi, 150px); --word: color-mix(in srgb, var(--dome-ink) 9%, transparent); }
 .role-stage[data-window="dome"] [data-hairline] {
   --hairline-plate: var(--dome);
@@ -277,7 +277,7 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 /* MLAs: the constituency on a kolam circle, the card over its lower edge */
 .role-stage[data-window="circle"] .role-window { display: grid; place-items: center; aspect-ratio: 1; }
 .role-stage[data-window="circle"] .role-bg { border-radius: 999px; background: radial-gradient(circle at 50% 46%, var(--surface) 0%, var(--accent-soft) 72%); }
-.role-stage[data-window="circle"] .role-figure { width: 84%; }
+.role-stage[data-window="circle"] .role-figure { width: 100%; }
 .role-stage[data-window="circle"] .role-word { top: 10%; left: 50%; translate: -50% 0; font-size: 14cqi; }
 .role-stage[data-window="circle"] .role-card-wrap { margin-top: -16%; }
 
@@ -287,7 +287,7 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
   border-radius: 32px; border: 1px solid var(--line); background: var(--surface-2);
   outline: 1px solid color-mix(in srgb, var(--accent) 16%, transparent); outline-offset: -12px;
 }
-.role-stage[data-window="jharokha"] .role-figure { width: 100%; max-width: 600px; }
+.role-stage[data-window="jharokha"] .role-figure { width: 100%; max-width: 780px; }
 .role-stage[data-window="jharokha"] [data-hairline] { --hairline-plate: var(--surface); }
 .role-stage[data-window="jharokha"] .role-word { right: 4%; bottom: 5%; font-size: 9cqi; }
 .role-stage[data-window="jharokha"] .role-card-wrap { position: relative; z-index: 2; }
@@ -295,7 +295,7 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 /* Consultants: the turntable on a pool of waves, the next clients' cards behind this one's */
 .role-stage[data-window="pool"] .role-window { display: grid; place-items: center; aspect-ratio: 6 / 5; }
 .role-stage[data-window="pool"] .role-bg { border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, var(--surface) 0%, var(--accent-soft) 74%); }
-.role-stage[data-window="pool"] .role-figure { width: 86%; }
+.role-stage[data-window="pool"] .role-figure { width: 100%; }
 .role-stage[data-window="pool"] .role-word { top: 9%; left: 50%; translate: -50% 0; font-size: 11cqi; }
 .role-stage[data-window="pool"] .hairline-read { top: 14%; }
 .role-stage[data-window="pool"] .role-card-wrap { margin-top: -14%; margin-left: auto; }
@@ -308,10 +308,12 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 
 @media (min-width: 64rem) {
   .role-stage[data-window="dome"] .role-card-wrap { position: absolute; z-index: 2; left: 40px; bottom: 44px; width: 360px; margin: 0; }
+  /* the larger chamber steps right of centre so its left benches clear the card */
+  .role-stage[data-window="dome"] .role-figure { translate: 12% 0; }
   /* the circle stands right and the card bridges back under the promise: text, map, case on a diagonal */
-  .role-stage[data-window="circle"] .role-window { width: 92%; margin-left: auto; }
+  .role-stage[data-window="circle"] .role-window { width: 100%; margin-left: auto; }
   .role-stage[data-window="circle"] .role-card-wrap { margin-top: -20%; margin-left: -22%; }
-  .role-stage[data-window="jharokha"] .role-window { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); align-items: center; gap: 32px; padding: 40px 40px 32px; }
+  .role-stage[data-window="jharokha"] .role-window { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); align-items: center; gap: 24px; padding: 32px 32px 24px; }
   .role-stage[data-window="jharokha"] .role-card-wrap { order: -1; }
 }
 

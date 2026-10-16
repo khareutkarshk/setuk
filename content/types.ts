@@ -314,10 +314,10 @@ export interface RoleHead {
   /** Set large and faint in Devanagari behind the figure */
   word: string;
   /**
-   * The hero figure: what it shows (its accessible name), the hint shown until the pointer arrives,
-   * and the read-out's nouns, by the word the figure writes ("seat 3·12" → read.seat + " 3·12")
+   * The hero figure: what it shows (its accessible name) and the read-out's nouns,
+   *, by the word the figure writes ("seat 3·12" → read.seat + " 3·12")
    */
-  figure: { label: string; hint: string; read: Record<string, string> };
+  figure: { label: string; read: Record<string, string> };
   /** The case the hero's card plays beside the figure: the office pages' Flow example in four short steps */
   case: RoleCase;
   faq: { title: string; items: QA[] };
@@ -392,7 +392,7 @@ export interface Roles {
     eg: string;
     soon: string;
     /** The hero card's buttons: play the case again, and jump to the Flow section that tells it in full */
-    hero: { replay: string; more: string };
+    hero: { more: string };
     setup: { title: string; sub: string; link: string };
     trust: { title: string; items: TitledItem[]; link: string };
     allFaqs: string;

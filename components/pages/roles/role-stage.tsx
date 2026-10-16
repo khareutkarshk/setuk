@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import type { RoleCase } from "@/content/types";
 import * as I from "@/components/icons";
 import { Hairline, type HairlineControls } from "@/components/site/hairline";
@@ -10,49 +10,83 @@ import type { RoleWindow, Stop } from "./look";
 /*
  * The role hero's picture: the line figure in its window, and the case card that walks one real
  * case through the figure's tour (Hairline's `tour` and `onTour`). The card is copy, so it is always
- * there and always readable: before the lap and without motion it shows the case as written, every
- * step done; while the lap plays the step the unseen pointer has reached is lit, and when the figure
- * comes back to rest the case closes and the rest highlight turns leaf (`data-closed`, globals.css).
- * The figure's own read-out ("ward 07") stands down while the case plays, so it never contradicts
+ * there and always readable: before it plays and without motion it shows the case as written, every
+ * step done. It plays once, when the card itself is half in view (on a phone it sits under the
+ * figure, so the figure's view alone is no sign it is read): the figure's lap starts again from its
+ * first stop, and each step lights as the unseen pointer reaches it. The kernel pauses a figure out
+ * of view and gives way to a real hand, so each step also has a deadline a little past the lap's
+ * own pace; the case always reaches its close, in step with the figure whenever the figure is moving.
+ * The figure loops on its own after that: at each rest its highlight turns leaf (`data-closed`,
+ * globals.css), and while it walks its own read-out ("ward 07") stands down so it never contradicts
  * the card; a real pointer brings it back and takes the leaf away.
  */
 
 /** null: the case as written; -1: the lap has set off; 0 to 3: the step reached, 3 closing it */
 type Step = number | null;
 
+/** The longest wait for the first stop (the kernel's resume, stagger and travel), then for each next one */
+const FIRST_MS = 4200;
+const NEXT_MS = 2600;
+
 type Props = {
   window: RoleWindow;
   figure: string;
   stops: Stop[];
   label: string;
-  hint: string;
   nouns: Record<string, string>;
   /** The role in Devanagari, set large in outline behind the figure */
   word: string;
   kase: RoleCase;
-  replay: string;
   /** The Flow section's anchor and its link text, on the office pages */
   more?: { href: string; t: string };
 };
 
-export function RoleStage({ window: kind, figure, stops, label, hint, nouns, word, kase, replay, more }: Props) {
+export function RoleStage({ window: kind, figure, stops, label, nouns, word, kase, more }: Props) {
+  // the figure's lap, round and round, and the card's one pass through the case
+  const [lap, setLap] = useState<Step>(null);
   const [step, setStep] = useState<Step>(null);
   const [hand, setHand] = useState(false);
   const controls = useRef<HairlineControls | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const last = kase.steps.length - 1;
-  const closed = step === null || step >= last;
+  const resting = lap === null || lap >= last;
   const inside = kind === "jharokha";
 
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const watch = new IntersectionObserver(([e]) => {
+      if (!e?.isIntersecting) return;
+      watch.disconnect();
+      setStep(-1);
+      controls.current?.restart();
+    }, { threshold: 0.5 });
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, []);
+
+  // the deadline for the next step, should the figure not reach it first
+  useEffect(() => {
+    if (step === null || step >= last) return;
+    const t = window.setTimeout(() => setStep((s) => (s === null || s >= last ? s : s + 1)), step < 0 ? FIRST_MS : NEXT_MS);
+    return () => window.clearTimeout(t);
+  }, [step, last]);
+
+  const heard = (i: number) => {
+    setLap(i);
+    setStep((s) => (s !== null && s < last && i === s + 1 ? i : s));
+  };
+
   const card = (
-    <CaseCard kase={kase} step={step} closed={closed} replay={step === last ? () => controls.current?.replay() : undefined} replayLabel={replay} more={more} />
+    <CaseCard cardRef={cardRef} kase={kase} step={step} closed={step === null || step >= last} more={more} />
   );
 
   return (
     <div
       className="role-stage"
       data-window={kind}
-      data-playing={!closed && !hand ? "" : undefined}
-      data-closed={closed && !hand ? "" : undefined}
+      data-playing={!resting && !hand ? "" : undefined}
+      data-closed={resting && !hand ? "" : undefined}
     >
       <div className="role-window">
         {/* the window's shape, ground and ornament, clipped on their own so the figure and its read-out never are */}
@@ -60,10 +94,10 @@ export function RoleStage({ window: kind, figure, stops, label, hint, nouns, wor
           <Decor kind={kind} />
           <span className="role-word font-deva">{word}</span>
         </span>
-        {/* a hero is tall, so the case starts once a good part of the figure is in view, not most of it */}
+        {/* a hero is tall, so the figure starts walking once a good part of it is in view, not most of it */}
         {/* a hand on the figure itself (not the card beside it) takes the stage from the case */}
         <div className="role-figure" onPointerEnter={() => setHand(true)} onPointerLeave={() => setHand(false)}>
-          <Hairline name={figure} label={label} hint={hint} nouns={nouns} tour={stops} onTour={(i) => setStep(i)} controls={controls} threshold={0.35} />
+          <Hairline name={figure} label={label} nouns={nouns} tour={stops} onTour={heard} controlsRef={controls} threshold={0.35} />
         </div>
         {inside && card}
       </div>
@@ -95,18 +129,17 @@ function Decor({ kind }: { kind: RoleWindow }) {
   return <CornerPattern kind="lehar" fx={50} fy={100} radius={420} className="inset-0 text-accent opacity-[.24]" />;
 }
 
-function CaseCard({ kase, step, closed, replay, replayLabel, more }: {
+function CaseCard({ cardRef, kase, step, closed, more }: {
+  cardRef: RefObject<HTMLDivElement | null>;
   kase: RoleCase;
   step: Step;
   closed: boolean;
-  replay?: () => void;
-  replayLabel: string;
   more?: { href: string; t: string };
 }) {
   const last = kase.steps.length - 1;
   const reached = step === null ? last : Math.max(step, -1);
   return (
-    <div className="role-card-wrap">
+    <div ref={cardRef} className="role-card-wrap">
       {/* the next clients' cards, squared up behind this one (shown on the consultants' pool only) */}
       <span aria-hidden="true" className="role-ghost" />
       <span aria-hidden="true" className="role-ghost" />
@@ -132,19 +165,12 @@ function CaseCard({ kase, step, closed, replay, replayLabel, more }: {
           );
         })}
       </ol>
-      {(replay || more) && (
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-3">
-          {more && (
-            <a href={more.href} className="group inline-flex min-h-9 items-center gap-1.5 text-[14px] font-semibold text-accent">
-              <span className="underline decoration-accent/30 underline-offset-4 group-hover:decoration-accent">{more.t}</span>
-              <I.ArrowDown size={14} aria-hidden />
-            </a>
-          )}
-          {replay && (
-            <button type="button" onClick={replay} className="press ml-auto inline-flex min-h-9 items-center gap-1.5 rounded-full px-2 text-[14px] font-medium text-muted hover:text-ink">
-              <I.ClockCounterClockwise size={15} aria-hidden />{replayLabel}
-            </button>
-          )}
+      {more && (
+        <div className="mt-3 border-t border-line pt-3">
+          <a href={more.href} className="group inline-flex min-h-9 items-center gap-1.5 text-[14px] font-semibold text-accent">
+            <span className="underline decoration-accent/30 underline-offset-4 group-hover:decoration-accent">{more.t}</span>
+            <I.ArrowDown size={14} aria-hidden />
+          </a>
         </div>
       )}
       </div>
