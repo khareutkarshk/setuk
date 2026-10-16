@@ -29,8 +29,17 @@ export function watchLenis(cb: (l: Lenis | null) => void): () => void {
   return () => { watchers.delete(cb); };
 }
 
-/** Scroll the page to `y`: eased through Lenis when it runs, otherwise natively */
-export function scrollToY(y: number, { immediate = false, duration = 1 }: { immediate?: boolean; duration?: number } = {}) {
-  if (lenis) lenis.scrollTo(y, { immediate, duration, force: true });
-  else scrollTo({ top: y, behavior: immediate ? "instant" : "smooth" });
+/** Where the page is headed: Lenis's target while it eases, otherwise where it is */
+export function scrollTarget(): number {
+  return lenis ? lenis.targetScroll : scrollY;
+}
+
+/** Scroll the page to `y`: eased through Lenis when it runs, otherwise natively. `onComplete` runs on
+    arrival (natively, at once for an immediate jump, else after `duration`) */
+export function scrollToY(y: number, { immediate = false, duration = 1, onComplete }: { immediate?: boolean; duration?: number; onComplete?: () => void } = {}) {
+  if (lenis) lenis.scrollTo(y, { immediate, duration, force: true, onComplete: onComplete && (() => onComplete()) });
+  else {
+    scrollTo({ top: y, behavior: immediate ? "instant" : "smooth" });
+    if (onComplete) { if (immediate) onComplete(); else setTimeout(onComplete, duration * 1000); }
+  }
 }

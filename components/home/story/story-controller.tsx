@@ -6,7 +6,7 @@ import type { Dictionary, SceneLabels } from "@/content/types";
 import { CornerPattern, Mandala } from "@/components/site/pattern";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { clamp01, createScrollProgress, smooth } from "@/lib/sadan/progress";
-import { scrollToY } from "@/lib/smooth-scroll";
+import { scrollTarget, scrollToY } from "@/lib/smooth-scroll";
 import type { SadanHandle } from "@/lib/sadan/engine";
 import poster from "@/assets/loksabha.jpg";
 import styles from "./story.module.css";
@@ -30,7 +30,8 @@ interface Props {
  * or before the engine is ready, the Lok Sabha photo stays as the backdrop.
  *
  * When the scroll settles between two chapters it finishes the move to one of them (Lenis eases
- * it), so a card is never left half on screen and the camera always rests on a stop.
+ * it), so a card is never left half on screen and the camera always rests on a stop. A wheel or
+ * trackpad gesture inside the story moves exactly one chapter, however hard it is flung.
  */
 export function StoryController({ chapters, railLabel, labels, ariaLabel, brand, children }: Props) {
   const rootRef = useRef<HTMLElement>(null);
@@ -135,6 +136,40 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       clearTimeout(settle);
       settle = window.setTimeout(snap, 160);
     };
+    /* Paging: inside the story a wheel or trackpad gesture moves exactly one chapter, however hard it is.
+       The wheel is caught before Lenis (document, capture) and the rest of the gesture is swallowed: the
+       move itself, then the trackpad's momentum tail, until the wheel goes quiet or a fresh swipe starts
+       (its deltas jump up where a tail only decays). Past the last chapter, or before the first, the page
+       scrolls on as usual, and so do chapters too tall for the reading area, as with the snap. */
+    const PAGE_S = 0.9, QUIET_MS = 180;
+    let paging = false, gesture = false, lastWheel = 0, lastMag = 0, pageEnd = 0;
+    const pageTarget = (dy: number) => {
+      const n = steps.length, y = scrollY, end = progress.centre(n - 1), d = Math.sign(dy);
+      /* below the story: coming back up, land on its last chapter as soon as this wheel would carry the
+         page into it, rather than glide on into the middle of the story */
+      if (y > end + 2) return d < 0 && Math.min(y, scrollTarget()) + dy < end + innerHeight / 2 ? n - 1 : null;
+      const p = progress.get();
+      const to = d > 0 ? Math.floor(p + 0.02) + 1 : Math.ceil(p - 0.02) - 1;
+      if (to < 0 || to > n - 1) return null;
+      return fits(steps[to]) && fits(steps[d > 0 ? to - 1 : to + 1]) ? to : null;
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || held || !inView) return; /* pinch zoom, a scrollbar drag, or the page below the story */
+      const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * innerHeight : e.deltaY;
+      if (!dy || Math.abs(dy) < Math.abs(e.deltaX)) return;
+      const now = performance.now(), mag = Math.abs(dy), prevMag = lastMag, gap = now - lastWheel;
+      lastWheel = now; lastMag = mag;
+      if (gesture && !paging && (gap > QUIET_MS || (mag > 12 && mag > prevMag * 1.6))) gesture = false;
+      if (paging || gesture) { e.preventDefault(); e.stopPropagation(); return; }
+      const to = pageTarget(dy);
+      if (to === null) return;
+      e.preventDefault(); e.stopPropagation();
+      pinCh = null; paging = gesture = true; clearTimeout(settle); clearTimeout(pageEnd);
+      const done = () => { if (!paging) return; paging = false; clearTimeout(pageEnd); };
+      scrollToY(progress.centre(to), { immediate: reduced, duration: PAGE_S, onComplete: done });
+      pageEnd = window.setTimeout(done, PAGE_S * 1000 + 300); /* in case the move is cut short and never completes */
+    };
+
     const hold = () => { held = true; clearTimeout(settle); };
     const letGo = () => { if (!held) return; held = false; clearTimeout(settle); settle = window.setTimeout(snap, 160); };
     const remeasure = () => {
@@ -152,6 +187,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
     if (pinCh !== null) scrollToY(progress.centre(pinCh), { immediate: true });
     update();
     addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("wheel", onWheel, { passive: false, capture: true });
     addEventListener("pointerdown", hold, { passive: true });
     addEventListener("touchstart", hold, { passive: true });
     addEventListener("pointerup", letGo);
@@ -173,7 +209,9 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
     return () => {
       cancelAnimationFrame(frame);
       clearTimeout(settle);
+      clearTimeout(pageEnd);
       removeEventListener("scroll", onScroll);
+      document.removeEventListener("wheel", onWheel, { capture: true });
       removeEventListener("pointerdown", hold);
       removeEventListener("touchstart", hold);
       removeEventListener("pointerup", letGo);
