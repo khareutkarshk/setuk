@@ -1,13 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * The article's table of contents. It marks the section being read, so a long guide always shows
- * where you are in it. Plain anchor links underneath, so it works before hydration too.
+ * where you are in it. Plain anchor links underneath, so it works before hydration too. When the list
+ * is taller than its sticky column (which scrolls on its own), the column follows the marked entry so
+ * it never sits out of sight.
  */
 export function ArticleToc({ items, label }: { items: { id: string; text: string }[]; label: string }) {
   const [active, setActive] = useState(items[0]?.id);
+  const navRef = useRef<HTMLElement>(null);
+
+  /* keep the marked entry in view inside the scrolling column, a third of the way down, without moving the page */
+  useEffect(() => {
+    const nav = navRef.current;
+    const box = nav?.closest<HTMLElement>("[data-toc-scroll]");
+    const link = nav?.querySelector<HTMLElement>("[aria-current]");
+    if (!box || !link || box.scrollHeight <= box.clientHeight) return;
+    const b = box.getBoundingClientRect(), l = link.getBoundingClientRect(), pad = 24;
+    if (l.top >= b.top + pad && l.bottom <= b.bottom - pad) return;
+    const top = box.scrollTop + l.top - b.top - box.clientHeight / 3;
+    box.scrollTo({ top, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+  }, [active]);
 
   useEffect(() => {
     const els = items.map((i) => document.getElementById(i.id)).filter((e): e is HTMLElement => !!e);
@@ -30,7 +45,7 @@ export function ArticleToc({ items, label }: { items: { id: string; text: string
   }, [items]);
 
   return (
-    <nav aria-label={label}>
+    <nav ref={navRef} aria-label={label}>
       <p className="text-[13px] font-semibold text-ink">{label}</p>
       <ol className="mt-4 space-y-1 border-l border-line">
         {items.map((i) => (

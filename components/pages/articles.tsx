@@ -125,7 +125,9 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
       </PageHero>
 
       <Wrap className="grid grid-cols-[minmax(0,1fr)] gap-10 pt-12 pb-16 md:pt-16 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-16">
-        <aside className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:max-h-[calc(100dvh-var(--header-h)-64px)] lg:self-start lg:overflow-y-auto lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden">
+        {/* the column scrolls on its own when the contents run long (ArticleToc follows the marked entry);
+            data-lenis-prevent lets a wheel over it scroll the list, not the page */}
+        <aside data-toc-scroll data-lenis-prevent className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:max-h-[calc(100dvh-var(--header-h)-64px)] lg:self-start lg:overflow-y-auto lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden">
           {/* on small screens the contents fold away above the text */}
           <details className="group rounded-xl border border-line bg-surface p-4 lg:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] font-semibold [&::-webkit-details-marker]:hidden">
