@@ -318,8 +318,21 @@ export interface RoleHead {
    * and the read-out's nouns, by the word the figure writes ("seat 3·12" → read.seat + " 3·12")
    */
   figure: { label: string; hint: string; read: Record<string, string> };
+  /** The case the hero's card plays beside the figure: the office pages' Flow example in four short steps */
+  case: RoleCase;
   faq: { title: string; items: QA[] };
   cta: { title: string; body: string };
+}
+
+/**
+ * The hero's case card: a label over its title, then four steps that light up as the figure's tour
+ * reaches them (the last when it comes to rest), and `done` on the card once the case has closed
+ */
+export interface RoleCase {
+  label: string;
+  title: string;
+  done: string;
+  steps: [TitledItem, TitledItem, TitledItem, TitledItem];
 }
 
 /** One of Setuk's modules put in a role's words. `img` when it has an illustration; `soon` while it's being built */
@@ -332,8 +345,11 @@ export interface RoleModule {
 }
 
 /** The shared body of an office's page (MPs, MLAs, Mayors) */
+/** What gets in the way: a headline, the line beside it, and four problems (their icons are in roles/look.ts) */
+export type RoleChallenges = { title: string; sub: string; items: TitledItem[] };
+
 export interface OfficeRole extends RoleHead {
-  challenges: { title: string; items: TitledItem[] };
+  challenges: RoleChallenges;
   modules: { title: string; sub: string; items: RoleModule[] };
   /** Four steps with one real case running through them (`eg`) */
   flow: { title: string; sub: string; steps: { t: string; d: string; eg: string }[] };
@@ -359,7 +375,7 @@ export interface MayorRole extends OfficeRole {
 /** Political consultants: a partnership page, not an office's */
 export interface ConsultantRole extends RoleHead {
   tribute: { kicker: string; title: string; paras: string[]; alt: string };
-  challenges: { title: string; items: TitledItem[] };
+  challenges: RoleChallenges;
   /** Your practice, Setuk's platform, your clients' offices */
   model: { title: string; sub: string; parts: TitledItem[] };
   offer: { title: string; sub: string; items: RoleModule[] };
@@ -375,6 +391,8 @@ export interface Roles {
   common: {
     eg: string;
     soon: string;
+    /** The hero card's buttons: play the case again, and jump to the Flow section that tells it in full */
+    hero: { replay: string; more: string };
     setup: { title: string; sub: string; link: string };
     trust: { title: string; items: TitledItem[]; link: string };
     allFaqs: string;

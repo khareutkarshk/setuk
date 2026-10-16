@@ -5,7 +5,8 @@ import { Pattern } from "@/components/site/pattern";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { Band, Figure, H2, IconTile, SectionHead, Wrap } from "../ui";
 import { ROLE_LOOK } from "./look";
-import { Challenges, Flow, ModuleBento, RoleFaq, RoleHero } from "./parts";
+import { Challenges, Flow, ModuleBento, RoleFaq } from "./parts";
+import { RoleHero } from "./role-hero";
 
 const WHO_ICONS = [I.Briefcase, I.FlagBanner, I.Plugs, I.UserGear];
 const PATH_ICONS = [I.Handshake, I.Wrench, I.Storefront, I.Strategy];
@@ -59,7 +60,7 @@ export function ConsultantsPage({ locale }: { locale: Locale }) {
         </div>
       </Wrap>
 
-      <Challenges title={r.challenges.title} items={r.challenges.items} />
+      <Challenges c={r.challenges} icons={look.problems} />
 
       {/* The partnership as a setu: your practice on one bank, your clients' offices on the other */}
       <Band tone="surface" labelledBy="model-title" corner={{ kind: look.pattern, fx: 100, fy: 0 }}>

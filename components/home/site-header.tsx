@@ -135,7 +135,7 @@ export function SiteHeader({ t, roles, locale, path = routes.home }: { t: Pick<D
               <div className="relative w-[620px] overflow-hidden rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_80px_-30px_color-mix(in_srgb,var(--ink)_35%,transparent)]">
                 <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent opacity-20" />
                 <ul className="relative grid grid-cols-2 gap-1 pt-1.5">
-                  {roleLinks.map(({ key, t: title, d, word, href: to, current, Icon }) => (
+                  {roleLinks.map(({ key, t: title, d, href: to, current, Icon }) => (
                     <li key={key}>
                       <Link
                         href={to}
@@ -153,8 +153,6 @@ export function SiteHeader({ t, roles, locale, path = routes.home }: { t: Pick<D
                           </span>
                           <span className="mt-1 block text-[13px] leading-snug text-muted">{d}</span>
                         </span>
-                        {/* the role's own word, faint in the corner, as on its page */}
-                        <span aria-hidden="true" className="font-deva pointer-events-none absolute -right-1 -bottom-2 select-none text-[34px] leading-none font-bold text-accent opacity-[.07]">{word}</span>
                       </Link>
                     </li>
                   ))}

@@ -20,6 +20,7 @@ pnpm lint
 | `/articles`, `/articles/[slug]` | `app/(en)/articles/...` | Guides list (topic filter) and each guide (contents beside the text) |
 | `/faqs` | `app/(en)/faqs/page.tsx` | All questions, grouped and searchable |
 | `/contact` | `app/(en)/contact/page.tsx` | Channels and the contact form |
+| `/for-mps`, `/for-mlas`, `/for-mayors`, `/for-consultants` | `app/(en)/for-*/page.tsx` | The role pages under "By role" in the header (see below) |
 | `/legal`, `/legal/[slug]` | `app/(en)/legal/...` | Policy hub and each policy |
 | `/hi/...` | `app/(hi)/hi/...` | The same pages in Hindi |
 | `/sitemap.xml` | `app/sitemap.ts` | Every page in both languages |
@@ -36,6 +37,18 @@ Each locale has its own **root layout** (`app/(en)/layout.tsx`, `app/(hi)/layout
 - its own metadata, with `hreflang` alternates.
 
 Moving between the two locales is a full page load, which is expected with separate root layouts.
+
+## Role pages
+
+For MPs, For MLAs, For Mayors and For consultants (`components/pages/roles/`, copy in `pages.roles` in both dictionaries) share one family of sections and differ in five ways, set in `components/pages/roles/look.ts`:
+
+- **The hero figure**: an isometric line drawing that answers the pointer, drawn on the kernel of `@lucasmarkes/hairline`. MPs: the Lok Sabha benches; MLAs: a constituency map with booths; Mayors: a city cut into wards; consultants: a turntable of client offices. The kernel (`public/hairline/v1/kernel.js`, unchanged) and each figure (`public/hairline/v1/<name>.js`) load after hydration through `components/site/hairline.tsx`, which themes them with the `--hairline-*` variables in `globals.css`, shows the figure's read-out in the page's language and plays its tour once. Write or change a figure only with the hairline-create skill in `.agents/skills/hairline-create`, and check it with that skill's `look.mjs`; never edit the kernel.
+- **The hero** (`role-hero.tsx`, `role-stage.tsx`): each role has its own composition and window. MPs: the promise centred over a dark dome; MLAs: a kolam circle running off the page; Mayors: a wide civic window (a jharokha) under the promise; consultants: a pool of waves, picture first. Beside the figure a case card plays one real case in four steps (`case` in each role's copy), the office pages' Flow example in short: the hero passes its own `stops` to the figure's tour (`look.ts`), steps one to three light as the unseen pointer reaches each stop, and the fourth when the figure returns to rest, where its rest highlight turns leaf. The card is always readable: before the lap and under reduced motion it shows the case closed. "Play again" replays the lap, and "See every step" jumps to the Flow section (`#flow`). After changing a figure, check its stops still land where `look.ts` says.
+- **The pattern** (sadan, kolam, jaali, lehar) in the hero window and the sections, and the role's word in Devanagari, set large and faint behind the figure.
+- **One section of its own** (`own.tsx`): an MP's offices feeding one record, an assembly seat from the office out to its booths, complaints landing ward by ward. The consultants page (`consultants-page.tsx`) is a partnership page with its own sections; partner terms are agreed per partner and never published there.
+- **Its copy and modules**, taken from the live modules on How we work; anything still being built is badged "In progress".
+
+The header's "By role" menu opens on hover with a mouse and on click, tap or keyboard; below `xl`, Home leaves the desktop row so the row fits on one line. Each role page also carries FAQPage structured data and its own closing call to action.
 
 ## Architecture
 

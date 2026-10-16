@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored or generated, checked by their own tools: the hairline kernel and figures, the skills
+    "public/hairline/**",
+    ".agents/**",
   ]),
 ]);
 

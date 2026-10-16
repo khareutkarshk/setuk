@@ -229,8 +229,147 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 .hairline-stage { position: relative; aspect-ratio: 5 / 4; }
 .hairline-stage > svg { opacity: 0; transition: opacity 0.9s var(--ease-out); }
 .hairline-stage[data-ready] > svg { opacity: 1; }
-.hairline-read { position: absolute; top: 18px; right: 20px; font: 500 12px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--muted); font-variant-numeric: tabular-nums; pointer-events: none; transition: color 0.3s; }
+.hairline-read { position: absolute; top: 18px; right: 20px; font: 500 12px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--muted); font-variant-numeric: tabular-nums; pointer-events: none; transition: color 0.3s, opacity 0.3s; }
 .hairline-read[data-live] { color: var(--accent); }
+
+/* Role heroes (components/pages/roles/role-hero.tsx and role-stage.tsx): the figure in its role's
+   window, the role's name in outline behind it, and the case card. Each window gives the figure its
+   own plate and strokes; once the case closes (data-closed) the rest highlight turns leaf, the one
+   outcome on the hero, and while it plays (data-playing) the figure's read-out stands down so it
+   never contradicts the card. The card always shows its copy; only the step marks change. */
+.role-stage { position: relative; }
+.role-window { position: relative; isolation: isolate; container-type: inline-size; }
+.role-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.role-window > .role-figure { position: relative; z-index: 1; margin-inline: auto; }
+.role-window [data-hairline] { --hairline-stroke: 1.25; --hairline-edge: color-mix(in srgb, var(--ink) 64%, var(--surface)); }
+.role-stage[data-playing] .hairline-read { opacity: 0; }
+.role-stage[data-closed] [data-hairline] { --hairline-hi: var(--leaf); }
+/* a soft fill, not an outline: a stroke draws every contour where the shirorekha joins the letters */
+.role-word {
+  position: absolute; z-index: 0; pointer-events: none; user-select: none; white-space: nowrap;
+  font-size: 12cqi; font-weight: 700; line-height: 1.1;
+  color: var(--word, color-mix(in srgb, var(--accent) 10%, transparent));
+}
+
+/* MPs: a dome over the chamber. It stays dark in both themes (ink by day, the navy tint by night):
+   at this size a flipped, light dome would glare on the dark page. */
+.role-stage[data-window="dome"] {
+  --dome: var(--ink); --dome-ink: var(--bg);
+  --dome-hi: color-mix(in srgb, var(--accent) 40%, var(--accent-soft)); --dome-leaf: var(--leaf-inverse);
+}
+:root[data-theme="dark"] .role-stage[data-window="dome"] { --dome: var(--accent-soft); --dome-ink: var(--ink); --dome-hi: var(--accent); --dome-leaf: var(--leaf); }
+.role-stage[data-window="dome"] .role-window { padding: 7% 4% 44px; }
+.role-stage[data-window="dome"] .role-bg { background: var(--dome); color: var(--dome-ink); border-radius: 50% 50% 24px 24px / 30% 30% 24px 24px; }
+.role-stage[data-window="dome"] .role-figure { max-width: 660px; }
+.role-stage[data-window="dome"] .role-word { top: 6%; left: 50%; translate: -50% 0; font-size: min(13cqi, 150px); --word: color-mix(in srgb, var(--dome-ink) 9%, transparent); }
+.role-stage[data-window="dome"] [data-hairline] {
+  --hairline-plate: var(--dome);
+  --hairline-hi: var(--dome-hi);
+  --hairline-edge: color-mix(in srgb, var(--dome-ink) 64%, var(--dome));
+  --hairline-mid: color-mix(in srgb, var(--dome-ink) 38%, var(--dome));
+  --hairline-lo: color-mix(in srgb, var(--dome-ink) 18%, var(--dome));
+}
+.role-stage[data-window="dome"][data-closed] [data-hairline] { --hairline-hi: var(--dome-leaf); }
+.role-stage[data-window="dome"] .hairline-read { color: color-mix(in srgb, var(--dome-ink) 62%, var(--dome)); }
+.role-stage[data-window="dome"] .hairline-read[data-live] { color: var(--dome-hi); }
+.role-stage[data-window="dome"] .role-card-wrap { margin-top: 16px; }
+
+/* MLAs: the constituency on a kolam circle, the card over its lower edge */
+.role-stage[data-window="circle"] .role-window { display: grid; place-items: center; aspect-ratio: 1; }
+.role-stage[data-window="circle"] .role-bg { border-radius: 999px; background: radial-gradient(circle at 50% 46%, var(--surface) 0%, var(--accent-soft) 72%); }
+.role-stage[data-window="circle"] .role-figure { width: 84%; }
+.role-stage[data-window="circle"] .role-word { top: 10%; left: 50%; translate: -50% 0; font-size: 14cqi; }
+.role-stage[data-window="circle"] .role-card-wrap { margin-top: -16%; }
+
+/* Mayors: a wide civic window, framed twice like a jharokha, the card beside the city */
+.role-stage[data-window="jharokha"] .role-window { display: grid; gap: 20px; padding: 20px; }
+.role-stage[data-window="jharokha"] .role-bg {
+  border-radius: 32px; border: 1px solid var(--line); background: var(--surface-2);
+  outline: 1px solid color-mix(in srgb, var(--accent) 16%, transparent); outline-offset: -12px;
+}
+.role-stage[data-window="jharokha"] .role-figure { width: 100%; max-width: 600px; }
+.role-stage[data-window="jharokha"] [data-hairline] { --hairline-plate: var(--surface); }
+.role-stage[data-window="jharokha"] .role-word { right: 4%; bottom: 5%; font-size: 9cqi; }
+.role-stage[data-window="jharokha"] .role-card-wrap { position: relative; z-index: 2; }
+
+/* Consultants: the turntable on a pool of waves, the next clients' cards behind this one's */
+.role-stage[data-window="pool"] .role-window { display: grid; place-items: center; aspect-ratio: 6 / 5; }
+.role-stage[data-window="pool"] .role-bg { border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, var(--surface) 0%, var(--accent-soft) 74%); }
+.role-stage[data-window="pool"] .role-figure { width: 86%; }
+.role-stage[data-window="pool"] .role-word { top: 9%; left: 50%; translate: -50% 0; font-size: 11cqi; }
+.role-stage[data-window="pool"] .hairline-read { top: 14%; }
+.role-stage[data-window="pool"] .role-card-wrap { margin-top: -14%; margin-left: auto; }
+.role-ghost { display: none; }
+.role-stage[data-window="pool"] .role-ghost {
+  display: block; position: absolute; inset: 0; border-radius: 24px; border: 1px solid var(--line); background: var(--surface);
+  translate: 0 -22px; scale: .94; opacity: .85; box-shadow: 0 20px 50px -36px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+.role-stage[data-window="pool"] .role-ghost + .role-ghost { translate: 0 -42px; scale: .88; opacity: .55; }
+
+@media (min-width: 64rem) {
+  .role-stage[data-window="dome"] .role-card-wrap { position: absolute; z-index: 2; left: 40px; bottom: 44px; width: 360px; margin: 0; }
+  /* the circle stands right and the card bridges back under the promise: text, map, case on a diagonal */
+  .role-stage[data-window="circle"] .role-window { width: 92%; margin-left: auto; }
+  .role-stage[data-window="circle"] .role-card-wrap { margin-top: -20%; margin-left: -22%; }
+  .role-stage[data-window="jharokha"] .role-window { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); align-items: center; gap: 32px; padding: 40px 40px 32px; }
+  .role-stage[data-window="jharokha"] .role-card-wrap { order: -1; }
+}
+
+/* The problems' mark: the hero card's rail laid on its side and broken. A filled dot where the work
+   started, a solid stretch in the accent, a gap, then dashes fading out before a hollow dot where the
+   step should have closed. */
+.role-slip {
+  position: relative; display: block; width: 100%; height: 12px;
+  background: radial-gradient(circle at 5px 50%, var(--accent) 0 4px, transparent 4.5px) no-repeat;
+}
+.role-slip::before {
+  content: ""; position: absolute; left: 9px; right: 16px; top: 50%; height: 2px; translate: 0 -50%;
+  background:
+    linear-gradient(90deg, var(--accent) 0 30%, transparent 30%),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--muted) 70%, transparent) 0 6px, transparent 6px 11px);
+  -webkit-mask-image: linear-gradient(90deg, #000 0 30%, transparent 30% 38%, #000 38% 62%, transparent 96%);
+  mask-image: linear-gradient(90deg, #000 0 30%, transparent 30% 38%, #000 38% 62%, transparent 96%);
+}
+.role-slip::after {
+  content: ""; position: absolute; right: 0; top: 50%; width: 12px; height: 12px; translate: 0 -50%; border-radius: 999px;
+  border: 1.5px dashed color-mix(in srgb, var(--muted) 70%, transparent);
+}
+.role-problem { transition: translate 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), border-color 0.4s; }
+@media (hover: hover) {
+  .role-problem:hover { translate: 0 -3px; border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); box-shadow: 0 24px 60px -40px color-mix(in srgb, var(--accent) 55%, transparent); }
+}
+
+/* The case card: four steps, each joined to the next by a connector that fills once its step is done.
+   One connector per step (not one rail down the list) so the line ends at the last dot, however long its text. */
+.role-card-wrap { position: relative; width: 100%; max-width: 360px; }
+.role-card {
+  position: relative; z-index: 1; padding: 18px 20px 16px; border-radius: 24px;
+  border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 94%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: 0 30px 70px -40px color-mix(in srgb, var(--ink) 50%, transparent);
+}
+.role-steps { position: relative; display: grid; gap: 2px; }
+/* Devanagari needs room for its matras, as the Hindi base rules give p and li */
+html[lang="hi"] .role-card :is(p, span) { line-height: 1.55; }
+.role-steps > li { position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; align-items: start; margin-inline: -8px; padding: 6px 8px; border-radius: 12px; transition: background-color 0.4s; }
+.role-steps > li[data-state="now"] { background: var(--accent-soft); }
+/* from this dot's centre (8px padding + 12px, 6px + 12px down) to the next dot's centre (2px gap + 18px) */
+.role-steps > li:not(:last-child)::before { content: ""; position: absolute; left: 19.25px; top: 18px; bottom: -20px; width: 1.5px; border-radius: 1px; background: var(--line); transition: background-color 0.4s; }
+.role-steps > li[data-state="done"]::before { background: var(--accent); }
+.role-steps > li[data-state="next"] > span:last-child > span:first-child { color: var(--muted); }
+.role-dot {
+  position: relative; z-index: 1; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 999px;
+  border: 1.5px solid var(--line); background: var(--surface); color: var(--accent-ink);
+  transition: background-color 0.4s, border-color 0.4s, box-shadow 0.4s;
+}
+li[data-state="done"] > .role-dot { border-color: var(--accent); background: var(--accent); }
+li[data-state="now"] > .role-dot { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
+li[data-state="now"] > .role-dot::after { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--accent); }
+li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var(--leaf); color: var(--leaf-ink); }
+@media (prefers-reduced-motion: no-preference) {
+  li[data-state="now"] > .role-dot::after { animation: role-beat 1.2s var(--ease-out) infinite; }
+  @keyframes role-beat { 0% { scale: .6; } 50% { scale: 1; } 100% { scale: .6; } }
+}
 
 /* Role pages (components/pages/roles): the flow's rail draws in, an MP's offices send a request down
    to the record on a slow clock, an assembly seat's rings light outward and a city's wards take their

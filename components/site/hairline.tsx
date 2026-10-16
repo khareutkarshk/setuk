@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 /**
  * A hairline figure: an isometric line drawing that answers the pointer (the role pages' heroes).
@@ -14,9 +14,14 @@ import { useEffect, useRef } from "react";
  * which shows in the plate's corner in the page's language, and the hint shows until the pointer
  * arrives. The first time the figure is mostly in view it plays its tour once, unless the reader
  * asked for less motion. Without script the plate stays empty and the label still names it.
+ *
+ * A page can give its own `tour` (the role heroes walk their case through it) and hear it with
+ * `onTour`: -1 as the lap sets off, then each stop's index as the unseen pointer reaches it, the
+ * closing null's when the figure is back at rest. `controls` hands back `replay` for one more lap.
  */
 
 type Stop = [number, number] | null;
+export type HairlineControls = { replay: () => void };
 type Handle = { set: (value: number) => void; destroy: () => void };
 type Definition = {
   name: string;
@@ -74,7 +79,7 @@ function load(name: string): Promise<Definition> {
   return p;
 }
 
-export function Hairline({ name, label, hint, nouns, className = "" }: {
+export function Hairline({ name, label, hint, nouns, tour, onTour, controls, threshold = 0.6, className = "" }: {
   name: string;
   /** What the figure shows, for screen readers */
   label: string;
@@ -82,10 +87,19 @@ export function Hairline({ name, label, hint, nouns, className = "" }: {
   hint: string;
   /** The read-out's first word in the page's language: { seat: "सीट" } */
   nouns: Record<string, string>;
+  /** Stops for the lap in place of the figure's own, ending in null */
+  tour?: Stop[];
+  onTour?: (step: number) => void;
+  controls?: RefObject<HairlineControls | null>;
+  /** How much of the figure must be in view before the lap plays */
+  threshold?: number;
   className?: string;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const outRef = useRef<HTMLSpanElement>(null);
+  // the latest listener, so a page re-rendering on each step never mounts the figure again
+  const heard = useRef(onTour);
+  useEffect(() => { heard.current = onTour; });
 
   useEffect(() => {
     const stage = stageRef.current, out = outRef.current;
@@ -117,25 +131,35 @@ export function Hairline({ name, label, hint, nouns, className = "" }: {
       stage.toggleAttribute("data-ready", true);
 
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const stops = tour ?? figure.tour ?? HL.LAP;
+      const play = () => {
+        lap?.stop();
+        heard.current?.(-1);
+        // the kernel's tour walks round for ever; one lap is enough to show the figure answers
+        lap = HL.tour(stage, stops, (i) => {
+          heard.current?.(i);
+          if (stops[i] === null) { lap?.stop(); lap = null; }
+        });
+      };
+      if (controls) controls.current = { replay: play };
       watch = new IntersectionObserver(([e]) => {
         if (!e?.isIntersecting) return;
         watch?.disconnect();
-        const stops = figure.tour ?? HL.LAP;
-        // the kernel's tour walks round for ever; one lap is enough to show the figure answers
-        lap = HL.tour(stage, stops, (i) => { if (stops[i] === null) { lap?.stop(); lap = null; } });
-      }, { threshold: 0.6 });
+        play();
+      }, { threshold });
       watch.observe(stage);
     }).catch(() => {});
 
     return () => {
       gone = true;
+      if (controls) controls.current = null;
       watch?.disconnect();
       lap?.stop();
       handle?.destroy();
       stage.replaceChildren();
       stage.removeAttribute("data-ready");
     };
-  }, [name, hint, nouns]);
+  }, [name, hint, nouns, tour, controls, threshold]);
 
   return (
     <div className={`relative ${className}`}>

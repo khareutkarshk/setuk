@@ -706,6 +706,7 @@ export const en: Dictionary = {
       common: {
         eg: "For example",
         soon: "In progress",
+        hero: { replay: "Play again", more: "See every step" },
         setup: {
           title: "Set up with your office in two to three weeks.",
           sub: "We study how your office runs, configure Setuk around it, train each role, then stay on.",
@@ -740,8 +741,20 @@ export const en: Dictionary = {
           hint: "Point at a bench",
           read: { seat: "seat" }
         },
+        case: {
+          label: "One request, start to finish",
+          title: "Confirmed berths to Delhi for a family",
+          done: "Closed",
+          steps: [
+            { t: "Record", d: "Logged with the family's details for Friday's hospital visit." },
+            { t: "Assign", d: "The PNR desk in the Delhi office has it, marked urgent." },
+            { t: "Follow up", d: "A letter to the railway division; its reply joins the case." },
+            { t: "Close and inform", d: "The family gets an SMS: berths confirmed." }
+          ]
+        },
         challenges: {
           title: "An MP's office carries more than one register can hold.",
+          sub: "Where requests slip today, between Delhi, the constituency and home.",
           items: [
             { t: "Letters in many registers", d: "Citizen applications, PNR requests and replies from ministries sit in different files and inboxes." },
             { t: "Two cities, one team", d: "Work moves between Delhi and the constituency, and a request can stall in the handover." },
@@ -829,7 +842,7 @@ export const en: Dictionary = {
         },
         menu: { t: "For MLAs", d: "Constituency office, booths and karyakartas." },
         kicker: "For Members of Legislative Assembly",
-        title: "Run your constituency from one connected office.",
+        title: "Your constituency, run from one office.",
         sub: "Citizen requests, letters, programs, booths and karyakartas in one system, so every action in the constituency is tracked.",
         primary: "Request demo",
         secondary: "See the modules",
@@ -839,8 +852,20 @@ export const en: Dictionary = {
           hint: "Point at the map",
           read: { booth: "booth" }
         },
+        case: {
+          label: "One request, start to finish",
+          title: "The handpump by the primary school",
+          done: "Closed",
+          steps: [
+            { t: "Record", d: "Residents report that the handpump has stopped working." },
+            { t: "Assign", d: "Filed under the village's booth, sent to the water desk." },
+            { t: "Follow up", d: "A letter to PHED; the booth's karyakarta confirms the repair team." },
+            { t: "Close and inform", d: "The residents get an SMS: repair recorded." }
+          ]
+        },
         challenges: {
           title: "A constituency asks a lot of one office.",
+          sub: "Where work slips today, between the office, the villages and the departments.",
           items: [
             { t: "Requests from every direction", d: "Applications, complaints and calls arrive at the office, at home and in the field." },
             { t: "Teams spread across villages", d: "Office staff and karyakartas need a shared view of who is doing what, and where." },
@@ -938,8 +963,20 @@ export const en: Dictionary = {
           hint: "Point at a ward",
           read: { ward: "ward" }
         },
+        case: {
+          label: "One complaint, start to finish",
+          title: "A broken road outside the vegetable market",
+          done: "Closed",
+          steps: [
+            { t: "Record", d: "A resident of Ward 14 reports it, with photos." },
+            { t: "Assign", d: "Filed as Roads, Ward 14, with an owner for engineering." },
+            { t: "Follow up", d: "A letter to the executive engineer; the site visit joins the case." },
+            { t: "Close and inform", d: "The resident gets an SMS: repair recorded." }
+          ]
+        },
         challenges: {
           title: "A city reaches the Mayor's office in many pieces.",
+          sub: "Where complaints slip today, between residents, wards and departments.",
           items: [
             { t: "Complaints on every channel", d: "Roads, drains, garbage and streetlights are reported by phone, letter and in person." },
             { t: "Many departments, one question", d: "An issue may need engineering, sanitation and the zonal office. Who has it now?" },
@@ -1023,7 +1060,7 @@ export const en: Dictionary = {
         },
         menu: { t: "For consultants", d: "One platform for every client you advise." },
         kicker: "For political consultants",
-        title: "Give every client you advise an office that runs on Setuk.",
+        title: "Bring Setuk to every client you advise.",
         sub: "Partner with Setuk to set up organised offices for the MPs, MLAs and Mayors you work with.",
         primary: "Become a partner",
         secondary: "See ways to partner",
@@ -1032,6 +1069,17 @@ export const en: Dictionary = {
           label: "A turntable carrying four kinds of office. Push it round and each client's office comes to the front.",
           hint: "Push the turntable",
           read: { client: "client" }
+        },
+        case: {
+          label: "One practice, many offices",
+          title: "Your next client, running on Setuk",
+          done: "Ready",
+          steps: [
+            { t: "Pick a client", d: "The office to start with, and the modules it needs." },
+            { t: "Set it up together", d: "Who configures, who trains, and by when." },
+            { t: "Support the client", d: "The office adopts Setuk while you advise." },
+            { t: "Repeat", d: "What worked becomes the template for the next office." }
+          ]
         },
         tribute: {
           kicker: "Why consultants matter",
@@ -1045,6 +1093,7 @@ export const en: Dictionary = {
         },
         challenges: {
           title: "Your strategy deserves an office that can carry it out.",
+          sub: "Where good advice loses its hold once the engagement ends.",
           items: [
             { t: "Every client works differently", d: "Each office handles requests, letters and appointments its own way, so each engagement starts from scratch." },
             { t: "Little visibility after handover", d: "Once the plan is delivered, it is hard to see whether the office is following it." },

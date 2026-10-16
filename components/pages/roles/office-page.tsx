@@ -2,7 +2,8 @@ import { getDictionary, type Locale } from "@/content";
 import type { MayorRole, MlaRole, MpRole } from "@/content/types";
 import { ROLE_LOOK } from "./look";
 import { MayorWards, MlaGround, MpOffices } from "./own";
-import { Challenges, Flow, ModuleBento, Oversight, RoleFaq, RoleHero, SetupAndTrust, Team } from "./parts";
+import { Challenges, Flow, ModuleBento, Oversight, RoleFaq, SetupAndTrust, Team } from "./parts";
+import { RoleHero } from "./role-hero";
 
 /**
  * For MPs, For MLAs and For Mayors. The same body in the same order, so an office can compare them;
@@ -19,7 +20,7 @@ export function OfficeRolePage({ role, locale }: { role: "mps" | "mlas" | "mayor
   return (
     <>
       <RoleHero role={role} r={r} locale={locale} anchor="modules" />
-      <Challenges title={r.challenges.title} items={r.challenges.items} />
+      <Challenges c={r.challenges} icons={look.problems} />
       {role === "mps" && <MpOffices o={(r as MpRole).offices} />}
       {role === "mlas" && <MlaGround g={(r as MlaRole).ground} />}
       {role === "mayors" && <MayorWards w={(r as MayorRole).wards} />}

@@ -2,62 +2,43 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { getDictionary, type Locale } from "@/content";
 import { media } from "@/content/media";
-import type { QA, RoleHead, RoleKey, RoleModule, TitledItem } from "@/content/types";
+import type { QA, RoleChallenges, RoleModule, TitledItem } from "@/content/types";
 import * as I from "@/components/icons";
-import { Hairline } from "@/components/site/hairline";
-import { Kicker } from "@/components/site/kicker";
 import { CornerPattern, Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
 import { Faqs } from "../faq-list";
-import { deva, H2, Lead, PageHero, Panel, PrimaryLink, SectionHead, TextLink, Wrap } from "../ui";
-import { ROLE_LOOK } from "./look";
+import { deva, H2, IconTile, Lead, Panel, SectionHead, TextLink, Wrap } from "../ui";
 
 /*
  * Sections the role pages share. Each page composes them in its own order around the one section
  * only it has (own.tsx), so the four read as one family with four faces.
  */
 
-/** A short accent rule above an item: the problems' mark (leaf stays for outcomes) */
-const RULE = "relative border-t border-line pt-5 before:absolute before:-top-px before:left-0 before:h-px before:w-10 before:bg-accent";
-
-/** The hero: the promise on the left, the role's line figure on a plate on the right */
-export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHead; locale: Locale; anchor: string }) {
-  const look = ROLE_LOOK[role];
-  return (
-    <PageHero routes={false} pattern={look.pattern} className="grid items-center gap-10 pt-8 pb-16 md:pt-14 lg:grid-cols-[minmax(0,11fr)_minmax(0,10fr)] lg:gap-12 lg:pb-24">
-      <div>
-        <Kicker className="rise text-leaf">{r.kicker}</Kicker>
-        <h1 className="rise font-display-tight mt-4 text-balance text-[clamp(34px,4.3vw,56px)] leading-[1.04] [--i:1]">{r.title}</h1>
-        <Lead className="rise mt-5 [--i:2]">{r.sub}</Lead>
-        <div className="rise mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 [--i:3]">
-          <PrimaryLink href={href(locale, routes.contact)}>{r.primary}</PrimaryLink>
-          <TextLink href={`#${anchor}`}>{r.secondary}</TextLink>
-        </div>
-      </div>
-      <div className="rise relative [--i:2]">
-        <div className="relative overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_30px_80px_-44px_color-mix(in_srgb,var(--accent)_50%,transparent)]">
-          <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent opacity-25" />
-          {/* the role in Devanagari, faint in the corner; the figure's plates cover it where they stand */}
-          <span aria-hidden="true" className="font-deva pointer-events-none absolute right-6 bottom-3 select-none text-[clamp(56px,6.4vw,92px)] leading-none font-bold text-accent opacity-[.08]">{r.word}</span>
-          <Hairline name={look.figure} label={r.figure.label} hint={r.figure.hint} nouns={r.figure.read} />
-        </div>
-      </div>
-    </PageHero>
-  );
-}
-
-/** What gets in the way: four problems under one headline, in ruled columns */
-export function Challenges({ title, items }: { title: string; items: TitledItem[] }) {
+/**
+ * What gets in the way: the "before" to the hero's case. The headline and its line, then four
+ * problems as cards, each marked with the hero card's rail broken off (role-slip in globals.css):
+ * the work that slips today, where the hero showed it carried through.
+ */
+export function Challenges({ c, icons }: { c: RoleChallenges; icons: readonly I.Icon[] }) {
   return (
     <Wrap className="py-20 md:py-28">
-      <H2 className="max-w-[780px]">{title}</H2>
-      <ul className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((x) => (
-          <li key={x.t} className={`reveal ${RULE}`}>
-            <h3 className="text-[18px] leading-snug font-semibold">{x.t}</h3>
-            <p className="mt-2 text-[15px] leading-relaxed text-muted">{x.d}</p>
-          </li>
-        ))}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-14">
+        <H2 className="max-w-[780px]">{c.title}</H2>
+        <Lead className="lg:pb-1.5">{c.sub}</Lead>
+      </div>
+      <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {c.items.map((x, i) => {
+          const Ico = icons[i % icons.length];
+          return (
+            <li key={x.t} className="reveal role-problem relative flex flex-col overflow-hidden rounded-3xl border border-line bg-surface p-6 md:p-7">
+              <span aria-hidden="true" className="font-deva pointer-events-none absolute top-5 right-6 select-none text-[56px] leading-none font-bold text-accent opacity-[.1]">{deva(i + 1)}</span>
+              <IconTile icon={Ico} />
+              <span aria-hidden="true" className="role-slip mt-6" />
+              <h3 className="mt-5 text-[19px] leading-snug font-semibold">{x.t}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-muted">{x.d}</p>
+            </li>
+          );
+        })}
       </ul>
     </Wrap>
   );
@@ -125,7 +106,7 @@ const COLS: Record<number, string> = { 3: "lg:grid-cols-3", 4: "lg:grid-cols-4",
 /** Steps on a rail; on the office pages one real case runs under them (`eg`), the last step closes it */
 export function Flow({ title, sub, steps, eg }: { title: string; sub?: string; steps: { t: string; d: string; eg?: string }[]; eg?: string }) {
   return (
-    <section aria-labelledby="flow-title" className="relative overflow-clip border-t border-line bg-surface">
+    <section id="flow" aria-labelledby="flow-title" className="relative scroll-mt-20 overflow-clip border-t border-line bg-surface">
       <Wrap className="py-20 md:py-28">
         <SectionHead title={title} id="flow-title" lead={sub} className="max-w-[720px]" />
         <ol className={`relative mt-14 grid gap-10 md:grid-cols-2 lg:gap-6 ${COLS[steps.length] ?? "lg:grid-cols-4"}`}>
