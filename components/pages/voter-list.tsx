@@ -1,28 +1,45 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { getDictionary, type Locale } from "@/content";
 import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
 import { href, routes } from "@/lib/paths";
 import { site } from "@/content/site";
 import { count, inr, orderHref } from "@/lib/voter-list/order";
-import { areaHighlight, stateShape, type Highlight, type StateShape } from "@/lib/voter-list/shapes";
+import { areaHighlight, stateShape, type StateShape } from "@/lib/voter-list/shapes";
 import type { AreaDetail, AreaSummary, CopyBlock, StateIndex, VoterListView } from "@/lib/voter-list/types";
 import { Faqs } from "./faq-list";
 import { Band, Crumbs, H1, H2, IconTile, Lead, PageHero, Panel, SectionHead, TICK, Wrap } from "./ui";
 import { VoterListFinder } from "./voter-list-finder";
-import { OrderHost, type OrderPayload, type StatKey } from "./voter-list-order";
+import { AreaCard, cardCopy, fill, type CardArt, type SpriteId } from "./voter-list-card";
+import { VoterListMore } from "./voter-list-more";
+import { OrderHost } from "./voter-list-order";
+
+export { fill };
 
 type Copy = ReturnType<typeof getDictionary>["pages"]["voterList"];
 
 /** The second URL segment of a state's three lists, as on the live site */
 const LIST_SLUG = { districts: "all-districts", acs: "all-assembly-constituencies", pcs: "all-parliamentary-constituencies" } as const;
 
+/** Cards drawn on the server before a long list goes on as data (VoterListMore): a first screen, in whole rows of one, two or three */
+const FIRST = 12;
+
+/* a state card shows its outline; a card within a state, that state with the card's own area lit */
+function artOf(c: AreaSummary, map?: StateShape): CardArt | undefined {
+  if (c.level === "state") {
+    const s = stateShape(c.slug);
+    return s && { kind: "outline", viewBox: s.viewBox, d: s.d, marks: s.marks };
+  }
+  return map && { kind: "locator", viewBox: map.viewBox, area: areaHighlight(c) };
+}
+
 /*
  * The cards' icons, drawn once per page and referenced by each card (<use>), so a state's list of
  * hundreds of cards doesn't carry hundreds of copies of the same paths. They come from
  * components/icons.ts like every other icon, and take the text colour.
  */
-const SPRITE = {
+const SPRITE: Record<SpriteId, ReactNode> = {
   xls: <I.FileXls size={24} />,
   download: <I.DownloadSimple size={24} weight="bold" />,
   arrow: <I.ArrowRight size={24} />,
@@ -39,14 +56,7 @@ function Sprite({ map }: { map?: StateShape }) {
     </svg>
   );
 }
-function Use({ id, size, className = "" }: { id: keyof typeof SPRITE; size?: number; className?: string }) {
-  return <svg aria-hidden="true" width={size ?? "1em"} height={size ?? "1em"} className={`shrink-0 ${className}`}><use href={`#vl-${id}`} /></svg>;
-}
 
-/** "{name} voter list" + { name: "Bihar" } → "Bihar voter list" */
-export function fill(s: string, vars: Record<string, string | number | undefined>) {
-  return s.replace(/\{(\w+)\}/g, (m, k: string) => (vars[k] === undefined ? m : typeof vars[k] === "number" ? count(vars[k]) : String(vars[k])));
-}
 
 /** The area a page is about: the constituency or seat, else the district, else the state */
 const areaOf = (view: VoterListView) => view.trail.ac ?? view.trail.pc ?? view.trail.district ?? view.trail.state;
@@ -94,6 +104,10 @@ export function VoterListPage({ locale, view }: { locale: Locale; view: VoterLis
   const lists = view.index.length === 1 ? view.index[0] : undefined;
   /* the state's outline, for the map on each card within it */
   const map = state ? stateShape(state.slug) : undefined;
+  /* a long list: the first screen of cards as markup, the rest as data, drawn as they scroll near */
+  const split = view.cards.length > FIRST + FIRST / 2 ? FIRST : view.cards.length;
+  const first = view.cards.slice(0, split), rest = view.cards.slice(split);
+  const cp = cardCopy(p);
 
   return (
     <>
@@ -133,13 +147,16 @@ export function VoterListPage({ locale, view }: { locale: Locale; view: VoterLis
             )}
           </div>
           {view.cards.length ? (
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {view.cards.map((c) => (
-                <li key={c.slugs.join("/")} className="flex">
-                  <AreaCard locale={locale} c={c} p={p} view={view} map={map} selected={c === ac || c === pc} />
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {first.map((c) => (
+                  <li key={c.slugs.join("/")} className="flex">
+                    <AreaCard locale={locale} c={c} p={cp} rate={view.ratePerBooth} art={artOf(c, map)} selected={c === ac || c === pc} />
+                  </li>
+                ))}
+              </ul>
+              {rest.length > 0 && <VoterListMore locale={locale} p={cp} rate={view.ratePerBooth} cards={rest.map((c) => ({ c, art: artOf(c, map) }))} />}
+            </>
           ) : (
             <div className="mt-10 rounded-3xl border border-dashed border-line px-6 py-14 text-center">
               <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent-soft text-accent"><I.FileXls size={24} aria-hidden /></span>
@@ -235,125 +252,6 @@ function ListTabs({ locale, p, lists, level }: { locale: Locale; p: Copy; lists:
       </ul>
     </nav>
   );
-}
-
-/** One area: its roll, its figures, its links, and the order button. The price is in the dialog the button opens */
-function AreaCard({ locale, c, p, view, map, selected = false }: { locale: Locale; c: AreaSummary; p: Copy; view: VoterListView; map?: StateShape; selected?: boolean }) {
-  const at = (slugs: string[]) => href(locale, routes.voterListArea(slugs));
-  const more = selected ? undefined : at(c.slugs);
-  const stats: [number, string][] =
-    c.level === "state" ? [[c.districts, p.stats.districts], [c.acs, p.stats.acs], [c.pcs, p.stats.pcs], [c.booths, p.stats.booths]]
-    : c.level === "district" ? [[c.acs, p.stats.acs], [c.pcs, p.stats.pcs], [c.booths, p.stats.booths], [c.booths, p.stats.files]]
-    : c.level === "pc" ? [[c.segments.length, p.stats.acs], [c.booths, p.stats.booths]]
-    : [[c.booths, p.stats.booths], [c.booths, p.stats.files]];
-  const order: OrderPayload = {
-    code: `${p.levels[c.level]}${c.level === "ac" ? ` · AC ${c.no}` : c.level === "pc" ? ` · PC ${c.no}` : ""}`,
-    title: fill(p.cards.dialog.title, { name: c.name }), roll: c.roll, price: inr(c.booths * view.ratePerBooth),
-    stats: orderStats(c), seat: c.level === "ac" && c.pc ? `${c.pc.no} · ${c.pc.name}` : undefined
-  };
-  /* a state card shows its outline; a card within a state, that state with the card's own area lit */
-  const shape = c.level === "state" ? stateShape(c.slug) : undefined;
-  const local = c.level !== "state" ? map : undefined;
-  const corner = shape || local;
-  return (
-    <article aria-current={selected || undefined} className={`reveal group relative flex w-full flex-col overflow-hidden rounded-3xl border bg-bg p-6 transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_24px_60px_-40px_color-mix(in_srgb,var(--accent)_55%,transparent)] ${selected ? "border-accent ring-1 ring-accent" : "border-line"}`}>
-      {/* the badge takes the corner, unless the map has it; then it leads the card */}
-      {selected && <span className={`inline-flex h-6 items-center gap-1 self-start rounded-full bg-leaf-soft px-2.5 text-[12px] font-semibold text-leaf ${corner ? "mb-3" : "absolute top-5 right-5"}`}><I.Check size={12} weight="bold" aria-hidden />{p.selected}</span>}
-      {shape && <Outline shape={shape} className="absolute top-5 right-5 h-[84px] w-[92px]" />}
-      {local && <Locator map={local} area={areaHighlight(c)} className="absolute top-5 right-5 h-[84px] w-[92px]" />}
-      <p className={`text-[12px] font-semibold uppercase tracking-[.08em] text-muted ${selected || corner ? "pr-24" : ""}`}>
-        {p.levels[c.level]}{(c.level === "ac" || c.level === "pc") && <span className="font-mono normal-case tracking-normal"> · {c.level === "ac" ? "AC" : "PC"} {c.no}</span>}
-      </p>
-      <h3 className={`font-display-tight mt-1.5 text-[24px] leading-tight ${corner ? "pr-24" : ""}`}>
-        {more ? <Link href={more} className="transition-colors hover:text-accent">{c.name}</Link> : c.name}
-      </h3>
-      <p className="mt-3 inline-flex max-w-full items-center gap-1.5 self-start rounded-full bg-accent-soft px-3 py-1 text-[13px] text-accent">
-        <Use id="xls" /><span className="sr-only">{p.cards.roll}: </span><span className="truncate">{c.roll}</span>
-      </p>
-      <dl className="mt-5 grid grid-cols-2 gap-2">
-        {stats.map(([v, l]) => (
-          <div key={l} className="flex flex-col-reverse rounded-xl bg-surface px-3.5 py-3">
-            <dt className="mt-1.5 text-[13px] leading-snug text-muted">{l}</dt>
-            <dd className="text-[20px] leading-none font-semibold tabular-nums">{count(v)}</dd>
-          </div>
-        ))}
-      </dl>
-      {c.level === "ac" && c.pc && (
-        <Link href={at(c.pc.slugs)} className="mt-3 flex items-center gap-2 rounded-xl bg-surface px-3.5 py-3 text-[14px] transition-colors hover:text-accent">
-          <Use id="bank" className="text-accent" /><span className="text-muted">{p.cards.pc}</span><span className="min-w-0 truncate font-semibold">{c.pc.no} · {c.pc.name}</span>
-          <Use id="arrow" size={14} className="ml-auto text-muted" />
-        </Link>
-      )}
-      {c.level === "pc" && c.segments.length > 0 && (
-        <div className="mt-3 rounded-xl bg-surface px-3.5 py-3">
-          <p className="text-[13px] text-muted">{p.cards.segments}</p>
-          <ul className="mt-2 flex flex-wrap gap-1.5">
-            {c.segments.map((s) => (
-              <li key={s.no}>
-                <Link href={at(s.slugs)} className="inline-flex min-h-8 items-center rounded-full border border-line bg-bg px-2.5 text-[13px] font-medium transition-colors hover:border-accent hover:text-accent">
-                  <span className="mr-1 font-mono text-[12px] text-muted">{s.no}</span>{s.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <div className="mt-auto flex flex-col gap-1 pt-5">
-        {/* a WhatsApp link without script; with it, the page's order dialog (OrderHost) opens instead */}
-        <a href={orderHref(view, c)} target="_blank" rel="noopener noreferrer" data-order={JSON.stringify(order)} aria-haspopup="dialog"
-          className="press inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 py-2 text-center text-[15px] font-semibold text-accent-ink hover:brightness-110">
-          <Use id="download" />{fill(p.cards.order, { name: c.name })}
-        </a>
-        {more && c.level !== "ac" && (
-          <Link href={more} className="group/more inline-flex min-h-11 items-center justify-center gap-2 text-[15px] font-semibold text-accent">
-            {p.cards.explore[c.level]}
-            <Use id="arrow" className="transition-transform duration-300 group-hover/more:translate-x-0.5" />
-          </Link>
-        )}
-      </div>
-    </article>
-  );
-}
-
-/**
- * A state's outline in the corner of its card (lib/voter-list/shapes.ts): a hairline in the accent
- * with a faint fill that deepens with the card's hover, and a ring round each piece of a scattered UT
- */
-function Outline({ shape, className = "" }: { shape: StateShape; className?: string }) {
-  return (
-    <svg aria-hidden="true" viewBox={shape.viewBox} preserveAspectRatio="xMaxYMin meet" overflow="visible"
-      className={`pointer-events-none text-accent ${className}`}>
-      <path d={shape.d} fill="currentColor" fillRule="evenodd" stroke="currentColor" strokeWidth={1.25} strokeLinejoin="round" vectorEffect="non-scaling-stroke"
-        className="transition-[fill-opacity] duration-300 [fill-opacity:.08] group-hover:[fill-opacity:.16]" />
-      {shape.marks?.map(([x, y]) => <circle key={`${x},${y}`} cx={x} cy={y} r={6} fill="none" stroke="currentColor" strokeWidth={1} strokeOpacity={0.55} vectorEffect="non-scaling-stroke" />)}
-    </svg>
-  );
-}
-
-/**
- * A card's map within a state: the state's outline from the page's sprite (#vl-state), and the
- * card's own district, constituency or seat filled in, ringed when it is too small to find. Where the
- * boundary data lacks the area (Assam and Jammu and Kashmir, whose seats were redrawn) only the
- * state shows.
- */
-function Locator({ map, area, className = "" }: { map: StateShape; area?: Highlight; className?: string }) {
-  return (
-    <svg aria-hidden="true" viewBox={map.viewBox} preserveAspectRatio="xMaxYMin meet" overflow="visible"
-      className={`pointer-events-none text-accent ${className}`}>
-      <use href="#vl-state" fill="currentColor" fillOpacity={0.07} stroke="currentColor" strokeOpacity={0.45} strokeWidth={1} />
-      {area && <path d={area.d} fill="currentColor" className="transition-opacity duration-300 [opacity:.8] group-hover:[opacity:1]" />}
-      {area?.ring && <circle cx={area.ring[0]} cy={area.ring[1]} r={area.ring[2]} fill="none" stroke="currentColor" strokeWidth={1.25} vectorEffect="non-scaling-stroke" />}
-    </svg>
-  );
-}
-
-/** The dialog's figures for an area: what its file covers */
-function orderStats(c: AreaSummary): [StatKey, string][] {
-  const booths: [StatKey, string] = ["booths", count(c.booths)];
-  if (c.level === "state") return [["districts", count(c.districts)], ["acs", count(c.acs)], ["pcs", count(c.pcs)], booths];
-  if (c.level === "district") return [["acs", count(c.acs)], ["pcs", count(c.pcs)], booths, ["files", count(c.booths)]];
-  if (c.level === "pc") return [["acs", count(c.segments.length)], booths];
-  return [booths, ["files", count(c.booths)]];
 }
 
 /**
