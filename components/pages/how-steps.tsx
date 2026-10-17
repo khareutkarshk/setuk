@@ -7,7 +7,9 @@ import { useEffect, useRef, type ReactNode } from "react";
  * and a rail fills as the reader moves through all four. Both tell the reader where they are in the
  * process. GSAP ScrollTrigger is loaded only here, after hydration; without it the list and the
  * steps are simply static. Markup comes from the server: [data-rail] (the fill), [data-step-link]
- * (list items) and [data-step] (the step articles), matched by index.
+ * (list items) and [data-step] (the step articles), matched by index. The calendar beside the list
+ * ([data-cal-board]) lights its days up to the step being read; data-live on the root lets CSS dim
+ * the rest, so it stays full without this, and with reduced motion.
  */
 export function HowSteps({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,7 +33,12 @@ export function HowSteps({ children, className = "" }: { children: ReactNode; cl
             scrollTrigger: { trigger: steps[0], endTrigger: steps[steps.length - 1], start: "top 55%", end: "bottom 55%", scrub: 0.4 }
           });
         }
-        const mark = (i: number) => links.forEach((l, k) => l.toggleAttribute("data-on", k === i));
+        const days = [...root.querySelectorAll<HTMLElement>("[data-cal-board] [data-cal]")];
+        const mark = (i: number) => {
+          links.forEach((l, k) => l.toggleAttribute("data-on", k === i));
+          days.forEach((d) => d.toggleAttribute("data-on", Number(d.dataset.cal) <= i));
+        };
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) root.setAttribute("data-live", "");
         steps.forEach((s, i) => ScrollTrigger.create({ trigger: s, start: "top 55%", end: "bottom 55%", onToggle: (st) => { if (st.isActive) mark(i); } }));
         mark(0);
       }, root);

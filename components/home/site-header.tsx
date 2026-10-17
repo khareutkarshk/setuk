@@ -76,6 +76,8 @@ export function SiteHeader({ t, roles, products, locale, path = routes.home }: {
 
   return (
     <header
+      /* named on its own, so page transitions leave it in place */
+      style={{ viewTransitionName: "site-header" }}
       data-solid={solid || open ? "" : undefined}
       className={`site-header fixed inset-x-0 top-0 z-40 border-b ${
         solid || open ? "border-line/60 bg-bg/80 backdrop-blur-xl backdrop-saturate-150" : "border-transparent"

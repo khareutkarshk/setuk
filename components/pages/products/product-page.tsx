@@ -9,11 +9,12 @@ import { href, routes } from "@/lib/paths";
 import { Faqs } from "../faq-list";
 import { Band, Figure, IconTile, Lead, PageHero, PrimaryLink, SectionHead, TextLink, TICK, Wrap } from "../ui";
 import { PRODUCT_LOOK } from "./look";
+import { ScreenPlay } from "./screen-play";
 import { ElectionScreen, OfficeScreen } from "./screens";
 
 /**
  * A product page, one layout for both products:
- *   the hero, with the product's own screen drawn beside the promise
+ *   the hero, with the product's own screen drawn beside the promise, playing its story once in view
  *   what changes, today against with Setuk
  *   the four modules that carry the product, each beside its illustration with a status card on it
  *   every module, live or in progress (as How we work lists them)
@@ -61,10 +62,11 @@ export function ProductPage({ product, locale }: { product: ProductKey; locale: 
           <div aria-hidden className="absolute inset-x-6 top-16 bottom-6 -z-0 overflow-hidden rounded-[28px] bg-accent-soft/70 lg:-right-10 lg:left-12">
             <Pattern kind={look.pattern} className="absolute inset-0 text-accent opacity-[.12]" />
           </div>
-          {product === "office"
-            ? <OfficeScreen s={t.pages.products.office.screen} label={p.screenLabel} />
-            : <ElectionScreen s={t.pages.products.election.screen} label={p.screenLabel} />}
-          <p className="rise mt-3 text-center text-[12px] text-muted [--i:6]">{c.illustrative}</p>
+          <ScreenPlay note={c.illustrative} replay={c.replay}>
+            {product === "office"
+              ? <OfficeScreen s={t.pages.products.office.screen} label={p.screenLabel} />
+              : <ElectionScreen s={t.pages.products.election.screen} label={p.screenLabel} />}
+          </ScreenPlay>
         </div>
       </PageHero>
 

@@ -228,6 +228,44 @@ export const en: Dictionary = {
     done: "Done",
     close: "Close"
   },
+  tryIt: {
+    kicker: "Try it",
+    title: "Send a request. Watch it get done.",
+    sub: "Type your name, pick a request, and see how a Setuk office handles it, step by step, with the messages you would get.",
+    name: { label: "Your name", placeholder: "For example, Ramesh Kumar" },
+    request: {
+      label: "Your request",
+      samples: [
+        { t: "Repair the road in my ward", dept: "Public Works Department" },
+        { t: "A bed at the district hospital", dept: "Health Department" },
+        { t: "My pension hasn't arrived", dept: "Social Welfare Department" },
+        { t: "Correct my ration card", dept: "Food and Civil Supplies" }
+      ]
+    },
+    button: "Send my request",
+    again: "Play again",
+    another: "Try another",
+    privacy: "Nothing you type leaves this page.",
+    file: "File {no}",
+    steps: [
+      { t: "Logged as file {no}", d: "Your request gets a file number the moment it arrives." },
+      { t: "Sent to the {dept}", d: "The staff member in charge takes it on, with a date to answer by." },
+      { t: "Followed up", d: "The office chases the department until there is an answer." },
+      { t: "Closed", d: "Done, and kept on record against your name." }
+    ],
+    when: ["Today, 10:02", "Today, 10:15", "Day 3", "Day 6"],
+    phone: {
+      title: "Messages",
+      from: "Setuk · Representative's office",
+      messages: [
+        "Namaste {name}, your request is logged as file {no}. We will keep you updated.",
+        "{name}, file {no} has been sent to the {dept}. We are following it up.",
+        "Good news, {name}: file {no} is closed. Thank you for your patience."
+      ]
+    },
+    sample: "Ramesh Kumar",
+    done: "File {no} closed. Three messages sent to {name}."
+  },
   footer: {
     company: "Company",
     guides: "Guides",
@@ -329,7 +367,8 @@ export const en: Dictionary = {
             does: ["Send a monthly report on what was handled and what is pending", "Review each quarter what works and what doesn't", "Adjust the SOPs and settings as the office changes"],
             needs: "One person in your office who owns the system day to day."
           }
-        ]
+        ],
+        calendar: { title: "Your first three weeks", days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], week: "Week {n}", ongoing: "From week 4: a monthly report and a review each quarter" }
       },
       modules: {
         kicker: "Modules",
@@ -484,7 +523,8 @@ export const en: Dictionary = {
           "When they ask for an update, the staff search through WhatsApp, old emails, physical files and memory. Nothing surfaces cleanly. The citizen leaves frustrated, the staff feel helpless, and the representative looks unreliable. Not because they don't care, but because the system failed them.",
           "This is the problem Setuk solves, with clarity rather than complexity."
         ],
-        alt: "The same office before and after: desks buried in files, then one clean desk with a laptop"
+        alt: "The same office before and after: desks buried in files, then one clean desk with a laptop",
+        compare: { label: "Drag to compare the office before Setuk and with it", before: "Before", after: "With Setuk", valuetext: "{n}% of the picture shows the office with Setuk" }
       },
       beliefs: {
         kicker: "Beliefs",
@@ -731,6 +771,22 @@ export const en: Dictionary = {
       tabs: { label: "Lists in {name}", districts: "Districts", acs: "Assembly constituencies", pcs: "Lok Sabha seats" },
       selected: "Selected",
       preview: { title: "What you get", summary: "Summary", part: "Part {n}", more: "+{n} more", note: "One workbook, one sheet per booth." },
+      map: {
+        kicker: "Every state",
+        title: "Find your state on the map.",
+        sub: "Point at a state to see how much of its voter list we have, then open it for its districts and constituencies.",
+        hint: "Point at a state, or move through them with the Tab key.",
+        touchHint: "Tap a state to see its figures, then tap again to open it.",
+        all: "All of India",
+        districts: "Districts",
+        acs: "Assembly constituencies",
+        booths: "Polling booths",
+        open: "Open {name}'s voter lists",
+        label: "{name}: {districts} districts, {acs} assembly constituencies, {booths} booths",
+        skip: "Skip the map",
+        scale: "Fewer booths to more booths",
+        note: "Boundaries as drawn on India's official map."
+      },
       cards: {
         heading: { all: "Choose a state", state: "Districts in {name}", district: "Constituencies in {name}", ac: "{name} and the rest of {district}", pc: "{name} and its assembly segments", districts: "Every district in {state}", acs: "Every assembly constituency in {state}", pcs: "Every Lok Sabha seat in {state}" },
         count: { all: "{n} states", state: "{n} districts", district: "{n} constituencies", ac: "{n} constituencies", pc: "{n} segments", districts: "{n} districts", acs: "{n} constituencies", pcs: "{n} seats" },
@@ -789,7 +845,8 @@ export const en: Dictionary = {
           link: "How we work"
         },
         trust: { title: "Your records stay yours.", link: "Read the policies" },
-        faqAll: "All questions"
+        faqAll: "All questions",
+        replay: "Play again"
       },
       office: {
         meta: {
@@ -819,9 +876,10 @@ export const en: Dictionary = {
           ],
           meeting: { kicker: "Appointment", time: "11:30", t: "Ward 14 residents' delegation", status: "Confirmed" },
           sms: { from: "SMS to Sunita Devi", body: "Your letter 0142 has gone to the Health Department. We'll tell you the next step.", when: "now" },
-          pending: { label: "Over 7 days", value: "3", note: "letters waiting for action" }
+          pending: { label: "Over 7 days", value: "3", note: "letters waiting for action" },
+          after: { status: "Dispatched", tone: "leaf", tabs: ["3", "39"], pending: "2" }
         },
-        screenLabel: "An illustration of Setuk's letter screen: letters by status, with a confirmed appointment, a citizen's SMS update and three letters overdue.",
+        screenLabel: "An illustration of Setuk's letter screen: letters by status, one just dispatched, with a confirmed appointment, the citizen's SMS update and two letters overdue.",
         shift: {
           kicker: "What changes",
           title: "From registers and memory to one record the whole office shares.",

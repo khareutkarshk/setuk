@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { getDictionary, type Locale } from "@/content";
 import { media } from "@/content/media";
 import type { ModuleItem } from "@/content/types";
@@ -38,7 +39,8 @@ export function HowWeWorkPage({ locale }: { locale: Locale }) {
       <Band tone="surface" labelledBy="process-title" corner={{ kind: "kolam", fx: 100, fy: 0 }}>
         <SectionHead kicker={p.process.kicker} title={p.process.title} id="process-title" lead={p.process.sub} className="max-w-[760px]" />
         <HowSteps className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-          <ol className="relative hidden self-start lg:sticky lg:top-[calc(var(--header-h)+40px)] lg:block">
+          <div className="hidden self-start lg:sticky lg:top-[calc(var(--header-h)+40px)] lg:block">
+          <ol className="relative">
             <span aria-hidden className="absolute top-3 bottom-3 left-[15px] w-px bg-line" />
             <span aria-hidden data-rail className="absolute top-3 bottom-3 left-[15px] w-px origin-top scale-y-0 bg-accent" />
             {steps.map((s, i) => (
@@ -53,6 +55,10 @@ export function HowWeWorkPage({ locale }: { locale: Locale }) {
               </li>
             ))}
           </ol>
+          {/* the same weeks, lit by the rail as each step is read (how-steps.tsx) */}
+          <Calendar c={p.process.calendar} steps={steps.map((x) => x.t)} track className="mt-8" />
+          </div>
+          <Calendar c={p.process.calendar} steps={steps.map((x) => x.t)} className="lg:hidden" />
           <div className="divide-y divide-line border-y border-line">
             {steps.map((s, i) => (
               <article key={s.t} id={`step-${i + 1}`} data-step className="relative scroll-mt-28 py-10 first:pt-8 md:py-12">
@@ -173,5 +179,40 @@ function ModuleCard({ m, soon }: { m: ModuleItem; soon?: string }) {
         <p className="mt-2 text-[15px] leading-relaxed text-muted">{m.d}</p>
       </div>
     </article>
+  );
+}
+
+/* the first three weeks, Monday to Saturday, by the step that fills each day: discuss (two days),
+   design (a week), train (a week), then running */
+const DAYS = [0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3];
+const DAY_TONE = ["bg-accent/30", "bg-accent/60", "bg-accent", "bg-leaf"];
+
+/**
+ * The first three weeks as a calendar. `track`: the copy beside the steps, which the rail lights step
+ * by step (data-cal, data-on); without script, without GSAP or with reduced motion it shows in full,
+ * as the phone copy always does.
+ */
+function Calendar({ c, steps, track = false, className = "" }: { c: { title: string; days: string[]; week: string; ongoing: string }; steps: string[]; track?: boolean; className?: string }) {
+  return (
+    <div data-cal-board={track ? "" : undefined} className={`rounded-3xl border border-line bg-surface p-5 ${className}`}>
+      <p className="flex items-center gap-2 text-[14px] font-semibold"><I.CalendarDots size={17} className="text-accent" aria-hidden />{c.title}</p>
+      <div className="mt-4 grid grid-cols-[auto_repeat(6,minmax(0,1fr))] items-center gap-x-1.5 gap-y-1.5 text-[11.5px] text-muted">
+        <span />
+        {c.days.map((d) => <span key={d} className="text-center">{d}</span>)}
+        {[0, 1, 2].map((w) => (
+          <div key={w} className="contents">
+            <span className="pr-2 whitespace-nowrap">{c.week.replace("{n}", String(w + 1))}</span>
+            {DAYS.slice(w * 6, w * 6 + 6).map((s, d) => (
+              <span key={d} data-cal={s} style={{ "--k": w * 6 + d } as CSSProperties} className={`cal-day h-7 rounded-md ${DAY_TONE[s]}`} />
+            ))}
+          </div>
+        ))}
+      </div>
+      {/* which colour is which step */}
+      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12.5px] text-muted">
+        {steps.map((t, i) => <li key={t} className="flex items-center gap-1.5"><span className={`size-2.5 rounded-[3px] ${DAY_TONE[i]}`} aria-hidden />{t}</li>)}
+      </ul>
+      <p className="mt-3 flex items-center gap-2 border-t border-line pt-3 text-[13px] leading-snug text-muted"><I.ArrowRight size={14} className="shrink-0 text-leaf" aria-hidden />{c.ongoing}</p>
+    </div>
   );
 }

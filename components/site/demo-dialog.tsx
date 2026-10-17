@@ -229,10 +229,15 @@ export function DemoHost({ c, to, privacyHref, whatsapp, phone }: { c: DemoCopy;
 
           {sent && (
             <div ref={sentRef} tabIndex={-1} role="status" className="demo-sent px-6 pt-10 pb-10 outline-none sm:px-8 md:pt-16">
-              <span className="grid size-14 place-items-center rounded-full bg-leaf-soft text-leaf ring-8 ring-leaf-soft/40">
-                <I.Check size={26} weight="bold" aria-hidden />
+              {/* the slip goes into an envelope, the flap folds and Setuk's seal stamps it shut (globals.css, .env-*) */}
+              <span aria-hidden className="env">
+                <span className="env-back" />
+                <span className="env-slip" />
+                <span className="env-front" />
+                <span className="env-flap" />
+                <span className="env-seal"><span className="block w-[22px] [--mark-arch:var(--accent-ink)] [--mark-dot-mid:var(--accent-ink)] [--mark-dot-side:var(--accent-ink)]"><SetukMark /></span></span>
               </span>
-              <h3 className="font-display-tight mt-7 text-[26px] leading-tight text-balance">{c.sentTitle}</h3>
+              <h3 className="font-display-tight mt-8 text-[26px] leading-tight text-balance">{c.sentTitle}</h3>
               <p className="mt-3 max-w-[46ch] leading-relaxed text-muted">{c.sentBody}</p>
               <button type="button" onClick={hide} className="press mt-8 inline-flex h-11 items-center rounded-full border border-line px-6 font-semibold hover:border-ink">{c.done}</button>
             </div>

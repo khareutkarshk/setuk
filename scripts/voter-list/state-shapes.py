@@ -10,6 +10,13 @@ Kashmir as the Survey of India draws them), and STATES/<state>/<state>_ASSEMBLY.
 
   (the constituencies need shapely: pip install shapely, in a virtual environment)
 
+  python3 -I scripts/voter-list/state-shapes.py --india <INDIA_STATES.geojson> lib/voter-list/data/india-map.json
+
+  draws the map of India on the voter list's landing page instead: every state in one shared
+  projection (longitude scaled by the cosine of India's middle latitude, the longer side INDIA_SIZE
+  units), each with the centre of its largest piece, and `small` on those too small to tap, which
+  get a ring there. Same source, so the same official boundaries; no neighbouring country is drawn.
+
   curl -L -o INDIA_STATES.geojson https://raw.githubusercontent.com/datta07/INDIAN-SHAPEFILES/master/INDIA/INDIA_STATES.geojson
   (and each state's STATES/<STATE>/<STATE>_ASSEMBLY.geojson from the same repository, with
   STATES/ASSAM/ASSAM_DISTRICTS.geojson and STATES/JAMMU & KASHMIR/JAMMU & KASHMIR_DISTRICTS.geojson)
@@ -44,6 +51,9 @@ import difflib
 import os
 import re
 
+INDIA = sys.argv[1] == "--india"
+if INDIA:
+    sys.argv.pop(1)
 SRC, OUT = sys.argv[1], sys.argv[2]
 ASSEMBLY, CATALOGUE = (sys.argv[3], sys.argv[4]) if len(sys.argv) > 4 else (None, None)
 AC_TOLERANCE = 0.3  # simplification for constituencies, districts and seats: a card's map is about one pixel to the unit
@@ -55,6 +65,9 @@ MATCH = 0.8  # below this share of name-checked matches a state's boundary file 
 SIZE = 100.0
 TOLERANCE = 0.45  # simplification, in output units
 KEEP = 0.012  # an island is kept if it is at least this share of the state's largest piece
+INDIA_SIZE = 1000.0
+INDIA_TOLERANCE = 1.1  # the landing map is drawn at about 0.6 px to the unit
+SMALL = 18.0  # a state whose longer side is under this many units is too small to tap on the map
 
 # the dataset's names -> the catalogue's state slugs (lib/voter-list/data/catalogue.json)
 SLUGS = {
@@ -231,6 +244,42 @@ for f in json.load(open(SRC, encoding="utf-8"))["features"]:
     slug = SLUGS[name]
     groups.setdefault(slug, []).extend(polygons(f["geometry"]))
     pieces[name] = polygons(f["geometry"])
+
+
+
+def centroid(ring):
+    """The centre of a ring's area"""
+    a = cx = cy = 0.0
+    for (x0, y0), (x1, y1) in zip(ring, ring[1:] + ring[:1]):
+        c = x0 * y1 - x1 * y0
+        a, cx, cy = a + c, cx + (x0 + x1) * c, cy + (y0 + y1) * c
+    if abs(a) < 1e-9:
+        return sum(x for x, _ in ring) / len(ring), sum(y for _, y in ring) / len(ring)
+    return cx / (3 * a), cy / (3 * a)
+
+
+if INDIA:
+    every = [p for polys in groups.values() for poly in polys for ring in poly for p in ring]
+    lons, lats = [x for x, _ in every], [y for _, y in every]
+    k = math.cos(math.radians((min(lats) + max(lats)) / 2))
+    w, h = (max(lons) - min(lons)) * k, max(lats) - min(lats)
+    s = INDIA_SIZE / max(w, h)
+    project = lambda lon, lat: ((lon - min(lons)) * k * s, (max(lats) - lat) * s)
+    states = {}
+    for slug, polys in sorted(groups.items()):
+        rings = [[project(*p) for p in poly[0][:-1]] for poly in polys]  # outer rings: the map has no holes to show
+        big = max(rings, key=area)
+        xs, ys = [x for r in rings for x, _ in r], [y for r in rings for _, y in r]
+        cx, cy = centroid(big)
+        st = {"d": path(rings, INDIA_TOLERANCE, KEEP, slug in ISLANDS), "c": [round(cx, 1), round(cy, 1)]}
+        if max(max(xs) - min(xs), max(ys) - min(ys)) < SMALL or slug in SCATTERED:
+            st["small"] = True
+        states[slug] = st
+    with open(OUT, "w", encoding="utf-8") as f:
+        json.dump({"source": "datta07/INDIAN-SHAPEFILES: INDIA/INDIA_STATES.geojson (MIT, see state-shapes.LICENSE)",
+                   "viewBox": f"0 0 {w * s:.0f} {h * s:.0f}", "states": states}, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"{len(states)} states, {sum(len(v['d']) for v in states.values()) // 1024} KB of path data, small: {sorted(k for k, v in states.items() if v.get('small'))}")
+    sys.exit()
 
 catalogue = json.load(open(CATALOGUE, encoding="utf-8")) if CATALOGUE else None
 assembly, district_files = {}, {}

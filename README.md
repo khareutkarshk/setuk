@@ -25,7 +25,7 @@ pnpm lint
 | `/hi/...` | `app/(hi)/hi/...` | The same pages in Hindi |
 | `/sitemap.xml` | `app/sitemap.ts` | Every page in both languages |
 
-Inner pages share `components/pages/page-shell.tsx` (header, closing call to action, footer) and are server components; their client islands are small: the process rail on How we work (GSAP ScrollTrigger, loaded on demand), the article contents list, the article reader tools (share, copy link, "Was this helpful?", newsletter; `components/pages/article-engage.tsx`), the topic filter, the FAQ search and the contact form. Their copy is in `pages` in both dictionaries. Articles and policies are long-form text in `content/articles.ts` and `content/legal.ts` (generated once from setuk.org, now edited by hand), rendered by `components/pages/prose.tsx`; they are English only, so `/hi` shows them with Hindi navigation and a note. Pictures are Setuk's own illustrations from setuk.org, in `assets/media/` and listed in `content/media.ts`.
+Inner pages share `components/pages/page-shell.tsx` (header, closing call to action, footer) and are server components; their client islands are small: the process rail on How we work (GSAP ScrollTrigger, loaded on demand, which also lights the first-three-weeks calendar), the product heroes' story (`products/screen-play.tsx`), the voter list landing's map panel, the About before/after slider, the article contents list, the article reader tools (share, copy link, "Was this helpful?", newsletter; `components/pages/article-engage.tsx`), the topic filter, the FAQ search and the contact form. Their copy is in `pages` in both dictionaries. Articles and policies are long-form text in `content/articles.ts` and `content/legal.ts` (generated once from setuk.org, now edited by hand), rendered by `components/pages/prose.tsx`; they are English only, so `/hi` shows them with Hindi navigation and a note. Pictures are Setuk's own illustrations from setuk.org, in `assets/media/` and listed in `content/media.ts`.
 
 The contact form has no backend yet: sending opens the visitor's email app with the message filled in (to contact@setuk.org). Wire it to a form endpoint before launch if replies should not depend on a mail app. The article newsletter sign-up works the same way, and "Was this helpful?" answers are kept only in the reader's browser; both are marked in `article-engage.tsx` where a list provider or analytics call would go.
 
@@ -86,10 +86,11 @@ public/sadan/v1/tex/             PBR textures (full set and lite/), cached as im
 assets/loksabha.jpg              Poster and fallback image (next/image, blur placeholder)
 ```
 
-**Rendering.** Every section is a server component. Only three client islands ship JavaScript:
+**Rendering.** Every section is a server component. Only four client islands ship JavaScript:
 - the header;
 - the proof counters;
-- the story controller.
+- the story controller;
+- "Try it", the visitor's own request followed from logged to closed (`components/home/try-it-journey.tsx`), about 8 KB gzipped.
 
 The page is fully readable without JavaScript.
 
@@ -136,7 +137,7 @@ On every tier:
 - canvas screens redraw at about 8 fps while they animate, otherwise only on change;
 - the loop idles off screen and in background tabs.
 
-Measured on the mid tier (`?q=mid&debug`, then `__sadan.info()` in the console): 96 to 150 draw calls per frame and about 670k triangles. The 3D chunk is about 178 KB gzipped and is never part of first-load JS (about 185 KB gzipped).
+Measured on the mid tier (`?q=mid&debug`, then `__sadan.info()` in the console): 96 to 150 draw calls per frame and about 670k triangles. The 3D chunk is about 178 KB gzipped and is never part of first-load JS (measured from the scripts each page's HTML asks for: about 235 KB gzipped on the homepage, 222 to 236 KB on inner pages; Next prefetches other pages' code afterwards, which is not first load).
 
 If frames run slower than about 38 fps, the engine steps down in this order: ambient occlusion, then post-processing, then resolution. The threshold follows the display's own frame cadence (measured on frames that render nothing), so a 30 fps cap such as iOS Low Power Mode doesn't count as a slow GPU. Eased camera values snap once they are within a pixel, so the loop goes idle when scrolling stops. If the browser drops the WebGL context, the photo shows and the chamber is rebuilt when the context returns (or after 3 s).
 

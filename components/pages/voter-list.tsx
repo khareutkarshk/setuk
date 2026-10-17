@@ -7,11 +7,12 @@ import { href, routes } from "@/lib/paths";
 import { site } from "@/content/site";
 import { count, inr, orderHref } from "@/lib/voter-list/order";
 import { areaHighlight, stateShape, type StateShape } from "@/lib/voter-list/shapes";
-import type { AreaDetail, AreaSummary, CopyBlock, StateIndex, VoterListView } from "@/lib/voter-list/types";
+import type { AreaDetail, AreaSummary, CopyBlock, StateIndex, StateSummary, VoterListView } from "@/lib/voter-list/types";
 import { Faqs } from "./faq-list";
 import { Band, Crumbs, H1, H2, IconTile, Lead, PageHero, Panel, SectionHead, TICK, Wrap } from "./ui";
 import { VoterListFinder } from "./voter-list-finder";
 import { AreaCard, cardCopy, fill, type CardArt, type SpriteId } from "./voter-list-card";
+import { VoterListMap } from "./voter-list-map";
 import { VoterListMore } from "./voter-list-more";
 import { OrderHost } from "./voter-list-order";
 
@@ -135,6 +136,9 @@ export function VoterListPage({ locale, view }: { locale: Locale; view: VoterLis
           <VoterListFinder base={base} options={view.options} selected={{ state: state?.slug, district: district?.slug, ac: ac?.slug }} labels={p.finder} />
         </div>
       </PageHero>
+
+      {/* The landing page's map of India, every state a way in */}
+      {level === "all" && <VoterListMap locale={locale} c={p.map} states={view.cards.filter((c): c is StateSummary => c.level === "state")} />}
 
       {/* The cards: states, districts, constituencies or seats, each with its order button */}
       <section aria-labelledby="lists-title" className="border-t border-line bg-surface">

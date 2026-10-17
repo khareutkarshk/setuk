@@ -35,8 +35,12 @@ export interface SadanOptions {
   /** Element the engine adds its own <canvas> to. Each instance owns its canvas (and WebGL context),
       so a cancelled instance (e.g. React StrictMode's double mount) can't lose the context of the next one. */
   container: HTMLElement;
-  /** Sticky stage that holds the canvas; sized and observed for visibility */
+  /** Sticky stage that holds the canvas; sized, and observed for visibility unless `observe` is given */
   stage: HTMLElement;
+  /** What decides whether the chamber is on screen, when that isn't the stage: the story it belongs to.
+      The stage hangs a screen past the story (its negative margin), under the opaque sections that
+      follow, and rendering it there would cost a full frame for nothing */
+  observe?: HTMLElement;
   /** Current chapter progress (0..8) */
   progress: () => number;
   labels: SceneLabels;
@@ -1013,8 +1017,9 @@ export async function createSadan(o: SadanOptions): Promise<SadanHandle | null> 
   };
 
   /* ---------- loop ---------- */
-  const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) dirty = 2; }, { threshold: 0 });
-  io.observe(stage);
+  /* watching the story, its last strip under the header doesn't count: the canvas keeps its last frame there */
+  const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) dirty = 2; }, { threshold: 0, rootMargin: o.observe ? "-120px 0px 0px 0px" : "0px" });
+  io.observe(o.observe ?? stage);
   let last = performance.now();
   const onVisibility = () => { if (!document.hidden) { last = performance.now(); dirty = 2; } };
 

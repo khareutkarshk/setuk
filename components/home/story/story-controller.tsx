@@ -253,6 +253,8 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
         return createSadan({
           container: canvasSlotRef.current!,
           stage: stageRef.current!,
+          /* the chamber is on screen only while the story is: the stage hangs on under what follows */
+          observe: rootRef.current ?? undefined,
           progress: () => progressRef.current?.get() ?? 0,
           labels,
           reducedMotion,

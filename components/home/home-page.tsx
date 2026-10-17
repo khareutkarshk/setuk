@@ -1,5 +1,7 @@
+import { ViewTransition } from "react";
 import { getDictionary, type Locale } from "@/content";
 import { site } from "@/content/site";
+import { TryIt } from "./try-it";
 import { HeroChapter, HowChapters, ProblemChapter, ProductsChapter, ServeChapter, SolutionChapter } from "./story/chapters";
 import { StoryController } from "./story/story-controller";
 import { Cta, Engagements, Faq, Trust } from "./sections";
@@ -42,6 +44,8 @@ export function HomePage({ locale }: { locale: Locale }) {
         {t.skip}
       </a>
       <SiteHeader t={{ nav: t.nav, brand: t.brand }} roles={roleMenu(t)} products={productMenu(t)} locale={locale} path="/" />
+      {/* one view transition with the footer, as on every page (page-shell.tsx) */}
+      <ViewTransition enter="vt-page-in" exit="vt-page-out" default="none">
       <main id="main">
         <StoryController chapters={t.chapters} railLabel={t.nav.chapters} labels={t.scene} ariaLabel={t.meta.title} brand={t.brand}>
           <HeroChapter t={t} locale={locale} />
@@ -51,12 +55,14 @@ export function HomePage({ locale }: { locale: Locale }) {
           <ProductsChapter t={t} locale={locale} />
           <HowChapters t={t} />
         </StoryController>
+        <TryIt t={t} />
         <Engagements t={t} locale={locale} />
         <Trust t={t} locale={locale} />
         <Faq t={t} locale={locale} />
         <Cta t={t} locale={locale} />
       </main>
       <SiteFooter t={t} locale={locale} home />
+      </ViewTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>
   );

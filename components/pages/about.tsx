@@ -5,6 +5,7 @@ import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { CornerPattern, Lotus } from "@/components/site/pattern";
+import { BeforeAfter } from "./before-after";
 import { Band, Figure, H1, Lead, PageHero, Panel, SectionHead, TICK, Wrap } from "./ui";
 
 /**
@@ -67,7 +68,8 @@ export function AboutPage({ locale }: { locale: Locale }) {
               <span className="w-8"><SetukMark /></span>{p.moment.by}
             </figcaption>
           </figure>
-          <Figure img="officeBeforeAfter" alt={p.moment.alt} sizes="(min-width: 1024px) 600px, 100vw" className="reveal" />
+          {/* the picture's two halves, before Setuk and with it, as one frame to drag across */}
+          <BeforeAfter c={p.moment.compare} alt={p.moment.alt} className="reveal" />
         </div>
         {/* the story behind the quote, in the same column as the origin text above */}
         <div className="mt-14 grid lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">

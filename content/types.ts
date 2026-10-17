@@ -151,6 +151,8 @@ export interface Pages {
       needLabel: string;
       /** Pairs with how.steps by index */
       steps: { does: string[]; needs: string }[];
+      /** The first three weeks as a calendar, lit step by step as the reader goes; `week` has {n} */
+      calendar: { title: string; days: string[]; week: string; ongoing: string };
     };
     /** Grouped as the office, the election, and what's in progress (`soon`, badged with soonLabel) */
     modules: { kicker: string; title: string; sub: string; soonLabel: string; groups: { t: string; d: string; soon?: boolean; items: ModuleItem[] }[] };
@@ -177,7 +179,8 @@ export interface Pages {
     sub: string;
     heroAlt: string;
     origin: { kicker: string; title: string; paras: string[] };
-    moment: { quote: string; by: string; paras: string[]; alt: string };
+    /** `compare`: the before/after slider on the picture; `valuetext` has {n}, the share shown with Setuk */
+    moment: { quote: string; by: string; paras: string[]; alt: string; compare: { label: string; before: string; after: string; valuetext: string } };
     beliefs: { kicker: string; title: string; items: string[] };
     name: { kicker: string; title: string; paras: string[]; alt: string };
     /** `photoAlt` names the founder's portrait; `placeholder` stands in its frame until it arrives, saying what to shoot */
@@ -272,6 +275,11 @@ export interface Pages {
     /** Badge on the chosen constituency's card */
     selected: string;
     preview: { title: string; summary: string; part: string; more: string; note: string };
+    /**
+     * The map of India on the landing page (voter-list-map.tsx). In `label`, {name}, {districts},
+     * {acs} and {booths} are filled for each state; in `open`, {name}
+     */
+    map: { kicker: string; title: string; sub: string; hint: string; touchHint: string; all: string; districts: string; acs: string; booths: string; open: string; label: string; skip: string; scale: string; note: string };
     cards: {
       heading: Record<"all" | VoterListLevel, string>;
       count: Record<"all" | VoterListLevel, string>;
@@ -420,6 +428,8 @@ export interface OfficeScreen {
   meeting: { kicker: string; time: string; t: string; status: string };
   sms: { from: string; body: string; when: string };
   pending: { label: string; value: string; note: string };
+  /** What the story on the hero ends with: the first row dispatched, the tabs (follow-up, dispatched) and the overdue count one lower */
+  after: { status: string; tone: StatusTone; tabs: [string, string]; pending: string };
 }
 
 /** The election product's hero screen: every booth of a constituency by how well it is covered, the roll beside it */
@@ -483,6 +493,8 @@ export interface Products {
     setup: { kicker: string; title: string; sub: string; link: string };
     trust: { title: string; link: string };
     faqAll: string;
+    /** Replays the hero screen's story */
+    replay: string;
   };
   office: ProductCopy<OfficeScreen>;
   election: ProductCopy<ElectionScreen>;
@@ -605,6 +617,33 @@ export interface DemoCopy {
   close: string;
 }
 
+/**
+ * "Try it" on the homepage (components/home/try-it*.tsx): the visitor's own request, followed from
+ * logged to closed, with the messages they would get. In the steps and messages {name}, {no} (the file
+ * number) and {dept} are filled in; nothing typed leaves the page.
+ */
+export interface TryItCopy {
+  kicker: string;
+  title: string;
+  sub: string;
+  name: { label: string; placeholder: string };
+  request: { label: string; samples: { t: string; dept: string }[] };
+  button: string;
+  again: string;
+  another: string;
+  privacy: string;
+  /** The panel's heading over the steps, with {no} */
+  file: string;
+  steps: TitledItem[];
+  /** When each step happens, beside it */
+  when: string[];
+  phone: { title: string; from: string; messages: [string, string, string] };
+  /** The name the finished example shows before anyone types */
+  sample: string;
+  /** Announced when the journey ends */
+  done: string;
+}
+
 export interface Dictionary {
   meta: { title: string; description: string };
   brand: { name: string; line: string };
@@ -641,6 +680,7 @@ export interface Dictionary {
   faq: { eyebrow: string; title: string; more: string; items: QA[] };
   cta: { title: string; body: string; primary: string; secondary: string };
   demo: DemoCopy;
+  tryIt: TryItCopy;
   footer: {
     company: string;
     guides: string;

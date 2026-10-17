@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { Locale } from "@/content";
 import { proof } from "@/content/site";
+import { useEased } from "@/lib/use-eased";
 import styles from "./story.module.css";
 
 const format = (value: number, v: number, suffix: string) =>
@@ -14,20 +14,7 @@ const format = (value: number, v: number, suffix: string) =>
  * hidden behind its load-in animation at that point, so the reset to zero is not seen.
  */
 export function ProofStrip({ locale, items }: { locale: Locale; items: string[] }) {
-  const [t, setT] = useState(1);
-
-  useEffect(() => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let raf = 0;
-    const start = performance.now() + 500;
-    const tick = (now: number) => {
-      const e = 1 - Math.pow(1 - Math.min(1, Math.max(0, (now - start) / 1600)), 4);
-      setT(e);
-      if (e < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const t = useEased(true, { delay: 500 });
 
   return (
     <dl className={styles.proof}>

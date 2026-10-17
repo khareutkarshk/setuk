@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { ElectionScreen as ElectionCopy, OfficeScreen as OfficeCopy, StatusTone } from "@/content/types";
 import * as I from "@/components/icons";
 import { SetukMark } from "@/components/site/setuk-mark";
@@ -9,7 +9,11 @@ import { SetukMark } from "@/components/site/setuk-mark";
  * screenshot) and fill it with illustrative data; the page says so under them. Each is one picture to
  * a screen reader (role="img" with the page's own description), so its parts are hidden from it.
  * Cards that float off the window are positioned with top/left, never transform: they rise in with
- * the hero's `rise`, which owns transform.
+ * the hero's `rise`, which owns transform, and anything that arrives later does so on an inner layer.
+ *
+ * The story (ScreenPlay sets data-play once the screen is in view): what changes is drawn twice,
+ * as it was (.play-from) and as it ends (.play-to), and CSS swaps them at --at. At rest, without
+ * script and with reduced motion, only the end shows; the classes live in globals.css.
  */
 
 const TONE: Record<StatusTone, string> = {
@@ -19,7 +23,22 @@ const TONE: Record<StatusTone, string> = {
   warn: "bg-danger/10 text-danger"
 };
 
-const FLOAT = "absolute rounded-2xl border border-line bg-surface/95 shadow-[0_28px_60px_-28px_color-mix(in_srgb,var(--ink)_50%,transparent)] backdrop-blur-sm";
+const CARD = "rounded-2xl border border-line bg-surface/95 shadow-[0_28px_60px_-28px_color-mix(in_srgb,var(--ink)_50%,transparent)] backdrop-blur-sm";
+const FLOAT = `absolute ${CARD}`;
+const DARK = "rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--ink)_70%,transparent)]";
+
+/** A moment of the story, `at` seconds after it starts */
+const at = (t: number) => ({ "--at": `${t}s` }) as CSSProperties;
+
+/** Something that changes during the story: as it was, then as it ends, in the same place */
+function Swap({ from, to, t }: { from: ReactNode; to: ReactNode; t: number }) {
+  return (
+    <span className="inline-grid">
+      <span className="play-from col-start-1 row-start-1" style={at(t)}>{from}</span>
+      <span className="play-to col-start-1 row-start-1" style={at(t)}>{to}</span>
+    </span>
+  );
+}
 
 /** The app's window: a title bar, the navy sidebar with the active page lit, and the page */
 function Window({ app, nav, icons, active, children }: { app: string; nav: string[]; icons: I.Icon[]; active: number; children: ReactNode }) {
@@ -68,7 +87,9 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
           <div className="mt-4 flex gap-1.5 overflow-hidden">
             {s.tabs.map((x, i) => (
               <span key={x.t} className={`inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-[11px] font-medium ${i === 0 ? "bg-accent text-accent-ink" : "border border-line bg-surface text-muted"}`}>
-                {x.t}<span className={`rounded-full px-1.5 font-mono text-[10px] ${i === 0 ? "bg-accent-ink/20" : "bg-surface-2"}`}>{x.n}</span>
+                {x.t}<span className={`rounded-full px-1.5 font-mono text-[10px] ${i === 0 ? "bg-accent-ink/20" : "bg-surface-2"}`}>
+                  {i === 0 ? <Swap from={x.n} to={s.after.tabs[0]} t={1.6} /> : i === 4 ? <Swap from={x.n} to={s.after.tabs[1]} t={1.6} /> : x.n}
+                </span>
               </span>
             ))}
           </div>
@@ -76,12 +97,17 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
             <div className="grid grid-cols-[72px_minmax(0,1fr)_76px] gap-3 border-b border-line bg-surface-2/60 px-3 py-2 text-[10.5px] font-semibold text-muted sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px]">
               <span>{s.cols[0]}</span><span>{s.cols[1]}</span><span className="hidden sm:block">{s.cols[2]}</span><span>{s.cols[3]}</span>
             </div>
-            {s.rows.map((r) => (
-              <div key={r.no} className="grid grid-cols-[72px_minmax(0,1fr)_76px] items-center gap-3 border-b border-line px-3 py-2.5 text-[11.5px] last:border-b-0 sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px]">
+            {s.rows.map((r, k) => (
+              <div key={r.no} className={`grid grid-cols-[72px_minmax(0,1fr)_76px] items-center gap-3 border-b border-line px-3 py-2.5 text-[11.5px] last:border-b-0 sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px] ${k === 0 ? "play-flash" : ""}`} style={k === 0 ? at(1.6) : undefined}>
                 <span className="font-mono text-[10.5px] text-muted">{r.no}</span>
                 <span className="truncate font-medium">{r.name}</span>
                 <span className="hidden truncate text-muted sm:block">{r.dept}</span>
-                <span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[10.5px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>
+                {/* the first letter is the story: it goes from follow-up to dispatched */}
+                {k === 0
+                  ? <Swap t={1.6}
+                      from={<span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[10.5px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>}
+                      to={<span className={`inline-flex h-6 w-fit items-center gap-1 rounded-full px-2 text-[10.5px] font-semibold ${TONE[s.after.tone]}`}><I.Check size={10} weight="bold" />{s.after.status}</span>} />
+                  : <span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[10.5px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>}
               </div>
             ))}
           </div>
@@ -101,17 +127,19 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
       {/* the letters running late, off the bottom right */}
       <div aria-hidden className={`${FLOAT} rise right-6 bottom-2 hidden w-[164px] p-3.5 [--i:5] md:block`}>
         <p className="text-[11px] font-medium text-muted">{s.pending.label}</p>
-        <p className="mt-1 font-mono text-[28px] leading-none font-semibold text-danger tabular-nums">{s.pending.value}</p>
+        <p className="mt-1 font-mono text-[28px] leading-none font-semibold text-danger tabular-nums"><Swap from={s.pending.value} to={s.after.pending} t={2.5} /></p>
         <p className="mt-1.5 text-[11.5px] leading-snug text-muted">{s.pending.note}</p>
       </div>
 
-      {/* what the citizen got, as a notification, off the bottom left */}
-      <div aria-hidden className="rise absolute bottom-0 left-2 w-[260px] rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--ink)_70%,transparent)] [--i:6] sm:left-0 lg:-left-10">
-        <p className="flex items-center gap-2 text-[11px] text-bg/65">
-          <span className="grid size-5 place-items-center rounded-md bg-leaf text-leaf-ink"><I.ChatsCircle size={12} /></span>
-          <span className="font-semibold text-bg">{s.sms.from}</span><span className="ml-auto">{s.sms.when}</span>
-        </p>
-        <p className="mt-2 text-[12px] leading-snug">{s.sms.body}</p>
+      {/* what the citizen got, as a notification, off the bottom left: it arrives once the letter goes */}
+      <div aria-hidden className="rise absolute bottom-0 left-2 w-[260px] [--i:6] sm:left-0 lg:-left-10">
+        <div className={`play-pop ${DARK}`} style={at(2)}>
+          <p className="flex items-center gap-2 text-[11px] text-bg/65">
+            <span className="grid size-5 place-items-center rounded-md bg-leaf text-leaf-ink"><I.ChatsCircle size={12} /></span>
+            <span className="font-semibold text-bg">{s.sms.from}</span><span className="ml-auto">{s.sms.when}</span>
+          </p>
+          <p className="mt-2 text-[12px] leading-snug">{s.sms.body}</p>
+        </div>
       </div>
     </div>
   );
@@ -126,6 +154,8 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
 const COLS = 26;
 const ROWS = 14;
 type Booth = "ok" | "part" | "not" | "lit";
+/* when each booth fills during the story: a sweep from west to east, loosened by the coverage wave */
+const fillAt = (i: number) => (0.3 + ((i % COLS) / COLS) * 1.5 + (Math.floor(i / COLS) / ROWS) * 0.3).toFixed(2);
 const BOOTHS: (Booth | null)[] = (() => {
   const cells = Array.from({ length: COLS * ROWS }, (_, i) => {
     const x = i % COLS, y = Math.floor(i / COLS);
@@ -165,11 +195,15 @@ export function ElectionScreen({ s, label }: { s: ElectionCopy; label: string })
           <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
             <div className="rounded-xl border border-line bg-surface p-3">
               <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}>
-                {BOOTHS.map((b, i) => <span key={i} className={`aspect-square rounded-[2px] ${b ? DOT[b] : ""}`} />)}
+                {/* booths that are covered or partly covered fill in during the story; the lit one pulses after */}
+                {BOOTHS.map((b, i) => (
+                  <span key={i} className={`aspect-square rounded-[2px] ${b ? DOT[b] : ""} ${b === "ok" || b === "part" ? "play-booth" : b === "lit" ? "play-lit" : ""}`}
+                    style={b === "ok" || b === "part" ? ({ "--at": `${fillAt(i)}s` } as CSSProperties) : b === "lit" ? at(2.2) : undefined} />
+                ))}
               </div>
               <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] text-muted">
                 {s.legend.map((l, i) => (
-                  <span key={l.t} className="inline-flex items-center gap-1.5"><span className={`size-2 rounded-[2px] ${legend[i]}`} />{l.t}<b className="font-mono font-semibold text-ink">{l.n}</b></span>
+                  <span key={l.t} className="inline-flex items-center gap-1.5"><span className={`size-2 rounded-[2px] ${legend[i]}`} />{l.t}<b data-count className="font-mono font-semibold text-ink">{l.n}</b></span>
                 ))}
               </div>
             </div>
@@ -194,30 +228,35 @@ export function ElectionScreen({ s, label }: { s: ElectionCopy; label: string })
         </Window>
       </div>
 
-      {/* the lit booth, staffed, off the top right */}
-      <div aria-hidden className={`${FLOAT} rise top-0 right-2 w-[206px] p-3.5 [--i:4] sm:right-0 lg:-right-4`}>
-        <p className="flex items-center gap-1.5 text-[11px] font-semibold text-leaf"><span className="size-2 rounded-full bg-leaf" />{s.booth.kicker}</p>
-        <p className="mt-1.5 text-[14px] leading-snug font-semibold">{s.booth.t}</p>
-        <p className="mt-1 flex items-center gap-1.5 text-[11.5px] text-muted"><I.Clock size={12} />{s.booth.d}</p>
+      {/* the lit booth, staffed, off the top right: it comes in as the booth lights */}
+      <div aria-hidden className="rise absolute top-0 right-2 w-[206px] [--i:4] sm:right-0 lg:-right-4">
+        <div className={`play-pop ${CARD} p-3.5`} style={at(2.2)}>
+          <p className="flex items-center gap-1.5 text-[11px] font-semibold text-leaf"><span className="size-2 rounded-full bg-leaf" />{s.booth.kicker}</p>
+          <p className="mt-1.5 text-[14px] leading-snug font-semibold">{s.booth.t}</p>
+          <p className="mt-1 flex items-center gap-1.5 text-[11.5px] text-muted"><I.Clock size={12} />{s.booth.d}</p>
+        </div>
       </div>
 
       {/* new names on the roll, off the bottom right */}
       <div aria-hidden className={`${FLOAT} rise right-6 bottom-2 hidden w-[164px] p-3.5 [--i:5] md:block`}>
         <p className="text-[11px] font-medium text-muted">{s.roll.label}</p>
-        <p className="mt-1 font-mono text-[26px] leading-none font-semibold text-accent tabular-nums">+{s.roll.value}</p>
+        <p data-count className="mt-1 font-mono text-[26px] leading-none font-semibold text-accent tabular-nums">+{s.roll.value}</p>
         <p className="mt-1.5 text-[11.5px] leading-snug text-muted">{s.roll.note}</p>
       </div>
 
-      {/* a survey coming in from the field, off the bottom left */}
-      <div aria-hidden className="rise absolute bottom-0 left-2 w-[244px] rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--ink)_70%,transparent)] [--i:6] sm:left-0 lg:-left-10">
-        <p className="flex items-center gap-2 text-[11px] text-bg/65">
-          <span className="grid size-5 place-items-center rounded-md bg-leaf text-leaf-ink"><I.ClipboardText size={12} /></span>
-          <span className="font-semibold text-bg">{s.survey.kicker}</span>
-        </p>
-        <p className="mt-2 text-[13px] leading-snug font-medium">{s.survey.t}</p>
-        <p className="mt-2 flex items-center gap-2 text-[11.5px] text-bg/70">
-          <span className="flex h-1 flex-1 overflow-hidden rounded-full bg-bg/15"><span className="w-[62%] bg-leaf-inverse" /></span>{s.survey.v}
-        </p>
+      {/* a survey coming in from the field, off the bottom left: responses fill as it arrives */}
+      <div aria-hidden className="rise absolute bottom-0 left-2 w-[244px] [--i:6] sm:left-0 lg:-left-10">
+        <div className={`play-pop ${DARK}`} style={at(0.9)}>
+          <p className="flex items-center gap-2 text-[11px] text-bg/65">
+            <span className="grid size-5 place-items-center rounded-md bg-leaf text-leaf-ink"><I.ClipboardText size={12} /></span>
+            <span className="font-semibold text-bg">{s.survey.kicker}</span>
+          </p>
+          <p className="mt-2 text-[13px] leading-snug font-medium">{s.survey.t}</p>
+          <p className="mt-2 flex items-center gap-2 text-[11.5px] text-bg/70">
+            <span className="flex h-1 flex-1 overflow-hidden rounded-full bg-bg/15"><span className="play-bar w-[62%] origin-left bg-leaf-inverse" style={at(1.2)} /></span>
+            <span data-count>{s.survey.v}</span>
+          </p>
+        </div>
       </div>
     </div>
   );
