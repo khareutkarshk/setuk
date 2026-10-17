@@ -80,7 +80,7 @@ export function HeroChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
               {t.hero.primary}
               <I.ArrowRight weight="bold" aria-hidden />
             </Link>
-            <a href="#how" className="inline-flex items-center gap-2 whitespace-nowrap font-medium hover:text-accent">
+            <a href="#how" className="inline-flex min-h-11 items-center gap-2 whitespace-nowrap font-medium hover:text-accent">
               {t.hero.secondary}
               <I.ArrowDown aria-hidden />
             </a>
@@ -204,7 +204,7 @@ export function ProductsChapter({ t, locale }: { t: Dictionary; locale: Locale }
                   <span className={styles.ico}><Head size={17} aria-hidden /></span>
                   <div>
                     <h3 className="text-[17px] font-semibold leading-snug">
-                      <Link href={href(locale, routes.products[PRODUCT_KEYS[k]])} className="underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent">{p.t}</Link>
+                      <Link href={href(locale, routes.products[PRODUCT_KEYS[k]])} className="-my-1 inline-block py-1 underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent">{p.t}</Link>
                     </h3>
                     <p className="mt-0.5 text-[14px] text-muted">{p.d}</p>
                   </div>

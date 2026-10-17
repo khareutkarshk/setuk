@@ -73,28 +73,28 @@ export function EngagementsPage({ locale }: { locale: Locale }) {
         <p className="mt-5 flex items-center gap-1.5 text-[13px] text-muted"><I.Info aria-hidden />{t.engage.draft}</p>
       </Wrap>
 
-      {/* What's included, side by side */}
+      {/* What's included, side by side; on a phone the three plans narrow to fit, so nothing hides off to the side */}
       <section aria-labelledby="compare-title">
         <Wrap className="py-20 md:py-28">
           <SectionHead kicker={p.compare.kicker} title={p.compare.title} id="compare-title" />
           <div className="reveal relative mt-10 overflow-x-auto rounded-3xl border border-line bg-surface">
             <Pattern kind="temple" className="sticky left-0 -mb-[14px] w-full -scale-y-100 text-accent opacity-25" />
-            <table className="w-full min-w-[640px] border-collapse text-left text-[15px]">
+            <table className="w-full border-collapse text-left text-[14px] sm:min-w-[640px] sm:text-[15px]">
               <caption className="sr-only">{p.compare.title}</caption>
               <thead>
                 <tr className="border-b border-line">
-                  <th scope="col" className="w-[40%] px-6 py-5 text-[13px] font-semibold text-muted">{p.compare.feature}</th>
+                  <th scope="col" className="w-[40%] px-4 py-5 text-[13px] font-semibold text-muted sm:px-6">{p.compare.feature}</th>
                   {pkgs.map((k, i) => (
-                    <th key={k.t} scope="col" className={`px-4 py-5 text-center text-[16px] font-semibold ${i === 1 ? "bg-accent-soft text-accent" : ""}`}>{k.t}</th>
+                    <th key={k.t} scope="col" className={`px-1.5 py-4 text-center text-[13px] leading-tight font-semibold sm:px-4 sm:py-5 sm:text-[16px] ${i === 1 ? "bg-accent-soft text-accent" : ""}`}>{k.t}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {p.compare.rows.map((r, ri) => (
                   <tr key={r.t} className={`border-line ${ri > 0 && p.compare.rows[ri - 1].from !== r.from ? "border-t-2" : "border-t"} first:border-t-0`}>
-                    <th scope="row" className="px-6 py-3.5 font-medium">{r.t}</th>
+                    <th scope="row" className="px-4 py-3.5 font-medium sm:px-6">{r.t}</th>
                     {pkgs.map((k, i) => (
-                      <td key={k.t} className={`px-4 py-3.5 text-center ${i === 1 ? "bg-accent-soft/60" : ""}`}>
+                      <td key={k.t} className={`px-1.5 py-3.5 text-center sm:px-4 ${i === 1 ? "bg-accent-soft/60" : ""}`}>
                         {i >= r.from
                           ? <span className="inline-grid h-6 w-6 place-items-center rounded-full bg-leaf text-leaf-ink"><I.Check size={13} weight="bold" aria-label={p.compare.included} /></span>
                           : <I.Minus size={16} className="inline text-muted/50" aria-label={p.compare.notIncluded} />}

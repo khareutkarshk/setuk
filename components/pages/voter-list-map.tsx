@@ -47,14 +47,18 @@ export function VoterListMap({ locale, c, states }: { locale: Locale; c: MapCopy
               );
             })}
           </svg>
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
+        </VoterListMapHost>
+        {/* the key sits outside the host, so on a phone the sticky card stops at the map's foot instead of
+            sliding over the boundary note; from lg it keeps to the map's column */}
+        <div className="mt-4 lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
             <span className="inline-flex items-center gap-2" aria-hidden>
               {[0, 1, 2, 3].map((k) => <span key={k} className={`vl-swatch vl-tone-${k}`} />)}
               {c.scale}
             </span>
             <span>{c.note}</span>
           </div>
-        </VoterListMapHost>
+        </div>
       </Wrap>
     </section>
   );

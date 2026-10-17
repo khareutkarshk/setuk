@@ -94,7 +94,7 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
               <I.MagnifyingGlass size={12} className="shrink-0" /><span className="truncate">{s.search}</span>
             </span>
           </div>
-          <div className="mt-4 flex gap-1.5 overflow-hidden">
+          <div className="mt-4 flex gap-1.5 overflow-hidden max-lg:[mask-image:linear-gradient(to_right,#000_calc(100%-40px),transparent)]">
             {s.tabs.map((x, i) => (
               <span key={x.t} className={`inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-[11px] font-medium ${i === 0 ? "bg-accent text-accent-ink" : "border border-line bg-surface text-muted"}`}>
                 {x.t}<span className={`rounded-full px-1.5 font-mono text-[10px] ${i === 0 ? "bg-accent-ink/20" : "bg-surface-2"}`}>

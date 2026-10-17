@@ -92,7 +92,7 @@ function ModuleTile({ m, n, soon, wide, className, pattern }: { m: RoleModule; n
     );
   }
   return (
-    <article className={`reveal relative flex flex-col justify-end overflow-hidden rounded-3xl ${m.soon ? "border border-dashed border-accent/40 bg-surface" : "bg-accent-soft"} ${wide ? "min-h-[220px]" : "min-h-[260px]"} ${className}`}>
+    <article className={`reveal relative flex flex-col justify-end overflow-hidden rounded-3xl ${m.soon ? "border border-dashed border-accent/40 bg-surface" : "bg-accent-soft"} ${wide ? "min-h-[180px] md:min-h-[220px]" : "min-h-[180px] md:min-h-[260px]"} ${className}`}>
       <CornerPattern kind={pattern} fx={100} fy={0} radius={320} className="inset-0 text-accent opacity-[.16]" />
       {/* its place in the list as a Devanagari numeral, like the steps on How we work */}
       <span aria-hidden="true" className="font-deva pointer-events-none absolute top-5 right-6 select-none text-[64px] leading-none font-bold text-accent opacity-[.12]">{deva(n)}</span>

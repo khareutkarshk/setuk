@@ -23,6 +23,10 @@ import { ElectionScreen, OfficeScreen } from "./screens";
  *   the product's questions, then the other product
  * The closing call to action comes from the shell, in the page's own words (product-route.tsx).
  */
+
+/** A module's live / in progress badge: under its words on a phone, in the card's top corner from sm up */
+const BADGE = "col-start-2 row-start-3 mt-3 inline-flex h-6 items-center gap-1.5 justify-self-start self-start rounded-full px-2.5 text-[12px] font-medium sm:row-start-1 sm:mt-0 sm:justify-self-end";
+
 export function ProductPage({ product, locale }: { product: ProductKey; locale: Locale }) {
   const t = getDictionary(locale);
   const c = t.pages.products.common;
@@ -148,15 +152,14 @@ export function ProductPage({ product, locale }: { product: ProductKey; locale: 
             {p.modules.items.map((m, i) => {
               const MIcon = look.modules[i];
               return (
-                <li key={m.t} className={`reveal flex flex-col rounded-3xl border p-6 ${m.soon ? "border-dashed border-line" : "border-line bg-surface"}`}>
-                  <div className="flex items-start justify-between gap-3">
-                    <IconTile icon={MIcon} className={m.soon ? "opacity-60" : ""} />
-                    {m.soon
-                      ? <span className="inline-flex h-6 items-center gap-1.5 rounded-full bg-accent-soft px-2.5 text-[12px] font-medium text-accent"><I.Clock size={12} aria-hidden />{c.soon}</span>
-                      : <span className="inline-flex h-6 items-center gap-1.5 rounded-full bg-leaf-soft px-2.5 text-[12px] font-medium text-leaf"><span className="size-1.5 rounded-full bg-leaf" aria-hidden />{c.live}</span>}
-                  </div>
-                  <h3 className="mt-6 text-[17px] leading-snug font-semibold">{m.t}</h3>
-                  <p className="mt-1.5 text-[15px] leading-relaxed text-muted">{m.d}</p>
+                /* a row on a phone (the icon beside the words, the badge under them), a card from sm up */
+                <li key={m.t} className={`reveal grid grid-cols-[auto_minmax(0,1fr)] content-start gap-x-4 rounded-3xl border p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-3 sm:p-6 ${m.soon ? "border-dashed border-line" : "border-line bg-surface"}`}>
+                  <IconTile icon={MIcon} className={`col-start-1 row-span-3 row-start-1 sm:row-span-1 ${m.soon ? "opacity-60" : ""}`} />
+                  {m.soon
+                    ? <span className={`${BADGE} bg-accent-soft text-accent`}><I.Clock size={12} aria-hidden />{c.soon}</span>
+                    : <span className={`${BADGE} bg-leaf-soft text-leaf`}><span className="size-1.5 rounded-full bg-leaf" aria-hidden />{c.live}</span>}
+                  <h3 className="col-start-2 row-start-1 text-[17px] leading-snug font-semibold sm:col-span-2 sm:col-start-1 sm:row-start-2 sm:mt-6">{m.t}</h3>
+                  <p className="col-start-2 row-start-2 mt-1 text-[15px] leading-relaxed text-muted sm:col-span-2 sm:col-start-1 sm:row-start-3 sm:mt-1.5">{m.d}</p>
                 </li>
               );
             })}

@@ -130,7 +130,7 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
         <aside data-toc-scroll data-lenis-prevent className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:max-h-[calc(100dvh-var(--header-h)-64px)] lg:self-start lg:overflow-y-auto lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden">
           {/* on small screens the contents fold away above the text */}
           <details className="group rounded-xl border border-line bg-surface p-4 lg:hidden">
-            <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] font-semibold [&::-webkit-details-marker]:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-[15px] font-semibold [&::-webkit-details-marker]:hidden">
               {c.onThisPage}<I.CaretRight className="transition-transform group-open:rotate-90" aria-hidden />
             </summary>
             <ol className="mt-3 space-y-2 text-[14px] text-muted" lang="en">

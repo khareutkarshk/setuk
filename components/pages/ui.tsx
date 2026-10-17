@@ -161,7 +161,7 @@ export function Crumbs({ items, label }: { items: { t: string; href?: string }[]
         {items.map((c, i) => (
           <li key={c.t} className="flex items-center gap-2">
             {i > 0 && <I.CaretRight size={12} aria-hidden />}
-            {c.href ? <Link href={c.href} className="hover:text-ink">{c.t}</Link> : <span aria-current="page" className="line-clamp-1 text-ink">{c.t}</span>}
+            {c.href ? <Link href={c.href} className="inline-flex min-h-6 items-center hover:text-ink">{c.t}</Link> : <span aria-current="page" className="line-clamp-1 text-ink">{c.t}</span>}
           </li>
         ))}
       </ol>
