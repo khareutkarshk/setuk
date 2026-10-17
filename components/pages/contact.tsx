@@ -52,7 +52,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
         </div>
 
         <Panel fx={100} fy={0} className="rise self-start [--i:2]">
-          <ContactForm f={p.form} to={site.email} privacyHref={href(locale, routes.legalDoc("privacy"))} />
+          <ContactForm f={p.form} privacyHref={href(locale, routes.legalDoc("privacy"))} />
         </Panel>
       </div>
     </PageHero>

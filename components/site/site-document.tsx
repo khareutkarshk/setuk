@@ -26,7 +26,7 @@ export function SiteDocument({ locale, fontClassName, children }: { locale: Loca
       <body className="min-h-dvh" suppressHydrationWarning>
         <SmoothScroll />
         {children}
-        <DemoHost c={getDictionary(locale).demo} to={site.email} privacyHref={href(locale, routes.legalDoc("privacy"))} whatsapp={site.whatsapp} phone={site.phone} />
+        <DemoHost c={getDictionary(locale).demo} privacyHref={href(locale, routes.legalDoc("privacy"))} whatsapp={site.whatsapp} phone={site.phone} />
       </body>
     </html>
   );

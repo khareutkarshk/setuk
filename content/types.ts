@@ -215,7 +215,6 @@ export interface Pages {
       consent: string;
       privacy: string;
       submit: string;
-      submitNote: string;
       errors: { name: string; email: string; message: string; consent: string };
       sentTitle: string;
       sentBody: string;

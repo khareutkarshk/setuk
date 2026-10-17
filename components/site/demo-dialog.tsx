@@ -18,14 +18,14 @@ type Direct = { href: string; label: string };
  * opens this instead. data-demo="0".."3" preselects a role (the role pages pass theirs).
  *
  * Laid out like a note to the office: the brand side says what happens after you send it, the paper
- * side is the slip itself. On phones it rises as a sheet. There is no form backend yet, so sending
- * composes the email in the visitor's own mail app, like the contact form.
+ * side is the slip itself. On phones it rises as a sheet. There is no form backend yet, so until the
+ * API is connected in onSubmit a request shows its thank-you but goes nowhere.
  *
  * A native <dialog>: Escape, the backdrop and the close button all play the exit through `hide`
  * (data-closing keeps it in the top layer while it fades, in every browser), focus goes to the title
  * on open and back to the button after, and the page under it holds still (Lenis stops while open).
  */
-export function DemoHost({ c, to, privacyHref, whatsapp, phone }: { c: DemoCopy; to: string; privacyHref: string; whatsapp: Direct; phone: Direct }) {
+export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; privacyHref: string; whatsapp: Direct; phone: Direct }) {
   const id = useId();
   const ref = useRef<HTMLDialogElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -98,13 +98,7 @@ export function DemoHost({ c, to, privacyHref, whatsapp, phone }: { c: DemoCopy;
     setTouched(true);
     const first = (Object.keys(e) as Field[])[0];
     if (first) { form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus(); return; }
-    const d = new FormData(form);
-    const g = (k: string) => String(d.get(k) ?? "").trim();
-    const pick = (k: string, list: string[]) => (g(k) === "" ? "" : list[Number(g(k))] ?? "");
-    const subject = `${c.subject}: ${g("name")}${g("office") ? `, ${g("office")}` : ""}`;
-    const rows: [string, string][] = [[c.name, g("name")], [c.role, pick("role", c.roles)], [c.office, g("office")], [c.staff, pick("staff", c.staffs)], [c.email, g("email")], [c.phone, g("phone")]];
-    const body = [...(g("note") ? [g("note"), ""] : []), ...rows.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`)].join("\n");
-    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    /* TODO: send new FormData(form) (name, role, office, staff, email, phone, note) to the API here */
     /* sent: the next request starts on a clean slip */
     form.reset();
     setSent(true);

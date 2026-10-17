@@ -9,13 +9,13 @@ type F = Pages["contact"]["form"];
 type Field = "name" | "email" | "message" | "consent";
 
 /**
- * The contact form. There is no form backend yet, so sending composes the email in the visitor's
- * own mail app (to contact@setuk.org, subject and body filled in); the page says so beside the button.
- * Fields validate on submit, then live once touched; errors sit under their field and are announced.
+ * The contact form. Fields validate on submit, then live once touched; errors sit under their field
+ * and are announced. A valid message shows the thank-you; there is no form backend yet, so until the
+ * API is connected in onSubmit the message goes nowhere.
  * ?topic=0..4 preselects the topic (links from other pages). It draws no card of its own; the page
  * sets it on a Panel.
  */
-export function ContactForm({ f, to, privacyHref }: { f: F; to: string; privacyHref: string }) {
+export function ContactForm({ f, privacyHref }: { f: F; privacyHref: string }) {
   const id = useId();
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [touched, setTouched] = useState(false);
@@ -48,11 +48,7 @@ export function ContactForm({ f, to, privacyHref }: { f: F; to: string; privacyH
     setTouched(true);
     const first = (Object.keys(e) as Field[])[0];
     if (first) { form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus(); return; }
-    const d = new FormData(form);
-    const g = (k: string) => String(d.get(k) ?? "").trim();
-    const subject = `${f.topics[Number(g("topic"))] ?? f.topics[0]}: ${g("name")}${g("org") ? `, ${g("org")}` : ""}`;
-    const body = [g("message"), "", `${f.name}: ${g("name")}`, `${f.email}: ${g("email")}`, g("org") ? `${f.org}: ${g("org")}` : ""].filter((x, i) => x || i < 2).join("\n");
-    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    /* TODO: send new FormData(form) (name, email, org, topic, message) to the API here */
     setSent(true);
   };
 
@@ -63,7 +59,7 @@ export function ContactForm({ f, to, privacyHref }: { f: F; to: string; privacyH
   if (sent) {
     return (
       <div ref={sentRef} tabIndex={-1} role="status" className="p-8 pt-10 outline-none md:p-10 md:pt-12">
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf-soft text-leaf"><I.EnvelopeSimpleOpen size={24} aria-hidden /></span>
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf-soft text-leaf"><I.Check size={24} weight="bold" aria-hidden /></span>
         <h2 className="font-display-tight mt-6 text-[26px] leading-tight">{f.sentTitle}</h2>
         <p className="mt-3 max-w-[48ch] leading-relaxed text-muted">{f.sentBody}</p>
         <button type="button" onClick={() => { setSent(false); setTouched(false); setErrors({}); }} className="press mt-8 inline-flex h-11 items-center rounded-full border border-line px-5 font-semibold hover:border-ink">{f.again}</button>
@@ -121,7 +117,6 @@ export function ContactForm({ f, to, privacyHref }: { f: F; to: string; privacyH
         <button type="submit" className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
           {f.submit}<I.ArrowRight weight="bold" aria-hidden />
         </button>
-        <p className="text-[14px] text-muted">{f.submitNote}</p>
       </div>
     </form>
   );

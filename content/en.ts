@@ -616,15 +616,14 @@ export const en: Dictionary = {
         consent: "Setuk may contact me about this request.",
         privacy: "Privacy policy",
         submit: "Send message",
-        submitNote: "Opens your email app with the message ready to send.",
         errors: {
           name: "Enter your name.",
           email: "Enter a valid email address, like name@office.in.",
           message: "Tell us a little about what you need.",
           consent: "Tick this so we can reply to you."
         },
-        sentTitle: "Your message is ready in your email app.",
-        sentBody: "Press send there and we'll reply within two business days. If no app opened, write to us at contact@setuk.org.",
+        sentTitle: "Thank you. We've got your message.",
+        sentBody: "We'll reply within two business days. For anything urgent, call or WhatsApp us.",
         again: "Write another message"
       },
       expect: {
