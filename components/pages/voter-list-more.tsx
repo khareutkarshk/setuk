@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import type { Locale } from "@/content";
 import type { AreaSummary } from "@/lib/voter-list/types";
@@ -41,7 +41,18 @@ export function VoterListMore({ locale, cards, p, rate }: { locale: Locale; card
     return () => ro.disconnect();
   }, []);
 
+  /* switched on a frame after mount: the virtualizer takes window.scrollY as its starting offset and
+     scrolls the window there when it starts, and during a client navigation that is still the previous
+     page's position. By the next frame Next has taken the new page to the top, so starting then reads
+     the right offset (while it is off it holds none) */
+  const [live, setLive] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setLive(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   const rowsV = useWindowVirtualizer({
+    enabled: live,
     count: rows.length,
     estimateSize: (i) => ROW[rows[i][0].c.level],
     /* a new column count makes new rows: their measured heights don't carry over */
