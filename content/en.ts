@@ -555,18 +555,7 @@ export const en: Dictionary = {
           "The chaos is manageable. I've seen it and lived it. Now we've built the answer."
         ],
         by: "Founder, Setuk",
-        photoAlt: "The founder of Setuk",
-        placeholder: {
-          title: "Founder portrait",
-          note: "A placeholder: the photo goes here.",
-          specs: [
-            { t: "Size", d: "1600 × 2000 px, portrait 4:5 (at least 1200 × 1500). JPG or WebP, under 500 KB." },
-            { t: "Framing", d: "Chest up, eyes in the top third, a little room above the head. Corners are rounded, so keep the edges clear." },
-            { t: "Light", d: "Soft daylight from a window or open shade. No flash, no heavy filters." },
-            { t: "Setting", d: "A real working place, softly out of focus: an office desk with files, or a field visit." },
-            { t: "Look", d: "Plain, solid colours (white, navy, khadi, earth tones). A calm, relaxed expression, looking at the camera. No stage, banners or group shots." }
-          ]
-        }
+        photoAlt: "The founder of Setuk"
       },
       company: [
         { t: "Company", d: "Setuk Private Limited" },

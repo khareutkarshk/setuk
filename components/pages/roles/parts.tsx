@@ -139,7 +139,7 @@ export function Flow({ title, sub, steps, eg }: { title: string; sub?: string; s
 /** The ink band: what the representative can see, beside the real eLetter screen */
 export function Oversight({ o }: { o: { kicker: string; title: string; body: string; items: string[]; alt: string } }) {
   return (
-    <section aria-labelledby="oversight-title" className="relative overflow-clip bg-ink text-bg">
+    <section aria-labelledby="oversight-title" className="inverse relative overflow-clip bg-ink text-bg">
       <Pattern kind="sadan" className="absolute inset-0 opacity-[.06]" style={{ ["--s" as string]: "56px" }} />
       <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent-soft opacity-50" />
       <Pattern kind="temple" className="absolute inset-x-0 bottom-0 text-accent-soft opacity-50" />

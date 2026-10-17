@@ -24,7 +24,7 @@ function Title({ children, className = "" }: { children: ReactNode; className?: 
 /* One look per package card, from light to dark to the brand colour, so the stack reads as three layers */
 const LOOKS = [
   { card: "border-line bg-surface text-ink", soft: "text-muted", key: "text-accent", hi: "border-accent bg-accent text-accent-ink", cta: "bg-accent text-accent-ink hover:brightness-110" },
-  { card: "border-ink bg-ink text-bg", soft: "text-bg/70", key: "text-accent-soft", hi: "border-accent bg-accent text-accent-ink", cta: "bg-accent text-accent-ink hover:brightness-110" },
+  { card: "inverse border-ink bg-ink text-bg", soft: "text-bg/70", key: "text-accent-soft", hi: "border-accent bg-accent text-accent-ink", cta: "bg-accent text-accent-ink hover:brightness-110" },
   { card: "border-accent bg-accent text-accent-ink", soft: "text-accent-ink/75", key: "text-accent-ink", hi: "border-accent-ink bg-accent-ink text-accent", cta: "bg-accent-ink text-accent hover:brightness-95" }
 ];
 
@@ -123,7 +123,7 @@ const TRUST_ICONS = [I.MapPin, I.IdentificationBadge, I.Prohibit, I.BellRinging,
 
 export function Trust({ t, locale }: { t: Dictionary; locale: Locale }) {
   return (
-    <section id="trust" aria-labelledby="trust-title" className="relative z-10 overflow-hidden bg-ink text-bg">
+    <section id="trust" aria-labelledby="trust-title" className="inverse relative z-10 overflow-hidden bg-ink text-bg">
       <Pattern kind="sadan" className="absolute inset-0 opacity-[.07]" style={sadanWall} />
       <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent-soft opacity-50" />
       <Pattern kind="temple" className="absolute inset-x-0 bottom-0 text-accent-soft opacity-50" />

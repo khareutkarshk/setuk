@@ -1,7 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
 import { getDictionary, type Locale } from "@/content";
-import type { Dictionary } from "@/content/types";
-import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { CornerPattern, Lotus } from "@/components/site/pattern";
@@ -14,9 +12,16 @@ import { Band, Figure, H1, Lead, PageHero, Panel, SectionHead, TICK, Wrap } from
  */
 
 /**
- * The founder's portrait, beside his note. Until it arrives the frame says what to shoot
- * (`letter.placeholder`). To place it: save it as assets/media/founder.webp (1600 × 2000, 4:5),
+ * The founder's portrait, beside his note. Until it arrives the frame shows Setuk's mark on a
+ * block-printed plate. To place it: save it as assets/media/founder.webp,
  * `import founder from "@/assets/media/founder.webp"` here and set FOUNDER to it.
+ * The brief for the shoot:
+ *   Size     1600 × 2000 px, portrait 4:5 (at least 1200 × 1500). JPG or WebP, under 500 KB.
+ *   Framing  Chest up, eyes in the top third, a little room above the head. Corners are rounded, so keep the edges clear.
+ *   Light    Soft daylight from a window or open shade. No flash, no heavy filters.
+ *   Setting  A real working place, softly out of focus: an office desk with files, or a field visit.
+ *   Look     Plain, solid colours (white, navy, khadi, earth tones). A calm, relaxed expression, looking at
+ *            the camera. No stage, banners or group shots.
  */
 const FOUNDER: StaticImageData | null = null;
 export function AboutPage({ locale }: { locale: Locale }) {
@@ -110,7 +115,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <Wrap className="pb-20 md:pb-28">
           <Panel corner="kolam" fx={0} fy={0} chakra className="reveal mx-auto max-w-[1120px] px-6 pt-14 pb-10 sm:px-12 md:px-16 md:pt-16 md:pb-12">
             <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-14">
-            <Portrait photo={FOUNDER} alt={p.letter.photoAlt} placeholder={p.letter.placeholder} />
+            <Portrait photo={FOUNDER} alt={p.letter.photoAlt} />
             <div className="max-w-[680px]">
               <Kicker as="h2" id="letter-title">{p.letter.title}</Kicker>
               <div className="mt-6 space-y-6 text-[clamp(20px,2vw,24px)] leading-[1.55]">
@@ -129,8 +134,8 @@ export function AboutPage({ locale }: { locale: Locale }) {
   );
 }
 
-/** The portrait's frame: the photo when there is one, otherwise a placeholder that says what to shoot */
-function Portrait({ photo, alt, placeholder }: { photo: StaticImageData | null; alt: string; placeholder: Dictionary["pages"]["about"]["letter"]["placeholder"] }) {
+/** The portrait's frame: the photo when there is one, otherwise the mark on a block-printed plate */
+function Portrait({ photo, alt }: { photo: StaticImageData | null; alt: string }) {
   const frame = "relative mx-auto w-full max-w-[420px] overflow-hidden rounded-3xl border border-line lg:max-w-none";
   if (photo) {
     return (
@@ -139,33 +144,15 @@ function Portrait({ photo, alt, placeholder }: { photo: StaticImageData | null; 
       </div>
     );
   }
-  /* at least 4:5: a 4:5 spacer shares the grid cell with the content, so the specs can make it taller on a narrow screen */
+  /* decorative until the photo arrives: the note beside it is signed */
   return (
-    <div className={`${frame} grid grid-cols-[minmax(0,1fr)] bg-accent-soft`}>
-      <span aria-hidden="true" className="block aspect-[4/5] [grid-area:1/1]" />
-      <CornerPattern kind="lehar" fx={50} fy={100} radius={420} className="inset-0 text-accent opacity-[.18]" />
-      <span aria-hidden="true" className="pointer-events-none absolute inset-3 rounded-[18px] border border-dashed border-accent/35" />
-      <div className="relative flex flex-col p-6 [grid-area:1/1] sm:p-7">
-        <div className="flex items-center gap-3">
-          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-surface text-accent"><I.Camera size={22} aria-hidden /></span>
-          <span>
-            <span className="block text-[15px] font-semibold text-ink">{placeholder.title}</span>
-            <span className="block text-[13px] text-muted">{placeholder.note}</span>
-          </span>
-        </div>
-        {/* where the head and shoulders sit */}
-        <div aria-hidden="true" className="grid min-h-[96px] flex-1 place-items-center text-accent/30">
-          <I.User weight="thin" className="size-[clamp(96px,40%,168px)]" />
-        </div>
-        <dl className="space-y-2.5">
-          {placeholder.specs.map((x) => (
-            <div key={x.t} className="grid grid-cols-[72px_minmax(0,1fr)] gap-2 text-[12.5px] leading-snug">
-              <dt className="font-semibold text-accent">{x.t}</dt>
-              <dd className="text-ink/80">{x.d}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+    <div aria-hidden="true" className={`${frame} grid aspect-[4/5] place-items-center bg-accent-soft`}>
+      <CornerPattern kind="lehar" fx={50} fy={100} radius={460} className="inset-0 text-accent opacity-[.2]" />
+      <span className="pointer-events-none absolute inset-3 rounded-[18px] border border-accent/20" />
+      <Lotus className="absolute top-1/2 left-1/2 w-[86%] -translate-1/2 text-accent opacity-[.16]" />
+      <span className="relative grid size-[clamp(112px,38%,152px)] place-items-center rounded-full border border-accent/15 bg-surface p-[9%] shadow-[0_30px_60px_-34px_color-mix(in_srgb,var(--accent)_70%,transparent)]">
+        <SetukMark />
+      </span>
     </div>
   );
 }

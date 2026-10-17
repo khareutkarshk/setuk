@@ -26,7 +26,7 @@ const TONE: Record<StatusTone, string> = {
 
 const CARD = "rounded-2xl border border-line bg-surface/95 shadow-[0_28px_60px_-28px_color-mix(in_srgb,var(--ink)_50%,transparent)] backdrop-blur-sm";
 const FLOAT = `absolute ${CARD}`;
-const DARK = "rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--ink)_70%,transparent)]";
+const DARK = "inverse rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--ink)_70%,transparent)]";
 
 /** The pointer that works the screen during the story; `path` is its keyframes in globals.css */
 function Cursor({ path, time, style }: { path: string; time: number; style?: CSSProperties }) {

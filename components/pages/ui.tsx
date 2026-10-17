@@ -55,7 +55,7 @@ type Tone = "surface" | "tint" | "ink";
 const TONES: Record<Tone, string> = {
   surface: "border-t border-line bg-surface",
   tint: "bg-accent-soft",
-  ink: "bg-ink text-bg"
+  ink: "inverse bg-ink text-bg"
 };
 
 /**

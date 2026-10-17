@@ -98,9 +98,11 @@ export function AreaCard({ locale, c, p, rate, art, selected = false }: { locale
         </div>
       )}
       <div className="mt-auto flex flex-col gap-1 pt-5">
-        {/* a WhatsApp link without script; with it, the page's order dialog (OrderHost) opens instead */}
+        {/* a WhatsApp link without script; with it, the page's order dialog (OrderHost) opens instead.
+            Tonal until the card is pointed at or focused, so a list of dozens doesn't read as a wall of
+            primary buttons; the chosen area's card keeps it solid */}
         <a href={orderHref({ trail: {}, ratePerBooth: rate }, c)} target="_blank" rel="noopener noreferrer" data-order={JSON.stringify(order)} aria-haspopup="dialog"
-          className="press inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-5 py-2 text-center text-[15px] font-semibold text-accent-ink hover:brightness-110">
+          className={`press inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2 text-center text-[15px] font-semibold transition-[transform,background-color,color] ${selected ? "bg-accent text-accent-ink hover:brightness-110" : "bg-accent-soft text-accent group-hover:bg-accent group-hover:text-accent-ink group-focus-within:bg-accent group-focus-within:text-accent-ink"}`}>
           <Use id="download" />{fill(p.cards.order, { name: c.name })}
         </a>
         {more && c.level !== "ac" && (

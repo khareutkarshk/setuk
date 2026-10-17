@@ -183,8 +183,8 @@ export interface Pages {
     moment: { quote: string; by: string; paras: string[]; alt: string; compare: { label: string; before: string; after: string; valuetext: string } };
     beliefs: { kicker: string; title: string; items: string[] };
     name: { kicker: string; title: string; paras: string[]; alt: string };
-    /** `photoAlt` names the founder's portrait; `placeholder` stands in its frame until it arrives, saying what to shoot */
-    letter: { title: string; paras: string[]; by: string; photoAlt: string; placeholder: { title: string; note: string; specs: { t: string; d: string }[] } };
+    /** `photoAlt` names the founder's portrait */
+    letter: { title: string; paras: string[]; by: string; photoAlt: string };
     company: { t: string; d: string }[];
   };
   articles: {

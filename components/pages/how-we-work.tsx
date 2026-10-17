@@ -5,8 +5,10 @@ import { media } from "@/content/media";
 import type { ModuleItem } from "@/content/types";
 import * as I from "@/components/icons";
 import { Kicker } from "@/components/site/kicker";
+import { CornerPattern, Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
 import { HowSteps } from "./how-steps";
+import { PRODUCT_LOOK } from "./products/look";
 import { Band, deva, Figure, H1, Lead, PageHero, PrimaryLink, SectionHead, TextLink, TICK, Wrap } from "./ui";
 
 /**
@@ -107,8 +109,8 @@ export function HowWeWorkPage({ locale }: { locale: Locale }) {
                 <p className="max-w-[52ch] text-[15px] leading-snug text-muted">{g.d}</p>
               </div>
               <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {g.items.map((m) => (
-                  <ModuleCard key={m.t} m={m} soon={g.soon ? p.modules.soonLabel : undefined} />
+                {g.items.map((m, k) => (
+                  <ModuleCard key={m.t} m={m} icon={GROUP_ICONS[i]?.[k]} soon={g.soon ? p.modules.soonLabel : undefined} />
                 ))}
               </div>
             </div>
@@ -163,12 +165,31 @@ export function HowWeWorkPage({ locale }: { locale: Locale }) {
   );
 }
 
-/** `soon`: the label badged on the picture of a module still in progress */
-function ModuleCard({ m, soon }: { m: ModuleItem; soon?: string }) {
+/* Each module's icon, in the order of `modules.groups` (office, election, in progress), taken from the
+   product pages so a module wears the same icon everywhere */
+const { office, election } = PRODUCT_LOOK;
+const GROUP_ICONS: I.Icon[][] = [office.modules.slice(0, 8), election.modules.slice(0, 4), [office.modules[8], office.modules[9], election.modules[4], office.modules[10]]];
+
+/**
+ * `soon`: the label badged on the picture of a module still in progress. A module still waiting on its
+ * illustration (`img: "placeholder"`) shows its icon on a block-printed plate instead of a stand-in picture.
+ */
+function ModuleCard({ m, icon: Icon, soon }: { m: ModuleItem; icon?: I.Icon; soon?: string }) {
+  const art = m.img !== "placeholder" || !Icon;
   return (
     <article className="reveal flex flex-col overflow-hidden rounded-3xl border border-line bg-surface">
-      <div className="illo relative aspect-[4/3]">
-        <Image src={media[m.img]} alt={m.alt} fill sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw" placeholder="blur" className="object-cover" />
+      <div className={`illo relative aspect-[4/3] ${art ? "" : "overflow-hidden bg-accent-soft"}`}>
+        {art
+          ? <Image src={media[m.img]} alt={m.alt} fill sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw" placeholder="blur" className="object-cover" />
+          : (
+            <div aria-hidden="true" className="absolute inset-0 grid place-items-center">
+              <Pattern kind="sadan" className="absolute inset-0 text-accent opacity-[.07]" style={{ ["--s" as string]: "44px" }} />
+              <CornerPattern kind="jaali" fx={100} fy={0} radius={260} className="inset-0 text-accent opacity-[.16]" />
+              <span className="relative grid size-20 place-items-center rounded-3xl border border-accent/15 bg-surface text-accent shadow-[0_24px_50px_-28px_color-mix(in_srgb,var(--accent)_70%,transparent)]">
+                <Icon size={34} weight="duotone" />
+              </span>
+            </div>
+          )}
         {soon && (
           <span className="absolute top-3 left-3 inline-flex h-7 items-center gap-1.5 rounded-full bg-surface/90 px-3 text-[13px] font-medium text-accent backdrop-blur-sm"><I.Clock aria-hidden />{soon}</span>
         )}

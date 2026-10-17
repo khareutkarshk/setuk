@@ -42,7 +42,7 @@ export function ProductPage({ product, locale }: { product: ProductKey; locale: 
               <span className="grid size-7 place-items-center rounded-full bg-accent text-accent-ink"><Icon size={15} aria-hidden /></span>
               {p.name}
             </span>
-            <span className="rise mt-6 block text-[clamp(38px,5.4vw,66px)] leading-[1.02] [--i:1]">{p.title}</span>
+            <span className="rise mt-6 block text-[clamp(36px,5vw,60px)] leading-[1.03] [--i:1]">{p.title}</span>
           </h1>
           <Lead className="rise mt-6 [--i:2]">{p.sub}</Lead>
           <div className="rise mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 [--i:3]">

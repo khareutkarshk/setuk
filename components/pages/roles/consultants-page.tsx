@@ -110,7 +110,7 @@ export function ConsultantsPage({ locale }: { locale: Locale }) {
       <Flow title={r.steps.title} steps={r.steps.items} />
 
       {/* How each client's records stay apart: the page's one ink band */}
-      <section aria-labelledby="data-title" className="relative overflow-clip bg-ink text-bg">
+      <section aria-labelledby="data-title" className="inverse relative overflow-clip bg-ink text-bg">
         <Pattern kind="sadan" className="absolute inset-0 opacity-[.06]" style={{ ["--s" as string]: "56px" }} />
         <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent-soft opacity-50" />
         <Pattern kind="temple" className="absolute inset-x-0 bottom-0 text-accent-soft opacity-50" />
