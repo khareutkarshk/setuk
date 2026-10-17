@@ -92,6 +92,17 @@
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + 24px);
+    /* the request dialog's hairline scrollbar, kept in view: a soft ink thumb on a clear track.
+       scrollbar-color inherits, so every scroll area on the site (the menu sheet, wide tables) matches */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent) transparent;
+  }
+  /* browsers without scrollbar-color (Safari): the same thumb, inset from a clear track, firmer on hover */
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
+    ::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 99px; background: color-mix(in srgb, var(--ink) 22%, transparent) padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background-color: color-mix(in srgb, var(--ink) 38%, transparent); }
   }
   /* Lenis eases the scroll itself; a native smooth behaviour would ease every frame again */
   html.lenis { scroll-behavior: auto; }
