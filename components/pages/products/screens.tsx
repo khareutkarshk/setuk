@@ -6,14 +6,15 @@ import { SetukMark } from "@/components/site/setuk-mark";
 /*
  * The product heroes' screens, drawn in HTML from the dictionaries so they stay sharp, follow the
  * theme and speak Hindi on /hi. They copy the real app's frame (the navy sidebar of the eLetter
- * screenshot) and fill it with illustrative data; the page says so under them. Each is one picture to
+ * screenshot) and fill it with illustrative data. Each is one picture to
  * a screen reader (role="img" with the page's own description), so its parts are hidden from it.
  * Cards that float off the window are positioned with top/left, never transform: they rise in with
  * the hero's `rise`, which owns transform, and anything that arrives later does so on an inner layer.
  *
- * The story (ScreenPlay sets data-play once the screen is in view): what changes is drawn twice,
- * as it was (.play-from) and as it ends (.play-to), and CSS swaps them at --at. At rest, without
- * script and with reduced motion, only the end shows; the classes live in globals.css.
+ * The story (ScreenPlay loops it while the screen is in view): a cursor does what a staff member
+ * would, and what changes is drawn twice, as it was (.play-from) and as it ends (.play-to), swapped by
+ * CSS at --at. At rest, without script and with reduced motion, only the end shows; the classes live
+ * in globals.css.
  */
 
 const TONE: Record<StatusTone, string> = {
@@ -26,6 +27,15 @@ const TONE: Record<StatusTone, string> = {
 const CARD = "rounded-2xl border border-line bg-surface/95 shadow-[0_28px_60px_-28px_color-mix(in_srgb,var(--ink)_50%,transparent)] backdrop-blur-sm";
 const FLOAT = `absolute ${CARD}`;
 const DARK = "rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--ink)_70%,transparent)]";
+
+/** The pointer that works the screen during the story; `path` is its keyframes in globals.css */
+function Cursor({ path, time, style }: { path: string; time: number; style?: CSSProperties }) {
+  return (
+    <span className="play-cursor" style={{ "--cursor": path, "--cursor-time": `${time}s`, ...style } as CSSProperties}>
+      <svg viewBox="0 0 22 22"><path d="M1 1l7.5 19 2.6-7.9L19 9.5z" fill="var(--surface)" stroke="var(--ink)" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+    </span>
+  );
+}
 
 /** A moment of the story, `at` seconds after it starts */
 const at = (t: number) => ({ "--at": `${t}s` }) as CSSProperties;
@@ -93,7 +103,10 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
               </span>
             ))}
           </div>
-          <div className="mt-4 overflow-hidden rounded-xl border border-line bg-surface">
+          {/* the cursor goes to the first letter and marks it dispatched */}
+          <div className="relative mt-4">
+          <Cursor path="cursor-office" time={2.2} />
+          <div className="overflow-hidden rounded-xl border border-line bg-surface">
             <div className="grid grid-cols-[72px_minmax(0,1fr)_76px] gap-3 border-b border-line bg-surface-2/60 px-3 py-2 text-[10.5px] font-semibold text-muted sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px]">
               <span>{s.cols[0]}</span><span>{s.cols[1]}</span><span className="hidden sm:block">{s.cols[2]}</span><span>{s.cols[3]}</span>
             </div>
@@ -110,6 +123,7 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
                   : <span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[10.5px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>}
               </div>
             ))}
+          </div>
           </div>
         </Window>
       </div>
@@ -172,6 +186,9 @@ const BOOTHS: (Booth | null)[] = (() => {
   out[lit.i] = "lit";
   return out;
 })();
+/* where the lit booth sits in the grid, for the cursor */
+const LIT = BOOTHS.indexOf("lit");
+const LIT_AT = { "--lit-x": `${(((LIT % COLS) + 0.5) / COLS) * 100}%`, "--lit-y": `${((Math.floor(LIT / COLS) + 0.5) / ROWS) * 100}%` } as CSSProperties;
 const DOT: Record<Booth, string> = {
   ok: "bg-accent",
   part: "bg-accent/35",
@@ -194,12 +211,16 @@ export function ElectionScreen({ s, label }: { s: ElectionCopy; label: string })
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
             <div className="rounded-xl border border-line bg-surface p-3">
+              {/* the cursor crosses the constituency and opens booth 114 */}
+              <div className="relative">
+              <Cursor path="cursor-booth" time={2.6} style={LIT_AT} />
               <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}>
                 {/* booths that are covered or partly covered fill in during the story; the lit one pulses after */}
                 {BOOTHS.map((b, i) => (
                   <span key={i} className={`aspect-square rounded-[2px] ${b ? DOT[b] : ""} ${b === "ok" || b === "part" ? "play-booth" : b === "lit" ? "play-lit" : ""}`}
                     style={b === "ok" || b === "part" ? ({ "--at": `${fillAt(i)}s` } as CSSProperties) : b === "lit" ? at(2.2) : undefined} />
                 ))}
+              </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] text-muted">
                 {s.legend.map((l, i) => (

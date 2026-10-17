@@ -835,7 +835,6 @@ export const hi: Dictionary = {
     products: {
       common: {
         label: "उत्पाद",
-        illustrative: "उदाहरण के लिए डेटा",
         live: "चालू",
         soon: "बन रहा है",
         setup: {
@@ -845,8 +844,7 @@ export const hi: Dictionary = {
           link: "हमारा तरीका"
         },
         trust: { title: "आपके रिकॉर्ड आपके ही रहते हैं।", link: "नीतियाँ पढ़ें" },
-        faqAll: "सभी सवाल",
-        replay: "फिर से देखें"
+        faqAll: "सभी सवाल"
       },
       office: {
         meta: {

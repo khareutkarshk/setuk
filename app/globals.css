@@ -508,11 +508,12 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
 
 /* Product hero screens (components/pages/products/screens.tsx, screen-play.tsx). At rest, and without
    script or with reduced motion, a screen shows how its story ends: .play-from hidden, .play-to shown.
-   With script and motion it starts from the beginning and data-play runs it, each moment at --at. */
+   With script and motion it loops: data-play runs the story from the start, each moment at --at, with
+   a cursor doing what a staff member would; data-rewind then fades it back to the start, and it plays
+   again. ScreenPlay pauses the loop while the screen is out of view. */
 .play-from { opacity: 0; }
-.play-only { display: none; }
+.play-cursor { display: none; }
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  .play-only { display: inline-flex; }
   .play-from { opacity: 1; }
   .play-to, .play-pop { opacity: 0; }
   .play-bar { scale: 0 1; }
@@ -527,13 +528,47 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
   /* a booth fills: its colour comes back from "not yet" */
   [data-play] .play-booth::after { animation: play-out 0.5s var(--ease-out) var(--at, 0s) both; }
   [data-play] .play-lit { animation: play-lit 1s ease-out var(--at, 0s) 3; }
+  /* the rewind: everything that changed eases back to how the story starts */
+  [data-rewind] .play-to, [data-rewind] .play-pop { animation: play-out 0.5s var(--ease-out) both; }
+  [data-rewind] .play-from { animation: play-back 0.5s var(--ease-out) both; }
+  [data-rewind] .play-bar { animation: play-bar 0.5s var(--ease-out) both reverse; }
+  [data-rewind] .play-booth::after { animation: play-back 0.5s var(--ease-out) both; }
+
+  /* the cursor: its tip sits at its box's top left, and a ring spreads from it on the click */
+  .play-cursor { position: absolute; z-index: 2; display: block; width: 22px; height: 22px; pointer-events: none; opacity: 0; }
+  .play-cursor svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--ink) 35%, transparent)); }
+  .play-cursor::after { content: ""; position: absolute; left: -11px; top: -11px; width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--accent); opacity: 0; }
+  [data-play] .play-cursor { animation: var(--cursor) var(--cursor-time, 2.2s) var(--ease-out) both; }
+  [data-play] .play-cursor::after { animation: cursor-click var(--cursor-time, 2.2s) ease-out both; }
 }
 @keyframes play-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes play-back { from { opacity: 0; } to { opacity: 1; } }
 @keyframes play-in { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
 @keyframes play-pop { from { opacity: 0; translate: 0 14px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
 @keyframes play-bar { from { scale: 0 1; } to { scale: 1 1; } }
 @keyframes play-flash { 0%, 100% { background-color: transparent; } 25% { background-color: var(--leaf-soft); } }
 @keyframes play-lit { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--leaf) 55%, transparent); } 100% { box-shadow: 0 0 0 7px transparent; } }
+/* office: from the foot of the list to the first letter's status, a click, then away */
+@keyframes cursor-office {
+  0% { opacity: 0; left: 30%; top: 96%; }
+  12% { opacity: 1; }
+  56% { left: calc(100% - 50px); top: 24%; scale: 1; }
+  62% { scale: 0.82; }
+  70% { scale: 1; }
+  86% { opacity: 1; left: calc(100% - 50px); top: 24%; }
+  100% { opacity: 0; left: calc(100% - 34px); top: 42%; }
+}
+/* election: across the constituency to booth 114, a click, then away */
+@keyframes cursor-booth {
+  0% { opacity: 0; left: 28%; top: 82%; }
+  12% { opacity: 1; }
+  68% { left: var(--lit-x, 71%); top: var(--lit-y, 30%); scale: 1; }
+  74% { scale: 0.82; }
+  82% { scale: 1; }
+  92% { opacity: 1; left: var(--lit-x, 71%); top: var(--lit-y, 30%); }
+  100% { opacity: 0; left: calc(var(--lit-x, 71%) + 6%); top: calc(var(--lit-y, 30%) + 12%); }
+}
+@keyframes cursor-click { 0%, 58% { opacity: 0; scale: 0.3; } 64% { opacity: 0.7; scale: 1; } 82%, 100% { opacity: 0; scale: 1.9; } }
 
 /* Request-a-demo dialog (components/site/demo-dialog.tsx): a card that settles in on wide screens, a
    sheet that rises on phones. The exit runs while data-closing holds it in the top layer, so it plays

@@ -407,7 +407,7 @@ export interface ConsultantRole extends RoleHead {
 /**
  * The two product pages (components/pages/products/): the office software and the election software.
  * They share one layout; each draws its own product screen in the hero from `screen`. Names, numbers
- * and file numbers in a screen are illustrative, and the page says so under it.
+ * and file numbers in a screen are illustrative.
  */
 export type ProductKey = "office" | "election";
 
@@ -486,14 +486,11 @@ export interface Products {
   common: {
     /** The header's menu label and the breadcrumb */
     label: string;
-    illustrative: string;
     live: string;
     soon: string;
     setup: { kicker: string; title: string; sub: string; link: string };
     trust: { title: string; link: string };
     faqAll: string;
-    /** Replays the hero screen's story */
-    replay: string;
   };
   office: ProductCopy<OfficeScreen>;
   election: ProductCopy<ElectionScreen>;

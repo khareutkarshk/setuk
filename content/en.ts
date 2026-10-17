@@ -834,7 +834,6 @@ export const en: Dictionary = {
     products: {
       common: {
         label: "Products",
-        illustrative: "Illustrative data",
         live: "Live",
         soon: "In progress",
         setup: {
@@ -844,8 +843,7 @@ export const en: Dictionary = {
           link: "How we work"
         },
         trust: { title: "Your records stay yours.", link: "Read the policies" },
-        faqAll: "All questions",
-        replay: "Play again"
+        faqAll: "All questions"
       },
       office: {
         meta: {
