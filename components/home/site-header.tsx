@@ -184,7 +184,7 @@ export function SiteHeader({ t, roles, locale, path = routes.home }: { t: Pick<D
           >
             {dark ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
           </button>
-          <Link href={href(locale, routes.contact)} className="press relative inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-[13px] font-semibold text-accent-ink before:absolute before:-inset-y-1 before:inset-x-0 before:content-[''] hover:brightness-110">
+          <Link href={href(locale, routes.contact)} data-demo="" aria-haspopup="dialog" className="press relative inline-flex h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-accent px-4 text-[13px] font-semibold text-accent-ink before:absolute before:-inset-y-1 before:inset-x-0 before:content-[''] hover:brightness-110">
             {t.nav.demo}
           </Link>
           <button

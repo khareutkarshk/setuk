@@ -151,7 +151,7 @@ export function ArticlePage({ locale, article: a }: { locale: Locale; article: A
             <p className="font-display-tight text-[clamp(22px,2.2vw,28px)] leading-tight">{c.demoTitle}</p>
             <p className="mt-3 text-[16px] leading-relaxed text-muted">{c.demoBody}</p>
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <PrimaryLink href={href(locale, routes.contact)}>{t.nav.demo}</PrimaryLink>
+              <PrimaryLink href={href(locale, routes.contact)} demo>{t.nav.demo}</PrimaryLink>
               <a href={site.whatsapp.href} className="inline-flex min-h-11 items-center gap-2 font-semibold hover:text-accent"><I.WhatsappLogo size={18} className="text-leaf" aria-hidden />{t.cta.secondary}</a>
             </div>
           </Panel>

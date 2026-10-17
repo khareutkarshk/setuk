@@ -11,7 +11,8 @@ Kashmir as the Survey of India draws them), and STATES/<state>/<state>_ASSEMBLY.
   (the constituencies need shapely: pip install shapely, in a virtual environment)
 
   curl -L -o INDIA_STATES.geojson https://raw.githubusercontent.com/datta07/INDIAN-SHAPEFILES/master/INDIA/INDIA_STATES.geojson
-  (and each state's STATES/<STATE>/<STATE>_ASSEMBLY.geojson from the same repository)
+  (and each state's STATES/<STATE>/<STATE>_ASSEMBLY.geojson from the same repository, with
+  STATES/ASSAM/ASSAM_DISTRICTS.geojson and STATES/JAMMU & KASHMIR/JAMMU & KASHMIR_DISTRICTS.geojson)
 
 Each state is projected on its own (longitude scaled by the cosine of its middle latitude), fitted
 so its longer side is SIZE units, simplified, and written with one decimal; its ACs share that
@@ -25,7 +26,9 @@ name alone where the file has no numbers). A state whose file mostly disagrees, 
 were redrawn after the file was made (Assam in 2023, Jammu and Kashmir in 2022), gets no ACs: a
 wrong highlight is worse than none. Each state also lists, from the catalogue, the ACs of each
 district and of each Lok Sabha seat, so a card can light up a whole district or seat; one with an
-AC missing is left out.
+AC missing is left out. A state with no ACs but a <state>_DISTRICTS.geojson in the same folder
+(Assam, Jammu and Kashmir) gets its districts from that file, matched by name, leaving out any
+district split since the file was made.
 
 A card lights one area, so each area has to fill its own part of the outline: every AC is clipped to
 the state, and the land the boundary file leaves out of every AC goes to the nearest ACs (pieces
@@ -122,6 +125,15 @@ WHOLE = {
 }
 # assembly file names that differ from the state file's
 FILE_STATE = {"ORISSA": "ODISHA", "UTTARKHAND": "UTTARAKHAND"}
+# district file names that differ from the catalogue's district slugs, for the states drawn from
+# their district file (Karimganj was renamed Sribhumi in 2024, its land unchanged)
+DISTRICT_NAMES = {
+    "assam": {"Kamrup Metropolitan": "kamrup-metro", "Sivasagar": "sibsagar", "South Salmara Mancachar": "south-salmara-mankachar", "Karimganj": "sribhumi"},
+    "jammu-and-kashmir": {"Badgam": "budgam", "Baramula": "baramulla", "Punch": "poonch", "Shupiyan": "shopian"},
+}
+# districts split since the district file was made: the file's shape still holds the new district's
+# land, so neither is drawn (Bajali from Barpeta in 2020, Tamulpur from Baksa in 2022)
+SPLIT = {"assam": {"barpeta", "baksa"}}
 
 
 def path(rings, tol, keep, islands=False, decimals=1):
@@ -221,12 +233,13 @@ for f in json.load(open(SRC, encoding="utf-8"))["features"]:
     pieces[name] = polygons(f["geometry"])
 
 catalogue = json.load(open(CATALOGUE, encoding="utf-8")) if CATALOGUE else None
-assembly = {}
+assembly, district_files = {}, {}
 if ASSEMBLY:
     for fn in os.listdir(ASSEMBLY):
-        if fn.endswith("_ASSEMBLY.geojson"):
-            st = fn[: -len("_ASSEMBLY.geojson")].upper()
-            assembly[SLUGS[FILE_STATE.get(st, st)]] = os.path.join(ASSEMBLY, fn)
+        for end, into in (("_ASSEMBLY.geojson", assembly), ("_DISTRICTS.geojson", district_files)):
+            if fn.endswith(end):
+                st = fn[: -len(end)].upper()
+                into[SLUGS[FILE_STATE.get(st, st)]] = os.path.join(ASSEMBLY, fn)
 report = []
 
 shapes = {}
@@ -309,6 +322,24 @@ for slug, polys in sorted(groups.items()):
             found = {}
         elif listed and share < 1:
             report.append(f"{slug}: {len(found)} of {len(listed)} constituencies")
+        if not found and slug in district_files:
+            # seats redrawn but districts not: the districts come from the district file instead,
+            # each within the state, the land the file leaves out going to the nearest district
+            names = {d["slug"] for d in catalogue["districts"] if d["state"] == slug}
+            got, rest = {}, []
+            for f in json.load(open(district_files[slug], encoding="utf-8"))["features"]:
+                name = f["properties"]["dtname"].strip()
+                key = DISTRICT_NAMES.get(slug, {}).get(name) or re.sub(r"[^a-z]+", "-", name.lower()).strip("-")
+                (got.setdefault(key, []) if key in names else rest).append(flat(f["geometry"]))
+            got = {key: union_all(v).intersection(state) for key, v in got.items()}
+            rest = [g.intersection(state) for g in rest]
+            gap = state.difference(union_all([*got.values(), *rest]))
+            for key, extra in share_out(gap, [*got.items(), *((None, g) for g in rest)]).items():
+                if key is not None:
+                    got[key] = got[key].union(extra)
+            drawn = {key: g for key, g in got.items() if key not in SPLIT.get(slug, set())}
+            shape["districts"] = {key: lit(g) for key, g in sorted(drawn.items())}
+            report.append(f"{slug}: {len(drawn)} of {len(names)} districts from its district file, missing {sorted(names - set(drawn))}")
         if found:
             # each AC within the state, then the land no AC has, to the nearest: first the pieces the
             # file leaves in a district but in no AC, among that district's ACs, then the slivers
@@ -339,7 +370,7 @@ for slug, polys in sorted(groups.items()):
 missing = sorted(set(SLUGS.values()) - set(shapes))
 with open(OUT, "w", encoding="utf-8") as f:
     f.write("{\n")
-    f.write('  "source": "datta07/INDIAN-SHAPEFILES: INDIA/INDIA_STATES.geojson and STATES/*/*_ASSEMBLY.geojson (MIT, see state-shapes.LICENSE)",\n')
+    f.write('  "source": "datta07/INDIAN-SHAPEFILES: INDIA/INDIA_STATES.geojson, STATES/*/*_ASSEMBLY.geojson and the district files of Assam and Jammu and Kashmir (MIT, see state-shapes.LICENSE)",\n')
     f.write('  "shapes": {\n')
     f.write(",\n".join(f"    {json.dumps(k)}: {json.dumps(v, separators=(',', ':'))}" for k, v in shapes.items()))
     f.write("\n  }\n}\n")

@@ -85,7 +85,7 @@ export function Engagements({ t, locale }: { t: Dictionary; locale: Locale }) {
                       ))}
                     </ul>
                     <div className="mt-auto pt-8">
-                      <Link href={href(locale, routes.contact)} className={`press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full px-6 text-[15px] font-semibold ${look.cta}`}>
+                      <Link href={href(locale, routes.contact)} data-demo="" aria-haspopup="dialog" className={`press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full px-6 text-[15px] font-semibold ${look.cta}`}>
                         {t.engage.cta}
                         <I.ArrowRight weight="bold" aria-hidden />
                       </Link>
@@ -218,7 +218,7 @@ export function Cta({ t, locale, own }: { t: Dictionary; locale: Locale; own?: {
             <p className="mt-5 max-w-[52ch] text-[17px] leading-relaxed opacity-80">{own?.body ?? t.cta.body}</p>
           </div>
           <div className="relative flex flex-wrap gap-3">
-            <Link href={href(locale, routes.contact)} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent-ink px-6 font-semibold text-accent focus-visible:outline-accent-ink hover:brightness-95">
+            <Link href={href(locale, routes.contact)} data-demo="" aria-haspopup="dialog" className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent-ink px-6 font-semibold text-accent focus-visible:outline-accent-ink hover:brightness-95">
               {own?.primary ?? t.cta.primary}
               <I.ArrowRight weight="bold" aria-hidden />
             </Link>

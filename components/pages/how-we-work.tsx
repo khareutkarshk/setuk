@@ -27,7 +27,7 @@ export function HowWeWorkPage({ locale }: { locale: Locale }) {
           <H1 className="rise mt-4 [--i:1]">{p.title}</H1>
           <Lead className="rise mt-5 [--i:2]">{p.sub}</Lead>
           <div className="rise mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 [--i:3]">
-            <PrimaryLink href={href(locale, routes.contact)}>{p.primary}</PrimaryLink>
+            <PrimaryLink href={href(locale, routes.contact)} demo>{p.primary}</PrimaryLink>
             <TextLink href="#modules">{p.secondary}</TextLink>
           </div>
         </div>

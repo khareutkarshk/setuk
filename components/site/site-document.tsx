@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
-import type { Locale } from "@/content";
+import { getDictionary, type Locale } from "@/content";
+import { site } from "@/content/site";
+import { href, routes } from "@/lib/paths";
+import { DemoHost } from "./demo-dialog";
 import { geist, geistMono } from "@/lib/fonts";
 import { THEME_BG, THEME_KEY } from "@/lib/theme";
 import { SmoothScroll } from "./smooth-scroll";
@@ -10,7 +13,8 @@ const themeScript = `(function(){try{var t=localStorage.getItem(${JSON.stringify
 
 /**
  * The <html> and <body> shell shared by both root layouts, (en) and (hi). Each locale has its own
- * root layout so the server renders the right `lang` and the right preloaded fonts per URL.
+ * root layout so the server renders the right `lang` and the right preloaded fonts per URL. It also
+ * holds the one request-a-demo dialog that every demo button opens.
  */
 export function SiteDocument({ locale, fontClassName, children }: { locale: Locale; fontClassName: string; children: ReactNode }) {
   return (
@@ -22,6 +26,7 @@ export function SiteDocument({ locale, fontClassName, children }: { locale: Loca
       <body className="min-h-dvh" suppressHydrationWarning>
         <SmoothScroll />
         {children}
+        <DemoHost c={getDictionary(locale).demo} to={site.email} privacyHref={href(locale, routes.legalDoc("privacy"))} whatsapp={site.whatsapp} phone={site.phone} />
       </body>
     </html>
   );

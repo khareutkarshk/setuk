@@ -133,9 +133,11 @@ export function Figure({ img, alt, sizes, className = "", priority = false, rati
   );
 }
 
-export function PrimaryLink({ href, children }: { href: string; children: ReactNode }) {
+/** `demo` opens the request-a-demo dialog instead (a role's index preselects it); the link stays for no-script */
+export function PrimaryLink({ href, demo, children }: { href: string; demo?: boolean | number; children: ReactNode }) {
+  const d = demo === undefined || demo === false ? {} : { "data-demo": demo === true ? "" : String(demo), "aria-haspopup": "dialog" as const };
   return (
-    <Link href={href} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
+    <Link href={href} {...d} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
       {children}
       <I.ArrowRight weight="bold" aria-hidden />
     </Link>

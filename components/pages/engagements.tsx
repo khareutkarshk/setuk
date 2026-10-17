@@ -60,7 +60,7 @@ export function EngagementsPage({ locale }: { locale: Locale }) {
                   </ul>
                   <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
                     <span className="text-[14px] text-muted">{t.engage.price}</span>
-                    <Link href={href(locale, routes.contact)} className={`press inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full px-5 text-[14px] font-semibold ${pick ? "bg-accent text-accent-ink hover:brightness-110" : "border border-line hover:border-ink"}`}>
+                    <Link href={href(locale, routes.contact)} data-demo="" aria-haspopup="dialog" className={`press inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full px-5 text-[14px] font-semibold ${pick ? "bg-accent text-accent-ink hover:brightness-110" : "border border-line hover:border-ink"}`}>
                       {t.engage.cta}
                       <I.ArrowRight aria-hidden />
                     </Link>

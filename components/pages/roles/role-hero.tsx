@@ -3,7 +3,7 @@ import type { RoleHead, RoleKey } from "@/content/types";
 import { Kicker } from "@/components/site/kicker";
 import { href, routes } from "@/lib/paths";
 import { Lead, PageHero, PrimaryLink, TextLink } from "../ui";
-import { ROLE_LOOK, type RoleWindow } from "./look";
+import { ROLE_KEYS, ROLE_LOOK, type RoleWindow } from "./look";
 import { RoleStage } from "./role-stage";
 
 /*
@@ -27,12 +27,12 @@ function Head({ r, center = false, className = "", size = "text-[clamp(34px,4.3v
   );
 }
 
-function Body({ r, locale, anchor, center = false, className = "" }: { r: RoleHead; locale: Locale; anchor: string; center?: boolean; className?: string }) {
+function Body({ r, locale, anchor, demo, center = false, className = "" }: { r: RoleHead; locale: Locale; anchor: string; demo: number; center?: boolean; className?: string }) {
   return (
     <div className={className}>
       <Lead className={`rise [--i:2] ${center ? "mx-auto" : ""}`}>{r.sub}</Lead>
       <div className={`rise mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 [--i:3] ${center ? "justify-center" : ""}`}>
-        <PrimaryLink href={href(locale, routes.contact)}>{r.primary}</PrimaryLink>
+        <PrimaryLink href={href(locale, routes.contact)} demo={demo}>{r.primary}</PrimaryLink>
         <TextLink href={`#${anchor}`}>{r.secondary}</TextLink>
       </div>
     </div>
@@ -49,6 +49,8 @@ const SHELL: Record<RoleWindow, string> = {
 export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHead; locale: Locale; anchor: string }) {
   const look = ROLE_LOOK[role];
   const c = getDictionary(locale).pages.roles.common;
+  /* the demo dialog opens with this role chosen (its roles follow ROLE_KEYS) */
+  const demo = ROLE_KEYS.indexOf(role);
   const stage = (
     <RoleStage
       window={look.window}
@@ -68,7 +70,7 @@ export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHe
         <>
           <div className="mx-auto max-w-[880px] text-center">
             <Head r={r} center size="text-[clamp(36px,5vw,64px)]" />
-            <Body r={r} locale={locale} anchor={anchor} center className="mt-5" />
+            <Body r={r} locale={locale} anchor={anchor} demo={demo} center className="mt-5" />
           </div>
           <div className="rise mt-12 [--i:3] md:mt-14">{stage}</div>
         </>
@@ -77,7 +79,7 @@ export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHe
         <>
           <div className="grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-14">
             <Head r={r} size="text-[clamp(34px,4.8vw,62px)]" />
-            <Body r={r} locale={locale} anchor={anchor} className="lg:pb-1.5" />
+            <Body r={r} locale={locale} anchor={anchor} demo={demo} className="lg:pb-1.5" />
           </div>
           <div className="rise mt-10 [--i:3] md:mt-14">{stage}</div>
         </>
@@ -86,7 +88,7 @@ export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHe
         <>
           <div className={look.window === "circle" ? "lg:pt-[clamp(32px,6vw,88px)]" : ""}>
             <Head r={r} />
-            <Body r={r} locale={locale} anchor={anchor} className="mt-5" />
+            <Body r={r} locale={locale} anchor={anchor} demo={demo} className="mt-5" />
           </div>
           <div className={`rise [--i:2] ${look.window === "pool" ? "lg:order-first" : ""}`}>{stage}</div>
         </>

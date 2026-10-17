@@ -477,6 +477,42 @@ export interface SceneLabels {
   run: { title: string; tiles: string[]; trend: string; vs: string };
 }
 
+/** The request-a-demo dialog, opened by every demo button (components/site/demo-dialog.tsx) */
+export interface DemoCopy {
+  kicker: string;
+  title: string;
+  body: string;
+  /** What happens after they send it, in order */
+  steps: TitledItem[];
+  /** The line over the phone and WhatsApp links */
+  direct: string;
+  /** The memo line over the form: "To", "The Setuk team, Patna" */
+  to: string;
+  toValue: string;
+  name: string;
+  email: string;
+  phone: string;
+  office: string;
+  optional: string;
+  role: string;
+  /** In the order of the role pages (MPs, MLAs, mayors, consultants), then the rest */
+  roles: string[];
+  staff: string;
+  staffs: string[];
+  note: string;
+  noteHint: string;
+  consent: string;
+  privacy: string;
+  submit: string;
+  errors: { name: string; email: string; consent: string };
+  /** The email's subject, before the sender's name */
+  subject: string;
+  sentTitle: string;
+  sentBody: string;
+  done: string;
+  close: string;
+}
+
 export interface Dictionary {
   meta: { title: string; description: string };
   brand: { name: string; line: string };
@@ -512,6 +548,7 @@ export interface Dictionary {
   trust: { eyebrow: string; title: string; body: string; items: TitledItem[]; legal: string; dpa: string };
   faq: { eyebrow: string; title: string; more: string; items: QA[] };
   cta: { title: string; body: string; primary: string; secondary: string };
+  demo: DemoCopy;
   footer: {
     company: string;
     guides: string;

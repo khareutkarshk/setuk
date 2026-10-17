@@ -75,7 +75,7 @@ export function HeroChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
           </h1>
           <p className="rise mt-5 max-w-[44ch] text-[17px] leading-relaxed text-muted md:mt-6 md:text-xl" style={stagger(3)}>{t.hero.sub}</p>
           <div className="rise mt-7 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-9" style={stagger(4)}>
-            <Link href={href(locale, routes.contact)} className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
+            <Link href={href(locale, routes.contact)} data-demo="" aria-haspopup="dialog" className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
               {t.hero.primary}
               <I.ArrowRight weight="bold" aria-hidden />
             </Link>

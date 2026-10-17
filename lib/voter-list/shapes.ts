@@ -8,8 +8,9 @@ import type { AreaSummary } from "./types";
  * district and Lok Sabha seat whose ACs it has all of, drawn as one shape: its path and its bounds.
  * Together they fill the outline, so a card's area sits where its outline says. `marks` are the
  * centres of the scattered pieces of a UT such
- * as Puducherry, for a ring round each. Assam and Jammu and Kashmir have no ACs: their seats were
- * redrawn after the boundary data was made. Rebuild with scripts/voter-list/state-shapes.py.
+ * as Puducherry, for a ring round each. Assam and Jammu and Kashmir have no ACs or seats: they were
+ * redrawn after the boundary data was made; their districts come from a district file instead
+ * (in Assam, all but Barpeta, Bajali, Baksa and Tamulpur, split since). Rebuild with scripts/voter-list/state-shapes.py.
  * This is drawing, not data: the backend need not send it.
  */
 export type StateShape = {

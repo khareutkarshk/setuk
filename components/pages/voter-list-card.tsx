@@ -132,8 +132,8 @@ function Outline({ shape, className = "" }: { shape: { viewBox: string; d: strin
 /**
  * A card's map within a state: the state's outline from the page's sprite (#vl-state), and the
  * card's own district, constituency or seat filled in, ringed when it is too small to find. Where the
- * boundary data lacks the area (Assam and Jammu and Kashmir, whose seats were redrawn) only the
- * state shows.
+ * boundary data lacks the area (the constituencies and seats of Assam and Jammu and Kashmir, which
+ * were redrawn, and Assam's districts split since) only the state shows.
  */
 function Locator({ viewBox, area, className = "" }: { viewBox: string; area?: Highlight; className?: string }) {
   return (

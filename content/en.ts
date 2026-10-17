@@ -190,6 +190,43 @@ export const en: Dictionary = {
     primary: "Request demo",
     secondary: "Chat on WhatsApp"
   },
+  demo: {
+    kicker: "Request a demo",
+    title: "See Setuk run on your own office's work.",
+    body: "We'll walk you through it with your letters, appointments and requests, then show you how setup would go.",
+    steps: [
+      { t: "We write back within two business days", d: "To fix a time that suits your office." },
+      { t: "A walkthrough on your kind of work", d: "Letters, appointments and citizen requests, as your staff would see them." },
+      { t: "A setup plan and a quote", d: "Priced by offices, staff and modules. Ask for a trial if you'd like one." }
+    ],
+    direct: "Rather talk now?",
+    to: "To",
+    toValue: "The Setuk team, Patna",
+    name: "Full name",
+    email: "Work email",
+    phone: "Phone",
+    office: "Office or organisation",
+    optional: "optional",
+    role: "You are",
+    roles: ["MP", "MLA", "Mayor or councillor", "Consultant", "Party team", "Aspirant"],
+    staff: "People in your office",
+    staffs: ["Just me", "2 to 10", "11 to 30", "More than 30"],
+    note: "Anything we should know?",
+    noteHint: "The one or two things you'd most like to fix first.",
+    consent: "Setuk may contact me about this request.",
+    privacy: "Privacy policy",
+    submit: "Request demo",
+    errors: {
+      name: "Enter your name.",
+      email: "Enter a valid email address, like name@office.in.",
+      consent: "Tick this so we can reply to you."
+    },
+    subject: "Demo request",
+    sentTitle: "Thank you. We've got your request.",
+    sentBody: "We'll write back within two business days to fix a time for your demo.",
+    done: "Done",
+    close: "Close"
+  },
   footer: {
     company: "Company",
     guides: "Guides",
