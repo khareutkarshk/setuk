@@ -59,8 +59,8 @@ export function BeforeAfter({ c, alt, className = "" }: { c: Copy; alt: string; 
       <span aria-hidden className="absolute top-4 right-4 rounded-full bg-leaf px-3 py-1 text-[13px] font-semibold text-leaf-ink">{c.after}</span>
 
       {/* the divider and its handle */}
-      <span aria-hidden className="pointer-events-none absolute inset-y-0 left-(--pos) w-[3px] -translate-x-1/2 bg-surface shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_15%,transparent)]" />
-      <span aria-hidden className="pointer-events-none absolute top-1/2 left-(--pos) grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-surface text-accent shadow-[0_8px_24px_-8px_color-mix(in_srgb,var(--ink)_50%,transparent)] ring-accent ring-offset-2 ring-offset-surface group-has-[:focus-visible]:ring-2">
+      <span aria-hidden className="pointer-events-none absolute inset-y-0 left-(--pos) w-[3px] -translate-x-1/2 bg-surface shadow-[0_0_0_1px_color-mix(in_srgb,var(--shadow)_15%,transparent)]" />
+      <span aria-hidden className="pointer-events-none absolute top-1/2 left-(--pos) grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-surface text-accent shadow-[0_8px_24px_-8px_color-mix(in_srgb,var(--shadow)_50%,transparent)] ring-accent ring-offset-2 ring-offset-surface group-has-[:focus-visible]:ring-2">
         <I.ArrowsLeftRight size={22} weight="bold" />
       </span>
 

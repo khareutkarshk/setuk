@@ -52,7 +52,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <Band tone="surface" labelledBy="origin-title" corner={{ kind: "jaali", fx: 0, fy: 100 }}>
         <div className="grid gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
           <SectionHead kicker={p.origin.kicker} title={p.origin.title} id="origin-title" className="lg:sticky lg:top-[calc(var(--header-h)+40px)] lg:self-start" />
-          <div className="max-w-[64ch] space-y-6 text-[18px] leading-[1.7] md:text-[19px]">
+          <div className="max-w-[64ch] space-y-6 text-[17px] leading-[1.7] md:text-[19px]">
             {p.origin.paras.map((x, i) => (
               <p key={i} className={i === 0 ? "text-ink" : "text-muted"}>{x}</p>
             ))}
@@ -78,7 +78,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         </div>
         {/* the story behind the quote, in the same column as the origin text above */}
         <div className="mt-14 grid lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-          <div className="max-w-[64ch] space-y-6 text-[18px] leading-[1.7] text-muted lg:col-start-2">
+          <div className="max-w-[64ch] space-y-6 text-[17px] leading-[1.7] text-muted lg:col-start-2">
             {p.moment.paras.map((x, i) => (
               <p key={i} className={i === p.moment.paras.length - 1 ? "font-semibold text-ink" : ""}>{x}</p>
             ))}

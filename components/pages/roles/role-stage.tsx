@@ -159,7 +159,7 @@ function CaseCard({ cardRef, kase, step, closed, more }: {
               <span aria-hidden="true" className="role-dot">{(state === "done" || state === "closed") && <I.Check size={11} weight="bold" />}</span>
               <span className="min-w-0">
                 <span className="block text-[14px] font-semibold leading-snug">{s.t}</span>
-                <span className="mt-0.5 block text-[13.5px] leading-snug text-muted">{s.d}</span>
+                <span className="mt-0.5 block text-[13px] leading-snug text-muted">{s.d}</span>
               </span>
             </li>
           );

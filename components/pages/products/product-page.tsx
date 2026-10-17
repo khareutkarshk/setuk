@@ -123,7 +123,7 @@ export function ProductPage({ product, locale }: { product: ProductKey; locale: 
                 </div>
                 <div className="reveal relative">
                   <Figure img={f.img} alt={f.alt} ratio="4 / 3" sizes="(min-width: 1024px) 560px, 100vw" />
-                  <p className="absolute -bottom-6 left-5 flex max-w-[calc(100%-40px)] items-center gap-3 rounded-2xl border border-line bg-surface py-3 pr-5 pl-3.5 shadow-[0_24px_50px_-24px_color-mix(in_srgb,var(--ink)_45%,transparent)] sm:left-8">
+                  <p className="absolute -bottom-6 left-5 flex max-w-[calc(100%-40px)] items-center gap-3 rounded-2xl border border-line bg-surface py-3 pr-5 pl-3.5 shadow-[0_24px_50px_-24px_color-mix(in_srgb,var(--shadow)_45%,transparent)] sm:left-8">
                     <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-leaf-soft text-leaf"><I.Check size={16} weight="bold" aria-hidden /></span>
                     <span className="min-w-0">
                       <span className="block truncate text-[12px] text-muted">{f.chip.k}</span>
@@ -207,10 +207,10 @@ export function ProductPage({ product, locale }: { product: ProductKey; locale: 
             <li key={s.t} className="reveal flex flex-col bg-surface p-6 md:p-7">
               <div className="flex items-center justify-between gap-3">
                 <span className="grid size-9 place-items-center rounded-full bg-accent font-mono text-[14px] font-semibold text-accent-ink">{i + 1}</span>
-                <span className="inline-flex h-7 items-center gap-1.5 rounded-full bg-accent-soft px-3 text-[12.5px] font-medium text-accent"><I.Clock size={13} aria-hidden />{s.time}</span>
+                <span className="inline-flex h-7 items-center gap-1.5 rounded-full bg-accent-soft px-3 text-[13px] font-medium text-accent"><I.Clock size={13} aria-hidden />{s.time}</span>
               </div>
-              <h3 className="mt-6 text-[18px] leading-snug font-semibold">{s.t}</h3>
-              <p className="mt-auto flex items-start gap-2 pt-5 text-[14.5px] leading-snug text-muted">
+              <h3 className="mt-6 text-[17px] leading-snug font-semibold">{s.t}</h3>
+              <p className="mt-auto flex items-start gap-2 pt-5 text-[14px] leading-snug text-muted">
                 <I.SealCheck size={17} weight="fill" className="mt-px shrink-0 text-leaf" aria-hidden />{s.get}
               </p>
             </li>

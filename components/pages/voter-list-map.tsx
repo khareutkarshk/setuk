@@ -47,7 +47,7 @@ export function VoterListMap({ locale, c, states }: { locale: Locale; c: MapCopy
               );
             })}
           </svg>
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12.5px] text-muted">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
             <span className="inline-flex items-center gap-2" aria-hidden>
               {[0, 1, 2, 3].map((k) => <span key={k} className={`vl-swatch vl-tone-${k}`} />)}
               {c.scale}

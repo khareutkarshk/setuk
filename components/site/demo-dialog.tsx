@@ -136,7 +136,7 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
             <span className="block w-8 shrink-0 [--mark-arch:var(--accent-ink)] [--mark-dot-mid:var(--accent-ink)]"><SetukMark /></span>
             <span className="text-[12px] font-semibold uppercase tracking-[.12em] opacity-75">{c.kicker}</span>
           </div>
-          <h2 id={`${id}-t`} ref={titleRef} tabIndex={-1} className="font-display-tight mt-6 text-[26px] leading-[1.08] text-balance outline-none md:mt-6 md:text-[29px]">{c.title}</h2>
+          <h2 id={`${id}-t`} ref={titleRef} tabIndex={-1} className="font-display-tight mt-6 text-[24px] leading-[1.08] text-balance outline-none md:mt-6 md:text-[28px]">{c.title}</h2>
           <p className="mt-3 text-[15px] leading-relaxed opacity-80 md:leading-normal">{c.body}</p>
 
           <Next c={c} whatsapp={whatsapp} phone={phone} className="max-md:hidden md:mt-7 md:flex md:flex-1 md:flex-col" />
@@ -195,7 +195,7 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
               {/* a segmented scale: one track, the chosen step lifts out of it */}
               <div className="mt-3 grid grid-cols-2 gap-1 rounded-xl bg-surface-2 p-1 sm:grid-cols-4">
                 {c.staffs.map((s, i) => (
-                  <label key={s} className="relative flex min-h-10 cursor-pointer items-center justify-center rounded-[9px] px-2 text-center text-[14px] font-medium text-muted transition-[background-color,color,box-shadow] hover:text-ink has-[:checked]:bg-bg has-[:checked]:text-ink has-[:checked]:shadow-[0_1px_2px_color-mix(in_srgb,var(--ink)_14%,transparent),0_0_0_1px_var(--line)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent">
+                  <label key={s} className="relative flex min-h-10 cursor-pointer items-center justify-center rounded-[9px] px-2 text-center text-[14px] font-medium text-muted transition-[background-color,color,box-shadow] hover:text-ink has-[:checked]:bg-bg has-[:checked]:text-ink has-[:checked]:shadow-[0_1px_2px_color-mix(in_srgb,var(--shadow)_14%,transparent),0_0_0_1px_var(--line)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent">
                     <input type="radio" name="staff" value={i} className="sr-only" />
                     {s}
                   </label>
@@ -209,7 +209,7 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
             </div>
 
             <div className="mt-5">
-              <label className="flex cursor-pointer items-start gap-3 text-[14.5px]">
+              <label className="flex cursor-pointer items-start gap-3 text-[15px]">
                 <input type="checkbox" name="consent" aria-invalid={!!errors.consent} aria-describedby={desc("consent")} className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded accent-[var(--accent)]" />
                 <span>{c.consent} <Link href={privacyHref} className="font-medium text-accent underline underline-offset-2">{c.privacy}</Link></span>
               </label>
@@ -231,7 +231,7 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
                 <span className="env-flap" />
                 <span className="env-seal"><span className="block w-[22px] [--mark-arch:var(--accent-ink)] [--mark-dot-mid:var(--accent-ink)] [--mark-dot-side:var(--accent-ink)]"><SetukMark /></span></span>
               </span>
-              <h3 className="font-display-tight mt-8 text-[26px] leading-tight text-balance">{c.sentTitle}</h3>
+              <h3 className="font-display-tight mt-8 text-[24px] leading-tight text-balance">{c.sentTitle}</h3>
               <p className="mt-3 max-w-[46ch] leading-relaxed text-muted">{c.sentBody}</p>
               <button type="button" onClick={hide} className="press mt-8 inline-flex h-11 items-center rounded-full border border-line px-6 font-semibold hover:border-ink">{c.done}</button>
             </div>

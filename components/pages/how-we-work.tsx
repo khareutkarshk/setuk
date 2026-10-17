@@ -217,7 +217,7 @@ function Calendar({ c, steps, track = false, className = "" }: { c: { title: str
   return (
     <div data-cal-board={track ? "" : undefined} className={`rounded-3xl border border-line bg-surface p-5 ${className}`}>
       <p className="flex items-center gap-2 text-[14px] font-semibold"><I.CalendarDots size={17} className="text-accent" aria-hidden />{c.title}</p>
-      <div className="mt-4 grid grid-cols-[auto_repeat(6,minmax(0,1fr))] items-center gap-x-1.5 gap-y-1.5 text-[11.5px] text-muted">
+      <div className="mt-4 grid grid-cols-[auto_repeat(6,minmax(0,1fr))] items-center gap-x-1.5 gap-y-1.5 text-[12px] text-muted">
         <span />
         {c.days.map((d) => <span key={d} className="text-center">{d}</span>)}
         {[0, 1, 2].map((w) => (
@@ -230,7 +230,7 @@ function Calendar({ c, steps, track = false, className = "" }: { c: { title: str
         ))}
       </div>
       {/* which colour is which step */}
-      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12.5px] text-muted">
+      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[12px] text-muted">
         {steps.map((t, i) => <li key={t} className="flex items-center gap-1.5"><span className={`size-2.5 rounded-[3px] ${DAY_TONE[i]}`} aria-hidden />{t}</li>)}
       </ul>
       <p className="mt-3 flex items-center gap-2 border-t border-line pt-3 text-[13px] leading-snug text-muted"><I.ArrowRight size={14} className="shrink-0 text-leaf" aria-hidden />{c.ongoing}</p>

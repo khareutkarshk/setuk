@@ -117,16 +117,16 @@ export function TryItJourney({ c }: { c: TryItCopy }) {
                   <span className="flex min-w-0 flex-wrap items-baseline justify-between gap-x-4">
                     <span className="min-w-0">
                       <span className="block text-[16px] leading-snug font-semibold">{fill(s.t, vars)}</span>
-                      <span className="mt-0.5 block text-[14.5px] leading-snug text-muted">{s.d}</span>
+                      <span className="mt-0.5 block text-[14px] leading-snug text-muted">{s.d}</span>
                     </span>
-                    <span className="shrink-0 font-mono text-[12.5px] text-muted">{c.when[k]}</span>
+                    <span className="shrink-0 font-mono text-[12px] text-muted">{c.when[k]}</span>
                   </span>
                 </li>
               );
             })}
           </ol>
           <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-line pt-5">
-            <p role="status" className={`flex-1 text-[14.5px] font-medium ${done ? "text-leaf" : "text-muted"}`}>
+            <p role="status" className={`flex-1 text-[14px] font-medium ${done ? "text-leaf" : "text-muted"}`}>
               {done && <I.SealCheck size={17} weight="fill" className="mr-1.5 inline align-[-3px]" aria-hidden />}
               {done ? fill(c.done, vars) : ""}
             </p>
@@ -146,7 +146,7 @@ export function TryItJourney({ c }: { c: TryItCopy }) {
         </div>
 
         {/* the citizen's phone */}
-        <div aria-hidden className="mx-auto w-full max-w-[300px] rounded-[34px] border border-line bg-ink p-2.5 shadow-[0_40px_80px_-40px_color-mix(in_srgb,var(--ink)_70%,transparent)] xl:mt-10">
+        <div aria-hidden className="ti-phone mx-auto w-full max-w-[300px] rounded-[34px] border border-line p-2.5 shadow-[0_40px_80px_-40px_color-mix(in_srgb,var(--shadow)_70%,transparent)] xl:mt-10">
           <div className="min-h-[360px] rounded-[26px] bg-bg p-3.5">
             <div className="mx-auto mb-3 h-1.5 w-16 rounded-full bg-line" />
             <p className="flex items-center gap-2 border-b border-line pb-3 text-[13px] font-semibold">

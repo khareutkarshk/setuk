@@ -24,9 +24,9 @@ const TONE: Record<StatusTone, string> = {
   warn: "bg-danger/10 text-danger"
 };
 
-const CARD = "rounded-2xl border border-line bg-surface/95 shadow-[0_28px_60px_-28px_color-mix(in_srgb,var(--ink)_50%,transparent)] backdrop-blur-sm";
+const CARD = "rounded-2xl border border-line bg-surface/95 shadow-[0_28px_60px_-28px_color-mix(in_srgb,var(--shadow)_50%,transparent)] backdrop-blur-sm";
 const FLOAT = `absolute ${CARD}`;
-const DARK = "inverse rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--ink)_70%,transparent)]";
+const DARK = "inverse rounded-2xl bg-ink p-3.5 text-bg shadow-[0_28px_60px_-24px_color-mix(in_srgb,var(--shadow)_70%,transparent)]";
 
 /** The pointer that works the screen during the story; `path` is its keyframes in globals.css */
 function Cursor({ path, time, style }: { path: string; time: number; style?: CSSProperties }) {
@@ -53,7 +53,7 @@ function Swap({ from, to, t }: { from: ReactNode; to: ReactNode; t: number }) {
 /** The app's window: a title bar, the navy sidebar with the active page lit, and the page */
 function Window({ app, nav, icons, active, children }: { app: string; nav: string[]; icons: I.Icon[]; active: number; children: ReactNode }) {
   return (
-    <div className="relative overflow-hidden rounded-[22px] border border-line bg-bg shadow-[0_50px_100px_-50px_color-mix(in_srgb,var(--accent)_70%,transparent),0_20px_40px_-30px_color-mix(in_srgb,var(--ink)_40%,transparent)]">
+    <div className="relative overflow-hidden rounded-[22px] border border-line bg-bg shadow-[0_50px_100px_-50px_color-mix(in_srgb,var(--accent)_70%,transparent),0_20px_40px_-30px_color-mix(in_srgb,var(--shadow)_40%,transparent)]">
       <div className="flex h-10 items-center gap-3 border-b border-line bg-surface px-4">
         <span className="flex gap-1.5">{[0, 1, 2].map((i) => <span key={i} className="size-2.5 rounded-full bg-line" />)}</span>
         <span className="text-[12px] font-semibold text-muted">{app}</span>
@@ -65,7 +65,7 @@ function Window({ app, nav, icons, active, children }: { app: string; nav: strin
           {nav.map((n, i) => {
             const Icon = icons[i];
             return (
-              <span key={n} className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-[11.5px] leading-tight ${i === active ? "bg-accent-ink/15 font-semibold" : "opacity-70"}`}>
+              <span key={n} className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-[12px] leading-tight ${i === active ? "bg-accent-ink/15 font-semibold" : "opacity-70"}`}>
                 <Icon size={13} className="shrink-0" />{n}
               </span>
             );
@@ -88,7 +88,7 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
             <span className="grid size-9 place-items-center rounded-lg bg-accent font-mono text-[13px] font-semibold text-accent-ink">23</span>
             <span className="min-w-0">
               <span className="block text-[15px] leading-tight font-semibold">{s.title}</span>
-              <span className="block text-[11.5px] text-muted">{s.date}</span>
+              <span className="block text-[12px] text-muted">{s.date}</span>
             </span>
             <span className="ml-auto hidden h-8 min-w-0 items-center gap-2 rounded-lg border border-line bg-surface px-3 text-[11px] text-muted md:flex">
               <I.MagnifyingGlass size={12} className="shrink-0" /><span className="truncate">{s.search}</span>
@@ -107,20 +107,20 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
           <div className="relative mt-4">
           <Cursor path="cursor-office" time={2.2} />
           <div className="overflow-hidden rounded-xl border border-line bg-surface">
-            <div className="grid grid-cols-[72px_minmax(0,1fr)_76px] gap-3 border-b border-line bg-surface-2/60 px-3 py-2 text-[10.5px] font-semibold text-muted sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px]">
+            <div className="grid grid-cols-[72px_minmax(0,1fr)_76px] gap-3 border-b border-line bg-surface-2/60 px-3 py-2 text-[11px] font-semibold text-muted sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px]">
               <span>{s.cols[0]}</span><span>{s.cols[1]}</span><span className="hidden sm:block">{s.cols[2]}</span><span>{s.cols[3]}</span>
             </div>
             {s.rows.map((r, k) => (
-              <div key={r.no} className={`grid grid-cols-[72px_minmax(0,1fr)_76px] items-center gap-3 border-b border-line px-3 py-2.5 text-[11.5px] last:border-b-0 sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px] ${k === 0 ? "play-flash" : ""}`} style={k === 0 ? at(1.6) : undefined}>
-                <span className="font-mono text-[10.5px] text-muted">{r.no}</span>
+              <div key={r.no} className={`grid grid-cols-[72px_minmax(0,1fr)_76px] items-center gap-3 border-b border-line px-3 py-2.5 text-[12px] last:border-b-0 sm:grid-cols-[76px_minmax(0,1fr)_minmax(0,0.8fr)_80px] ${k === 0 ? "play-flash" : ""}`} style={k === 0 ? at(1.6) : undefined}>
+                <span className="font-mono text-[11px] text-muted">{r.no}</span>
                 <span className="truncate font-medium">{r.name}</span>
                 <span className="hidden truncate text-muted sm:block">{r.dept}</span>
                 {/* the first letter is the story: it goes from follow-up to dispatched */}
                 {k === 0
                   ? <Swap t={1.6}
-                      from={<span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[10.5px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>}
-                      to={<span className={`inline-flex h-6 w-fit items-center gap-1 rounded-full px-2 text-[10.5px] font-semibold ${TONE[s.after.tone]}`}><I.Check size={10} weight="bold" />{s.after.status}</span>} />
-                  : <span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[10.5px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>}
+                      from={<span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[11px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>}
+                      to={<span className={`inline-flex h-6 w-fit items-center gap-1 rounded-full px-2 text-[11px] font-semibold ${TONE[s.after.tone]}`}><I.Check size={10} weight="bold" />{s.after.status}</span>} />
+                  : <span className={`inline-flex h-6 w-fit items-center rounded-full px-2 text-[11px] font-semibold ${TONE[r.tone]}`}>{r.status}</span>}
               </div>
             ))}
           </div>
@@ -142,7 +142,7 @@ export function OfficeScreen({ s, label }: { s: OfficeCopy; label: string }) {
       <div aria-hidden className={`${FLOAT} rise right-6 bottom-2 hidden w-[164px] p-3.5 [--i:5] md:block`}>
         <p className="text-[11px] font-medium text-muted">{s.pending.label}</p>
         <p className="mt-1 font-mono text-[28px] leading-none font-semibold text-danger tabular-nums"><Swap from={s.pending.value} to={s.after.pending} t={2.5} /></p>
-        <p className="mt-1.5 text-[11.5px] leading-snug text-muted">{s.pending.note}</p>
+        <p className="mt-1.5 text-[12px] leading-snug text-muted">{s.pending.note}</p>
       </div>
 
       {/* what the citizen got, as a notification, off the bottom left: it arrives once the letter goes */}
@@ -207,7 +207,7 @@ export function ElectionScreen({ s, label }: { s: ElectionCopy; label: string })
         <Window app={s.app} nav={s.nav} icons={icons} active={1}>
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <span className="text-[15px] font-semibold">{s.title}</span>
-            <span className="text-[11.5px] text-muted">{s.area}</span>
+            <span className="text-[12px] text-muted">{s.area}</span>
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
             <div className="rounded-xl border border-line bg-surface p-3">
@@ -222,18 +222,18 @@ export function ElectionScreen({ s, label }: { s: ElectionCopy; label: string })
                 ))}
               </div>
               </div>
-              <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] text-muted">
+              <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted">
                 {s.legend.map((l, i) => (
                   <span key={l.t} className="inline-flex items-center gap-1.5"><span className={`size-2 rounded-[2px] ${legend[i]}`} />{l.t}<b data-count className="font-mono font-semibold text-ink">{l.n}</b></span>
                 ))}
               </div>
             </div>
             <div className="rounded-xl border border-line bg-surface p-3">
-              <p className="text-[10.5px] font-medium text-muted">{s.voters.title}</p>
+              <p className="text-[11px] font-medium text-muted">{s.voters.title}</p>
               <p className="mt-0.5 font-mono text-[20px] leading-tight font-semibold tabular-nums">{s.voters.total}</p>
               <div className="mt-3 space-y-2">
                 {s.voters.groups.map((g) => (
-                  <div key={g.t} className="grid grid-cols-[38px_minmax(0,1fr)_28px] items-center gap-2 text-[10.5px]">
+                  <div key={g.t} className="grid grid-cols-[38px_minmax(0,1fr)_28px] items-center gap-2 text-[11px]">
                     <span className="font-mono text-muted">{g.t}</span>
                     <span className="h-1.5 overflow-hidden rounded-full bg-surface-2"><span className="block h-full rounded-full bg-accent" style={{ width: `${(g.v / top) * 100}%` }} /></span>
                     <span className="text-right font-mono text-muted">{g.v}%</span>
@@ -254,15 +254,15 @@ export function ElectionScreen({ s, label }: { s: ElectionCopy; label: string })
         <div className={`play-pop ${CARD} p-3.5`} style={at(2.2)}>
           <p className="flex items-center gap-1.5 text-[11px] font-semibold text-leaf"><span className="size-2 rounded-full bg-leaf" />{s.booth.kicker}</p>
           <p className="mt-1.5 text-[14px] leading-snug font-semibold">{s.booth.t}</p>
-          <p className="mt-1 flex items-center gap-1.5 text-[11.5px] text-muted"><I.Clock size={12} />{s.booth.d}</p>
+          <p className="mt-1 flex items-center gap-1.5 text-[12px] text-muted"><I.Clock size={12} />{s.booth.d}</p>
         </div>
       </div>
 
       {/* new names on the roll, off the bottom right */}
       <div aria-hidden className={`${FLOAT} rise right-6 bottom-2 hidden w-[164px] p-3.5 [--i:5] md:block`}>
         <p className="text-[11px] font-medium text-muted">{s.roll.label}</p>
-        <p data-count className="mt-1 font-mono text-[26px] leading-none font-semibold text-accent tabular-nums">+{s.roll.value}</p>
-        <p className="mt-1.5 text-[11.5px] leading-snug text-muted">{s.roll.note}</p>
+        <p data-count className="mt-1 font-mono text-[28px] leading-none font-semibold text-accent tabular-nums">+{s.roll.value}</p>
+        <p className="mt-1.5 text-[12px] leading-snug text-muted">{s.roll.note}</p>
       </div>
 
       {/* a survey coming in from the field, off the bottom left: responses fill as it arrives */}
@@ -273,7 +273,7 @@ export function ElectionScreen({ s, label }: { s: ElectionCopy; label: string })
             <span className="font-semibold text-bg">{s.survey.kicker}</span>
           </p>
           <p className="mt-2 text-[13px] leading-snug font-medium">{s.survey.t}</p>
-          <p className="mt-2 flex items-center gap-2 text-[11.5px] text-bg/70">
+          <p className="mt-2 flex items-center gap-2 text-[12px] text-bg/70">
             <span className="flex h-1 flex-1 overflow-hidden rounded-full bg-bg/15"><span className="play-bar w-[62%] origin-left bg-leaf-inverse" style={at(1.2)} /></span>
             <span data-count>{s.survey.v}</span>
           </p>

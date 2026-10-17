@@ -72,9 +72,9 @@ export function OrderHost({ copy, labels, chat }: { copy: OrderCopy; labels: Ord
     <dialog ref={ref} aria-labelledby={`${id}-t`} onClose={() => setOpen(false)} data-lenis-prevent
       /* a click on the backdrop lands on the dialog itself, outside its panel */
       onClick={(e) => { if (e.target === e.currentTarget) hide(); }}
-      className="m-auto w-[calc(100%-32px)] max-w-[480px] overflow-visible bg-transparent p-0 text-ink backdrop:bg-ink/55 backdrop:backdrop-blur-[2px]">
+      className="m-auto w-[calc(100%-32px)] max-w-[480px] overflow-visible bg-transparent p-0 text-ink backdrop:bg-[color-mix(in_srgb,var(--shadow)_55%,transparent)] backdrop:backdrop-blur-[2px]">
       {order && (
-        <div className="max-h-[calc(100dvh-32px)] overflow-y-auto rounded-3xl border border-line bg-bg p-6 shadow-[0_40px_90px_-40px_color-mix(in_srgb,var(--ink)_60%,transparent)] sm:p-7">
+        <div className="max-h-[calc(100dvh-32px)] overflow-y-auto rounded-3xl border border-line bg-bg p-6 shadow-[0_40px_90px_-40px_color-mix(in_srgb,var(--shadow)_60%,transparent)] sm:p-7">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[12px] font-semibold uppercase tracking-[.08em] text-muted">{order.code}</p>
@@ -96,7 +96,7 @@ export function OrderHost({ copy, labels, chat }: { copy: OrderCopy; labels: Ord
                 <div key={key} className="flex items-center gap-3 rounded-xl bg-surface px-3 py-2.5">
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"><Icon size={18} aria-hidden /></span>
                   <span className="flex min-w-0 flex-col-reverse">
-                    <dt className="text-[12.5px] leading-snug text-muted">{labels.stats[key]}</dt>
+                    <dt className="text-[12px] leading-snug text-muted">{labels.stats[key]}</dt>
                     <dd className="text-[17px] leading-tight font-semibold tabular-nums">{value}</dd>
                   </span>
                 </div>
@@ -111,7 +111,7 @@ export function OrderHost({ copy, labels, chat }: { copy: OrderCopy; labels: Ord
 
           <div className="mt-5 border-t border-line pt-5">
             <p className="text-[13px] text-muted">{copy.price}</p>
-            <p className="mt-1 text-[32px] leading-none font-semibold tabular-nums">{order.price}</p>
+            <p className="mt-1 text-[28px] leading-none font-semibold tabular-nums">{order.price}</p>
             <p className="mt-2 text-[14px] font-medium text-accent">{labels.rate}</p>
           </div>
 
@@ -119,7 +119,7 @@ export function OrderHost({ copy, labels, chat }: { copy: OrderCopy; labels: Ord
             className="press mt-6 flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[16px] font-semibold text-accent-ink hover:brightness-110">
             <I.WhatsappLogo size={20} aria-hidden />{copy.buy}<I.ArrowRight weight="bold" aria-hidden />
           </a>
-          <p className="mt-3 text-center text-[13.5px] leading-snug text-muted">{copy.buyNote}</p>
+          <p className="mt-3 text-center text-[13px] leading-snug text-muted">{copy.buyNote}</p>
           {/* the number to write to: desktop only, as a phone's WhatsApp is one tap away through the button above */}
           <p className="my-4 hidden items-center gap-3 text-[12px] text-muted before:h-px before:flex-1 before:bg-line after:h-px after:flex-1 after:bg-line md:flex">{copy.or}</p>
           <a href={chat.href} target="_blank" rel="noopener noreferrer"

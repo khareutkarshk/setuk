@@ -58,7 +58,7 @@ export function VoterListMapHost({ c, states, totals, children }: { c: Pages["vo
       </div>
 
       {/* on phones it sits above the map, compact, and stays in view while the map passes under it */}
-      <aside className="sticky top-[calc(var(--header-h)+8px)] z-10 order-first overflow-hidden rounded-3xl border border-line bg-surface/95 p-4 shadow-[0_20px_40px_-30px_color-mix(in_srgb,var(--ink)_45%,transparent)] backdrop-blur-sm sm:p-6 lg:order-none lg:top-[calc(var(--header-h)+32px)] lg:bg-surface lg:p-8 lg:shadow-none">
+      <aside className="sticky top-[calc(var(--header-h)+8px)] z-10 order-first overflow-hidden rounded-3xl border border-line bg-surface/95 p-4 shadow-[0_20px_40px_-30px_color-mix(in_srgb,var(--shadow)_45%,transparent)] backdrop-blur-sm sm:p-6 lg:order-none lg:top-[calc(var(--header-h)+32px)] lg:bg-surface lg:p-8 lg:shadow-none">
         <p className="flex items-center gap-2 text-[13px] font-semibold text-leaf">
           <I.MapPin size={16} aria-hidden />{on ? c.kicker : c.all}
         </p>
@@ -79,7 +79,7 @@ export function VoterListMapHost({ c, states, totals, children }: { c: Pages["vo
             {c.open.replace("{name}", on.name)}<I.ArrowRight weight="bold" aria-hidden />
           </Link>
         ) : (
-          <p className="mt-3 text-[13.5px] leading-snug text-muted lg:mt-6 lg:text-[14.5px] lg:leading-relaxed">
+          <p className="mt-3 text-[14px] leading-snug text-muted lg:mt-6 lg:text-[15px] lg:leading-relaxed">
             <span className="[@media(hover:none)]:hidden">{c.hint}</span>
             <span className="hidden [@media(hover:none)]:inline">{c.touchHint}</span>
           </p>

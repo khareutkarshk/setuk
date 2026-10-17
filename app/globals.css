@@ -35,6 +35,8 @@
   --mark-arch: #15428c;
   --mark-dot-side: #2e8b4e;
   --mark-dot-mid: #1f6fd6;
+  /* what shadows and dialog backdrops are mixed from: the ink by day, black by night (a light ink would glow) */
+  --shadow: #0e1a2b;
 }
 /* Header height; shorter on landscape phones (the story's side layout) */
 :root { --header-h: 64px; }
@@ -59,6 +61,7 @@
   --danger: #ff8a80;
   --mark-arch: #eef2f8;
   --mark-dot-mid: #5b9bff;
+  --shadow: #000;
 }
 :root[data-theme="dark"] .inverse { color-scheme: dark; --ink: #10204a; }
 
@@ -79,6 +82,10 @@
   --color-leaf-inverse: var(--leaf-inverse);
   --color-danger: var(--danger);
 
+  /* Type sizes, written as text-[Npx] in the components, keep to one scale:
+       meta 11 · 12 · 13   ui 14 · 15 · 16 (inputs stay 16, so iOS doesn't zoom)   body 17 · 19
+       headings 20 · 22 · 24 · 28, then the clamp()s of H1, H2 and the display titles.
+     Long-form text (.prose-setuk) reads at 18; the product screens' miniatures may step down to 10. */
   /* Geist for Latin, Anek Devanagari for Hindi, Geist Mono for figures */
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
@@ -317,7 +324,7 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 .role-ghost { display: none; }
 .role-stage[data-window="pool"] .role-ghost {
   display: block; position: absolute; inset: 0; border-radius: 24px; border: 1px solid var(--line); background: var(--surface);
-  translate: 0 -22px; scale: .94; opacity: .85; box-shadow: 0 20px 50px -36px color-mix(in srgb, var(--ink) 40%, transparent);
+  translate: 0 -22px; scale: .94; opacity: .85; box-shadow: 0 20px 50px -36px color-mix(in srgb, var(--shadow) 40%, transparent);
 }
 .role-stage[data-window="pool"] .role-ghost + .role-ghost { translate: 0 -42px; scale: .88; opacity: .55; }
 
@@ -363,7 +370,7 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
   position: relative; z-index: 1; padding: 18px 20px 16px; border-radius: 24px;
   border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 94%, transparent);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-  box-shadow: 0 30px 70px -40px color-mix(in srgb, var(--ink) 50%, transparent);
+  box-shadow: 0 30px 70px -40px color-mix(in srgb, var(--shadow) 50%, transparent);
 }
 .role-steps { position: relative; display: grid; gap: 2px; }
 /* Devanagari needs room for its matras, as the Hindi base rules give p and li */
@@ -506,7 +513,10 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
 
-/* "Try it" on the homepage: each message lands on the phone as it arrives */
+/* "Try it" on the homepage: the phone's bezel is hardware, so it stays dark: ink by day, and by night a
+   step above the page round a dark screen, never a pale frame. Each message lands on it as it arrives */
+.ti-phone { background: var(--ink); }
+:root[data-theme="dark"] .ti-phone { background: var(--surface-2); }
 .ti-msg { animation: ti-msg 0.5s var(--ease-out) both; transform-origin: 0 0; }
 @keyframes ti-msg { from { opacity: 0; translate: 0 10px; scale: 0.96; } }
 
@@ -540,7 +550,7 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
 
   /* the cursor: its tip sits at its box's top left, and a ring spreads from it on the click */
   .play-cursor { position: absolute; z-index: 2; display: block; width: 22px; height: 22px; pointer-events: none; opacity: 0; }
-  .play-cursor svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--ink) 35%, transparent)); }
+  .play-cursor svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--shadow) 35%, transparent)); }
   .play-cursor::after { content: ""; position: absolute; left: -11px; top: -11px; width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--accent); opacity: 0; }
   [data-play] .play-cursor { animation: var(--cursor) var(--cursor-time, 2.2s) var(--ease-out) both; }
   [data-play] .play-cursor::after { animation: cursor-click var(--cursor-time, 2.2s) ease-out both; }
@@ -609,7 +619,7 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
   scale: 1;
   @starting-style { opacity: 0; translate: 0 14px; scale: 0.985; }
   &::backdrop {
-    background-color: color-mix(in srgb, var(--ink) 52%, transparent);
+    background-color: color-mix(in srgb, var(--shadow) 52%, transparent);
     backdrop-filter: blur(3px);
     @starting-style { background-color: transparent; backdrop-filter: blur(0px); }
   }
@@ -618,7 +628,7 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
   max-height: min(800px, calc(100dvh - 48px));
   border-radius: 28px;
   border: 1px solid var(--line);
-  box-shadow: 0 50px 100px -40px color-mix(in srgb, var(--ink) 55%, transparent), 0 18px 40px -24px color-mix(in srgb, var(--ink) 30%, transparent);
+  box-shadow: 0 50px 100px -40px color-mix(in srgb, var(--shadow) 55%, transparent), 0 18px 40px -24px color-mix(in srgb, var(--shadow) 30%, transparent);
 }
 /* a definite height on wide screens, so each side scrolls on its own instead of the row growing past the sheet */
 @media (min-width: 768px) {

@@ -220,7 +220,7 @@ function NavMenu({ id, label, items, open, onOpen, navLink, width }: { id: strin
         id={id}
         className={`absolute top-full left-1/2 z-10 -translate-x-1/2 pt-3 transition-[opacity,translate,visibility] duration-200 ${open ? "visible translate-y-0 opacity-100" : "invisible translate-y-1 opacity-0"}`}
       >
-        <div className={`relative ${width} overflow-hidden rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_80px_-30px_color-mix(in_srgb,var(--ink)_35%,transparent)]`}>
+        <div className={`relative ${width} overflow-hidden rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_80px_-30px_color-mix(in_srgb,var(--shadow)_35%,transparent)]`}>
           <Pattern kind="temple" className="absolute inset-x-0 top-0 -scale-y-100 text-accent opacity-20" />
           <ul className="relative grid grid-cols-2 gap-1 pt-1.5">
             {items.map(({ key, t: title, d, href: to, current: here, Icon }) => (

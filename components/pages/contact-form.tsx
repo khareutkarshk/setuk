@@ -60,7 +60,7 @@ export function ContactForm({ f, privacyHref }: { f: F; privacyHref: string }) {
     return (
       <div ref={sentRef} tabIndex={-1} role="status" className="p-8 pt-10 outline-none md:p-10 md:pt-12">
         <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf-soft text-leaf"><I.Check size={24} weight="bold" aria-hidden /></span>
-        <h2 className="font-display-tight mt-6 text-[26px] leading-tight">{f.sentTitle}</h2>
+        <h2 className="font-display-tight mt-6 text-[24px] leading-tight">{f.sentTitle}</h2>
         <p className="mt-3 max-w-[48ch] leading-relaxed text-muted">{f.sentBody}</p>
         <button type="button" onClick={() => { setSent(false); setTouched(false); setErrors({}); }} className="press mt-8 inline-flex h-11 items-center rounded-full border border-line px-5 font-semibold hover:border-ink">{f.again}</button>
       </div>
