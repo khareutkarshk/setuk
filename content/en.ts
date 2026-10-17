@@ -12,6 +12,7 @@ export const en: Dictionary = {
   nav: {
     labels: { home: "Home", how: "How we work", engagements: "Engagements", about: "About", articles: "Articles", faqs: "FAQs", contact: "Contact" },
     byRole: "By role",
+    products: "Products",
     demo: "Request demo",
     menu: "Menu",
     close: "Close menu",
@@ -80,15 +81,15 @@ export const en: Dictionary = {
         d: "Everything your office handles, in one place.",
         mods: [
           { t: "Appointments" }, { t: "Program calendar" }, { t: "eLetter" }, { t: "PNR letters" },
-          { t: "Citizen management" }, { t: "Citizen dashboard" }, { t: "Visitor management", soon: true }
+          { t: "Citizen management" }, { t: "Citizen dashboard" }, { t: "Visitor management" }
         ]
       },
       {
         t: "Election Management Software",
         d: "Win from the booth up.",
         mods: [
-          { t: "Booth management" }, { t: "Voter list Excel" }, { t: "Karyakarta management", soon: true },
-          { t: "Influential voters", soon: true }, { t: "Citizen surveys", soon: true }
+          { t: "Booth management" }, { t: "Voter list Excel" }, { t: "Karyakarta management" },
+          { t: "Influential voters", soon: true }, { t: "Citizen surveys" }
         ]
       }
     ]
@@ -773,6 +774,266 @@ export const en: Dictionary = {
           { t: "Get the file", d: "Files arrive within 24 hours, often instantly." }
         ],
         cta: "Order on WhatsApp"
+      }
+    },
+    products: {
+      common: {
+        label: "Products",
+        illustrative: "Illustrative data",
+        live: "Live",
+        soon: "In progress",
+        setup: {
+          kicker: "Getting started",
+          title: "Running in your office in two to three weeks.",
+          sub: "We don't hand you a login and leave. We set Setuk up with your team, in four steps.",
+          link: "How we work"
+        },
+        trust: { title: "Your records stay yours.", link: "Read the policies" },
+        faqAll: "All questions"
+      },
+      office: {
+        meta: {
+          title: "Political Office Management Software for MPs and MLAs | Setuk",
+          description: "Letters, appointments, visitors, programs and citizens in one system for MPs, MLAs and councillors. Set up with your staff in two to three weeks."
+        },
+        menu: { t: "Political office software", d: "Letters, appointments, visitors and citizens, in one place." },
+        name: "Political Office Management Software",
+        title: "Every letter, meeting and request, tracked until it's done.",
+        sub: "Setuk runs the daily work of an MP's, MLA's or councillor's office in one place: letters, appointments, visitors, programs and the citizens you serve. We set it up with your staff, then stay on.",
+        primary: "Request demo",
+        secondary: "See what's inside",
+        facts: ["8 modules live, 3 on the way", "Running in 2 to 3 weeks", "Data stored in India"],
+        screen: {
+          app: "Setuk · Office",
+          nav: ["Dashboard", "Appointments", "Program calendar", "eLetter", "PNR letters", "Visitors", "Citizens", "Reports"],
+          title: "eLetter",
+          date: "Thursday, 23 April",
+          search: "Search by file number, name or reason",
+          tabs: [{ t: "Follow-up", n: "4" }, { t: "Inbox", n: "12" }, { t: "Ongoing", n: "9" }, { t: "Issued", n: "21" }, { t: "Dispatched", n: "38" }],
+          cols: ["File no.", "From", "Department", "Status"],
+          rows: [
+            { no: "0142/APR", name: "Sunita Devi", dept: "Health", status: "Follow-up", tone: "warn" },
+            { no: "0139/APR", name: "Gram Panchayat Kurji", dept: "Rural Works", status: "Ongoing", tone: "accent" },
+            { no: "0131/APR", name: "Md. Arif", dept: "Railways (PNR)", status: "Issued", tone: "muted" },
+            { no: "0127/APR", name: "Ramesh Paswan", dept: "Education", status: "Dispatched", tone: "leaf" }
+          ],
+          meeting: { kicker: "Appointment", time: "11:30", t: "Ward 14 residents' delegation", status: "Confirmed" },
+          sms: { from: "SMS to Sunita Devi", body: "Your letter 0142 has gone to the Health Department. We'll tell you the next step.", when: "now" },
+          pending: { label: "Over 7 days", value: "3", note: "letters waiting for action" }
+        },
+        screenLabel: "An illustration of Setuk's letter screen: letters by status, with a confirmed appointment, a citizen's SMS update and three letters overdue.",
+        shift: {
+          kicker: "What changes",
+          title: "From registers and memory to one record the whole office shares.",
+          before: "Today",
+          after: "With Setuk",
+          items: [
+            { before: "Letters logged in a register, then lost in a pile.", after: "Every letter logged, assigned and tracked until the right action is taken." },
+            { before: "Meetings fixed by phone, double-booked, missed.", after: "Requests, slots and visitors in one queue the whole team can see." },
+            { before: "Citizens call again and again to ask what happened.", after: "Citizens get an SMS or WhatsApp update at every step." },
+            { before: "When a staffer leaves, what they knew leaves too.", after: "The record stays with the office, ready for whoever comes next." }
+          ]
+        },
+        features: {
+          title: "Built around the work your office already does.",
+          sub: "Each module ships with an SOP for how your office should use it, written from years of real political work.",
+          items: [
+            {
+              t: "Letter management",
+              h: "Letters that don't get lost.",
+              d: "Every letter in or out is logged with its file number, the department it goes to and the person handling it, then followed until it's dispatched.",
+              points: ["Five stages, from follow-up to dispatch, always in view", "Each letter assigned to the person handling it", "Search by file number, name or reason"],
+              img: "eletter",
+              alt: "An office assistant reviewing the eLetter list in Setuk",
+              chip: { k: "File 0142/APR", v: "Sent to the Health Department" }
+            },
+            {
+              t: "Appointment management",
+              h: "No more missed meetings.",
+              d: "Requests come into one queue. Staff give each one a slot, the citizen hears back, and the visit is recorded when they walk in.",
+              points: ["Requests, slots and visitors tracked end to end", "Citizens can book and follow their own appointments", "Every visitor logged with the reason they came"],
+              img: "appointments",
+              alt: "A citizen greeted at a constituency office reception desk",
+              chip: { k: "11:30 · Ward 14 delegation", v: "Confirmed" }
+            },
+            {
+              t: "Program calendar",
+              h: "Every commitment in one calendar.",
+              d: "Inaugurations, public meetings, party events and visits, shared with the whole team so nobody plans over anyone else.",
+              points: ["One calendar for the representative and the staff", "The day's schedule, ready for the morning briefing", "Shared across every office you run"],
+              img: "calendar",
+              alt: "A staff member briefing the representative on the day's schedule from a tablet",
+              chip: { k: "Today", v: "4 programs, 2 visits" }
+            },
+            {
+              t: "Citizen management",
+              h: "Know the people you serve.",
+              d: "Who they are, what they asked for and what was done, searchable in seconds. Updates reach them by SMS and WhatsApp, in bulk or one by one.",
+              points: ["Every request linked to the citizen who made it", "WhatsApp updates, greetings and notices", "Their own login to follow their requests"],
+              img: "citizens",
+              alt: "A representative meeting citizens at a public gathering",
+              chip: { k: "Every request", v: "Linked to its citizen" }
+            }
+          ]
+        },
+        modules: {
+          kicker: "Modules",
+          title: "Everything in the office software.",
+          sub: "Eight modules are live today and three more are being built. Start with the ones your office needs most.",
+          items: [
+            { t: "Letter management", d: "Every letter in or out, tracked until the right action is taken." },
+            { t: "Appointment management", d: "Requests, slots and visitors, tracked end to end." },
+            { t: "Visitor logs", d: "Everyone who walked in, with the reason they came." },
+            { t: "Program calendar", d: "Inaugurations, meetings and visits, shared with the team." },
+            { t: "PNR letters", d: "Railway requests in their own queue, never in the general pile." },
+            { t: "Citizen management", d: "Who they are, what they asked for and what was done." },
+            { t: "WhatsApp management", d: "Updates, greetings and notices, in bulk or one by one." },
+            { t: "Reports", d: "What came in, what was handled and what is pending." },
+            { t: "Event management", d: "Political events and public programs, from guest list to stage.", soon: true },
+            { t: "LADs management", d: "Local area development funds: allocation, works and reports.", soon: true },
+            { t: "Image and video management", d: "Photos from the field, uploaded even on a weak network.", soon: true }
+          ]
+        },
+        band: {
+          kicker: "The real screen",
+          title: "This is what your staff will open every morning.",
+          body: "eLetter files every letter by where it stands, from follow-up to dispatch, with the department and the person handling it.",
+          points: [],
+          alt: "The eLetter screen in Setuk: letters grouped by follow-up, inbox, ongoing, issued and dispatched, with file number, date, department and status"
+        },
+        faq: {
+          title: "Questions about the office software",
+          lead: "What offices usually ask before they start.",
+          items: [
+            { q: "Which offices is it for?", a: "MPs, MLAs, mayors, councillors and their teams. The same setup works for a single ward office or an MP's three offices; only the size of the work changes." },
+            { q: "Can we bring in our existing registers and Excel sheets?", a: "Yes. During setup we import your registers and Excel sheets, so the office starts with its history, not a blank screen." },
+            { q: "Do we have to take every module?", a: "No. Plans are priced by the number of offices, staff and modules, so you start with what your office needs and add more later." },
+            { q: "How long does it take to start?", a: "Usually two to three weeks: one or two meetings to understand your office, a week to design and set up, and a week to train your staff." },
+            { q: "Who can see citizen data?", a: "Each staff member sees only what their role allows. Data is primarily stored in India, never sold, and can be exported at any time." },
+            { q: "Is there a trial?", a: "Yes, a trial is available on request. Ask for one when you request a demo." }
+          ]
+        },
+        cta: { title: "See your office's work running in Setuk.", body: "We'll walk you through it with your letters, appointments and requests, then show you how setup would go." },
+        other: { kicker: "Also from Setuk", t: "Election Management Software", d: "Booths, the voter list, karyakartas and surveys, for the ground game.", link: "See the election software" }
+      },
+      election: {
+        meta: {
+          title: "Election Management Software: Booths, Voter List, Karyakartas | Setuk",
+          description: "Booth management, voter list reports, karyakarta management and field surveys in one system for candidates and party teams. Set up in two to three weeks."
+        },
+        menu: { t: "Election software", d: "Booths, the voter list, karyakartas and surveys." },
+        name: "Election Management Software",
+        title: "Know every booth before polling day.",
+        sub: "Setuk puts your constituency's ground game in one place: every booth and who covers it, the voter list read properly, your karyakartas, and what the field is telling you.",
+        primary: "Request demo",
+        secondary: "See what's inside",
+        facts: ["4 modules live, 1 on the way", "Running in 2 to 3 weeks", "Data stored in India"],
+        screen: {
+          app: "Setuk · Election",
+          nav: ["Overview", "Booths", "Voter list", "Karyakartas", "Surveys"],
+          title: "Booths",
+          area: "Assembly constituency · 248 booths",
+          legend: [{ t: "Covered", n: "164" }, { t: "Partly", n: "52" }, { t: "Not yet", n: "32" }],
+          voters: {
+            title: "Voters on the roll",
+            total: "2,61,480",
+            groups: [{ t: "18–25", v: 14 }, { t: "26–40", v: 34 }, { t: "41–60", v: 33 }, { t: "60+", v: 19 }],
+            women: "Women 48%",
+            men: "Men 52%",
+            womenShare: 48
+          },
+          booth: { kicker: "Booth 114", t: "3 karyakartas assigned", d: "Last visit today, 10:40" },
+          survey: { kicker: "Survey", t: "Water supply, Ward 9", v: "312 responses" },
+          roll: { label: "New on the roll", value: "1,248", note: "since the last revision" }
+        },
+        screenLabel: "An illustration of Setuk's booth screen: 248 booths by coverage, the voter roll by age and gender, a booth with three karyakartas assigned and a survey's responses.",
+        shift: {
+          kicker: "What changes",
+          title: "From scattered lists to one picture of the constituency.",
+          before: "Today",
+          after: "With Setuk",
+          items: [
+            { before: "Booth lists in notebooks and a dozen Excel files.", after: "Every booth mapped, staffed and tracked in one place." },
+            { before: "The voter list is a PDF nobody reads.", after: "The roll broken down by booth, age, gender and area, with what changed." },
+            { before: "Nobody is sure which worker covers which booth.", after: "Every karyakarta assigned, reachable and accounted for." },
+            { before: "What people think arrives as rumour.", after: "Surveys from the field, read area by area." }
+          ]
+        },
+        features: {
+          title: "The ground game, in one system.",
+          sub: "Each module ships with an SOP for how your team should use it, so the work runs the same way in every booth.",
+          items: [
+            {
+              t: "Booth management",
+              h: "Every booth, ready for polling day.",
+              d: "Map, staff and track every booth in your constituency, so you see which ones are covered and which still need people while there's time to act.",
+              points: ["Each booth with its area and the team on it", "Coverage at a glance: covered, partly, not yet", "Ready for polling day, not just the campaign"],
+              img: "booths",
+              alt: "Booth workers checking voter details on phones outside a polling station",
+              chip: { k: "Booth 114", v: "3 karyakartas assigned" }
+            },
+            {
+              t: "Voter list reports",
+              h: "Read the voter list properly.",
+              d: "Break the roll down by booth, age, gender and area, and spot what has changed since the last revision.",
+              points: ["By booth, age, gender and area", "What changed since the last revision", "Reports your team can act on, booth by booth"],
+              img: "warRoom",
+              alt: "A campaign team working through constituency maps and voter data on laptops",
+              chip: { k: "New on the roll", v: "1,248 voters" }
+            },
+            {
+              t: "Karyakarta management",
+              h: "Every worker, accounted for.",
+              d: "Assignments, communication and tracking for your ground workers, booth by booth, so the whole team pulls in one direction.",
+              points: ["Each karyakarta tied to the booths they cover", "Messages to one worker or to all of them", "See where the work is done and where it isn't"],
+              img: "commandCentre",
+              alt: "A campaign team in the war room, following the field on the big screens",
+              chip: { k: "Karyakartas", v: "Assigned booth by booth" }
+            },
+            {
+              t: "Survey management",
+              h: "Ask, then act.",
+              d: "Run surveys in the field and see what your constituency thinks, area by area, while there's still time to respond.",
+              points: ["Run in the field by your own workers", "Results by area, as they come in", "Know which issues matter where"],
+              img: "setu",
+              alt: "A representative speaking to villagers, their responses reaching a phone",
+              chip: { k: "Water supply, Ward 9", v: "312 responses" }
+            }
+          ]
+        },
+        modules: {
+          kicker: "Modules",
+          title: "Everything in the election software.",
+          sub: "Four modules are live today and one more is being built.",
+          items: [
+            { t: "Booth management", d: "Map, staff and track every booth, ready for polling day." },
+            { t: "Voter list reports", d: "The roll by booth, age, gender and area, and what changed." },
+            { t: "Karyakarta management", d: "Assignments, communication and tracking for ground workers." },
+            { t: "Survey management", d: "Surveys in the field, read area by area." },
+            { t: "Influential voters", d: "Identify and engage the people whose word carries weight locally.", soon: true }
+          ]
+        },
+        band: {
+          kicker: "Start with the data",
+          title: "Need the voter list in Excel first?",
+          body: "Setuk also supplies booth-wise voter lists as spreadsheets you can search, for every state, district and assembly constituency.",
+          points: ["One booth per sheet, one voter per row", "Every name in English and Hindi", "By state, district, assembly or Lok Sabha seat"],
+          link: "Find your constituency's voter list"
+        },
+        faq: {
+          title: "Questions about the election software",
+          lead: "What campaign teams usually ask before they start.",
+          items: [
+            { q: "Who is it for?", a: "Sitting representatives, candidates, aspirants and party teams running a constituency's ground game, from one assembly seat to all the segments of a Lok Sabha seat." },
+            { q: "When should we start?", a: "Well before the election is announced. Booths need people and the voter list needs reading long before polling day, and setup itself takes two to three weeks." },
+            { q: "Can we bring our own booth and worker lists?", a: "Yes. During setup we import your Excel sheets and registers, so the team starts with what it already has." },
+            { q: "Does it work with the office software?", a: "Yes. They are two products with one record of your work, so you can start with either and add the other later." },
+            { q: "Who can see the data?", a: "Each team member sees only what their role allows. Data is primarily stored in India, never sold, and can be exported at any time." },
+            { q: "What does it cost?", a: "Plans are monthly or annual, priced by the number of offices, staff and modules. Request a demo for a quote; a trial is available on request." }
+          ]
+        },
+        cta: { title: "See your constituency in Setuk.", body: "We'll walk you through booths, the voter list and your team's work, then show you how setup would go." },
+        other: { kicker: "Also from Setuk", t: "Political Office Management Software", d: "Letters, appointments, visitors and citizens, for the office's daily work.", link: "See the office software" }
       }
     },
     roles: {

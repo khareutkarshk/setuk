@@ -10,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = [
     routes.home, routes.how, routes.engagements, routes.about, routes.articles, routes.faqs, routes.contact, routes.legal,
     ...Object.values(routes.roles),
+    ...Object.values(routes.products),
     ...getArticles().map((a) => routes.article(a.slug)),
     ...legalDocs.map((d) => routes.legalDoc(d.slug)),
     ...(await getVoterListPaths()).map(routes.voterListArea)

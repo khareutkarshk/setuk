@@ -5,6 +5,7 @@ import { StoryController } from "./story/story-controller";
 import { Cta, Engagements, Faq, Trust } from "./sections";
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
+import { productMenu } from "@/components/pages/products/look";
 import { roleMenu } from "@/components/pages/roles/look";
 
 /**
@@ -40,14 +41,14 @@ export function HomePage({ locale }: { locale: Locale }) {
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-surface focus:px-4 focus:py-2">
         {t.skip}
       </a>
-      <SiteHeader t={{ nav: t.nav, brand: t.brand }} roles={roleMenu(t)} locale={locale} path="/" />
+      <SiteHeader t={{ nav: t.nav, brand: t.brand }} roles={roleMenu(t)} products={productMenu(t)} locale={locale} path="/" />
       <main id="main">
         <StoryController chapters={t.chapters} railLabel={t.nav.chapters} labels={t.scene} ariaLabel={t.meta.title} brand={t.brand}>
           <HeroChapter t={t} locale={locale} />
           <ServeChapter t={t} />
           <ProblemChapter t={t} />
           <SolutionChapter t={t} />
-          <ProductsChapter t={t} />
+          <ProductsChapter t={t} locale={locale} />
           <HowChapters t={t} />
         </StoryController>
         <Engagements t={t} locale={locale} />

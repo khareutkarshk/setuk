@@ -303,6 +303,7 @@ export interface Pages {
     order: { kicker: string; title: string; body: string; steps: TitledItem[]; cta: string };
   };
   roles: Roles;
+  products: Products;
 }
 
 /** Every voter list page but the landing one: an area (state, district, assembly or Lok Sabha constituency) or one of a state's three lists */
@@ -394,6 +395,97 @@ export interface ConsultantRole extends RoleHead {
   steps: { title: string; items: TitledItem[] };
   data: { title: string; body: string; items: TitledItem[] };
   who: { title: string; items: TitledItem[] };
+}
+
+/**
+ * The two product pages (components/pages/products/): the office software and the election software.
+ * They share one layout; each draws its own product screen in the hero from `screen`. Names, numbers
+ * and file numbers in a screen are illustrative, and the page says so under it.
+ */
+export type ProductKey = "office" | "election";
+
+export type StatusTone = "leaf" | "accent" | "muted" | "warn";
+
+/** The office product's hero screen: the letter queue, with an appointment, a citizen's SMS and the overdue count beside it */
+export interface OfficeScreen {
+  app: string;
+  /** The sidebar, in the product's own order */
+  nav: string[];
+  title: string;
+  date: string;
+  search: string;
+  tabs: { t: string; n: string }[];
+  cols: [string, string, string, string];
+  rows: { no: string; name: string; dept: string; status: string; tone: StatusTone }[];
+  meeting: { kicker: string; time: string; t: string; status: string };
+  sms: { from: string; body: string; when: string };
+  pending: { label: string; value: string; note: string };
+}
+
+/** The election product's hero screen: every booth of a constituency by how well it is covered, the roll beside it */
+export interface ElectionScreen {
+  app: string;
+  nav: string[];
+  title: string;
+  area: string;
+  /** Covered, partly covered, not yet: in that order, with their counts */
+  legend: [{ t: string; n: string }, { t: string; n: string }, { t: string; n: string }];
+  voters: { title: string; total: string; groups: { t: string; v: number }[]; women: string; men: string; womenShare: number };
+  booth: { kicker: string; t: string; d: string };
+  survey: { kicker: string; t: string; v: string };
+  roll: { label: string; value: string; note: string };
+}
+
+/** One module told at length, beside its illustration; `chip` is the status card laid over the picture */
+export interface ProductFeature {
+  t: string;
+  h: string;
+  d: string;
+  points: string[];
+  img: MediaKey;
+  alt: string;
+  chip: { k: string; v: string };
+}
+
+export interface ProductCopy<S> {
+  meta: PageMeta;
+  /** The header's Products menu */
+  menu: TitledItem;
+  name: string;
+  title: string;
+  sub: string;
+  primary: string;
+  secondary: string;
+  /** Three short facts under the buttons */
+  facts: string[];
+  screen: S;
+  /** What the hero screen shows, for screen readers */
+  screenLabel: string;
+  shift: { kicker: string; title: string; before: string; after: string; items: { before: string; after: string }[] };
+  features: { title: string; sub: string; items: ProductFeature[] };
+  /** Every module in the product, as How we work lists them; `soon` while it's being built */
+  modules: { kicker: string; title: string; sub: string; items: { t: string; d: string; soon?: boolean }[] };
+  /** The page's one feature band: the real eLetter screen (office), the voter list (election) */
+  band: { kicker: string; title: string; body: string; points: string[]; alt?: string; link?: string };
+  faq: { title: string; lead: string; items: QA[] };
+  cta: { title: string; body: string };
+  /** The card that points to the other product */
+  other: { kicker: string; t: string; d: string; link: string };
+}
+
+export interface Products {
+  common: {
+    /** The header's menu label and the breadcrumb */
+    label: string;
+    illustrative: string;
+    live: string;
+    soon: string;
+    setup: { kicker: string; title: string; sub: string; link: string };
+    trust: { title: string; link: string };
+    faqAll: string;
+  };
+  office: ProductCopy<OfficeScreen>;
+  election: ProductCopy<ElectionScreen>;
 }
 
 export interface Roles {
@@ -518,7 +610,7 @@ export interface Dictionary {
   brand: { name: string; line: string };
   skip: string;
   chapters: string[];
-  nav: { labels: Record<NavKey, string>; byRole: string; demo: string; menu: string; close: string; language: string; chapters: string; toDark: string; toLight: string };
+  nav: { labels: Record<NavKey, string>; byRole: string; products: string; demo: string; menu: string; close: string; language: string; chapters: string; toDark: string; toLight: string };
   hero: { eyebrow: string; titleA: string; titleB: string; sub: string; primary: string; secondary: string };
   proof: { label: string; note: string; items: string[] };
   serve: {

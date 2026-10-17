@@ -1,5 +1,5 @@
 import type { Locale } from "@/content";
-import type { RoleKey } from "@/content/types";
+import type { ProductKey, RoleKey } from "@/content/types";
 
 /**
  * Internal links. Pages are written once with a locale-free path ("/about"); Hindi lives under /hi.
@@ -23,6 +23,8 @@ export const routes = {
   voterList: "/voter-list-excel",
   /** The pages under "By role", in menu order */
   roles: { mps: "/for-mps", mlas: "/for-mlas", mayors: "/for-mayors", consultants: "/for-consultants" } satisfies Record<RoleKey, string>,
+  /** The product pages, under "Products"; the paths are the names people search for */
+  products: { office: "/office-management-software", election: "/election-management-software" } satisfies Record<ProductKey, string>,
   article: (slug: string) => `/articles/${slug}`,
   legalDoc: (slug: string) => `/legal/${slug}`,
   /** ["bihar", "patna"] → "/voter-list-excel/bihar/patna" */

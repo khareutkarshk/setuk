@@ -3,6 +3,7 @@ import { getDictionary, type Locale } from "@/content";
 import { Cta } from "@/components/home/sections";
 import { SiteFooter } from "@/components/home/site-footer";
 import { SiteHeader } from "@/components/home/site-header";
+import { productMenu } from "@/components/pages/products/look";
 import { roleMenu } from "@/components/pages/roles/look";
 
 /**
@@ -18,7 +19,7 @@ export function PageShell({ locale, path, cta = true, jsonLd, children }: { loca
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-surface focus:px-4 focus:py-2">
         {t.skip}
       </a>
-      <SiteHeader t={{ nav: t.nav, brand: t.brand }} roles={roleMenu(t)} locale={locale} path={path} />
+      <SiteHeader t={{ nav: t.nav, brand: t.brand }} roles={roleMenu(t)} products={productMenu(t)} locale={locale} path={path} />
       <main id="main" className="pt-(--header-h)">
         {children}
         {cta && <div className="pt-8 md:pt-12"><Cta t={t} locale={locale} own={typeof cta === "object" ? cta : undefined} /></div>}

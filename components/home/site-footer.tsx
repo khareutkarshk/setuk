@@ -5,6 +5,7 @@ import { EnvelopeSimple, FacebookLogo, InstagramLogo, MapPin, Phone, WhatsappLog
 import { SetukMark } from "@/components/site/setuk-mark";
 import { Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
+import { PRODUCT_KEYS } from "@/components/pages/products/look";
 import { ROLE_KEYS } from "@/components/pages/roles/look";
 
 const SOCIAL_ICONS: Record<(typeof site.social)[number]["key"], Icon> = { x: XLogo, facebook: FacebookLogo, instagram: InstagramLogo, youtube: YoutubeLogo };
@@ -32,6 +33,7 @@ export function SiteFooter({ t, locale, home = false }: { t: Dictionary; locale:
     ...site.nav.filter((l) => l.key !== "home").map((l) => ({ t: t.nav.labels[l.key], href: href(locale, l.path) })),
     { t: t.footer.voterList, href: href(locale, routes.voterList) }
   ];
+  const products = PRODUCT_KEYS.map((k) => ({ t: t.pages.products[k].menu.t, href: href(locale, routes.products[k]) }));
   const roles = ROLE_KEYS.map((k) => ({ t: t.pages.roles[k].menu.t, href: href(locale, routes.roles[k]) }));
   const guides = t.footer.guideItems.map((g) => ({ t: g.t, href: href(locale, routes.article(g.slug)) }));
   const legal = [{ t: t.pages.legal.all, href: href(locale, routes.legal) }, ...t.footer.legalItems.map((g) => ({ t: g.t, href: href(locale, routes.legalDoc(g.slug)) }))];
@@ -64,7 +66,11 @@ export function SiteFooter({ t, locale, home = false }: { t: Dictionary; locale:
             </div>
           </div>
           <Column title={t.footer.company} links={company} />
-          <Column title={t.nav.byRole} links={roles} />
+          {/* the products sit over the roles, so the row keeps its five columns */}
+          <div className="space-y-8">
+            <Column title={t.nav.products} links={products} />
+            <Column title={t.nav.byRole} links={roles} />
+          </div>
           <Column title={t.footer.guides} links={guides} />
           <Column title={t.footer.legal} links={legal} />
         </div>

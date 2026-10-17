@@ -5,6 +5,7 @@ import * as I from "@/components/icons";
 import type { Icon } from "@/components/icons";
 import { CornerPattern, Lotus, Pattern, type PatternKind } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
+import { PRODUCT_KEYS } from "@/components/pages/products/look";
 import { ProofStrip } from "./proof-strip";
 import styles from "./story.module.css";
 
@@ -187,7 +188,8 @@ export function SolutionChapter({ t }: { t: Dictionary }) {
   );
 }
 
-export function ProductsChapter({ t }: { t: Dictionary }) {
+/* each product's name links to its page; the order of `products.items` is PRODUCT_KEYS' order */
+export function ProductsChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
   return (
     <Chapter step={4} side="left" id="products">
       <Card n={5} ornament="buti" wide>
@@ -201,7 +203,9 @@ export function ProductsChapter({ t }: { t: Dictionary }) {
                 <div className="flex items-start gap-3">
                   <span className={styles.ico}><Head size={17} aria-hidden /></span>
                   <div>
-                    <h3 className="text-[17px] font-semibold leading-snug">{p.t}</h3>
+                    <h3 className="text-[17px] font-semibold leading-snug">
+                      <Link href={href(locale, routes.products[PRODUCT_KEYS[k]])} className="underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent">{p.t}</Link>
+                    </h3>
                     <p className="mt-0.5 text-[14px] text-muted">{p.d}</p>
                   </div>
                 </div>
