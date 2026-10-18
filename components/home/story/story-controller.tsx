@@ -133,7 +133,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       if (i >= steps.length - 1 || f < 0.005 || f > 0.995) return;
       if (!fits(steps[i]) || !fits(steps[i + 1])) return;
       const to = f > (dir < 0 ? 0.7 : 0.3) ? i + 1 : i;
-      scrollToY(progress.centre(to), { duration: 1 + 1.1 * (to === i ? f : 1 - f), easing: glide });
+      scrollToY(progress.centre(to), { duration: 0.7 + 0.7 * (to === i ? f : 1 - f), easing: glide });
     };
     const onScroll = () => {
       schedule();
@@ -148,7 +148,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
        (its deltas jump up where a tail only decays). Past the last chapter, or before the first, the page
        scrolls on as usual, and so do chapters too tall for the reading area, as with the snap. */
     /* PAGE_S: one chapter's move, long enough to watch the camera travel between stops */
-    const PAGE_S = 2.1, QUIET_MS = 180;
+    const PAGE_S = 1.4, QUIET_MS = 180;
     let paging = false, gesture = false, lastWheel = 0, lastMag = 0, pageEnd = 0;
     const pageTarget = (dy: number) => {
       const n = steps.length, y = scrollY, end = progress.centre(n - 1), d = Math.sign(dy);
@@ -317,7 +317,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
 
   const go = (i: number) => {
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    scrollToY(progressRef.current?.centre(i) ?? 0, { immediate: reduce, duration: 2.2, easing: glide });
+    scrollToY(progressRef.current?.centre(i) ?? 0, { immediate: reduce, duration: 1.6, easing: glide });
   };
 
   return (
