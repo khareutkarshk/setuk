@@ -7,6 +7,9 @@ const articleSlugs = readdirSync("content/articles")
   .map((f) => f.slice(0, -3));
 
 const nextConfig: NextConfig = {
+  /* unmatched addresses get the site's own 404 (app/global-not-found.tsx); there are two root layouts */
+  experimental: { globalNotFound: true },
+  poweredByHeader: false,
   async headers() {
     return [
       {
@@ -14,6 +17,22 @@ const nextConfig: NextConfig = {
            ship changed textures under a new version folder instead of overwriting. */
         source: "/sadan/:path*",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }]
+      },
+      {
+        /* the role pages' hairline figures and kernel: versioned the same way (v1) */
+        source: "/hairline/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }]
+      },
+      {
+        /* baseline security headers (GIGW's security audit checks for these). HSTS is left to the host,
+           which terminates TLS; a Content-Security-Policy needs the inline theme script hashed first */
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" }
+        ]
       }
     ];
   },

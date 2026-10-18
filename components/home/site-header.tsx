@@ -5,8 +5,9 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 import type { Dictionary, Locale } from "@/content";
 import { site } from "@/content/site";
 import { ArrowRight, CaretDown, List, Moon, Sun, X, type Icon as Ico } from "@/components/icons";
-import { PRODUCT_LOOK, type ProductMenuItem } from "@/components/pages/products/look";
-import { ROLE_LOOK, type RoleMenuItem } from "@/components/pages/roles/look";
+import type { ProductMenuItem } from "@/components/pages/products/look";
+import type { RoleMenuItem } from "@/components/pages/roles/look";
+import { PRODUCT_MENU_ICON, ROLE_MENU_ICON } from "@/components/site/menu-icons";
 import { href, routes } from "@/lib/paths";
 import { currentTheme, onThemeChange, setTheme } from "@/lib/theme";
 import { Pattern } from "@/components/site/pattern";
@@ -64,8 +65,8 @@ export function SiteHeader({ t, roles, products, locale, path = routes.home }: {
   /* a section counts as current on its own pages too (an article, a policy) */
   const isCurrent = (p: string) => (p === routes.home ? path === p : path === p || path.startsWith(p + "/"));
   const links = site.nav.map((l) => ({ ...l, href: href(locale, l.path), label: t.nav.labels[l.key], current: isCurrent(l.path) }));
-  const roleLinks = roles.map((r) => ({ ...r, href: href(locale, routes.roles[r.key]), current: path === routes.roles[r.key], Icon: ROLE_LOOK[r.key].icon }));
-  const productLinks = products.map((r) => ({ ...r, href: href(locale, routes.products[r.key]), current: path === routes.products[r.key], Icon: PRODUCT_LOOK[r.key].icon }));
+  const roleLinks = roles.map((r) => ({ ...r, href: href(locale, routes.roles[r.key]), current: path === routes.roles[r.key], Icon: ROLE_MENU_ICON[r.key] }));
+  const productLinks = products.map((r) => ({ ...r, href: href(locale, routes.products[r.key]), current: path === routes.products[r.key], Icon: PRODUCT_MENU_ICON[r.key] }));
   const [home, ...rest] = links;
   const toggle = (m: "products" | "roles") => (on: boolean) => setMenu((v) => (on ? m : v === m ? null : v));
   const langs: { l: Locale; short: string; long: string }[] = [
@@ -101,9 +102,10 @@ export function SiteHeader({ t, roles, products, locale, path = routes.home }: {
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden items-center text-[13px] text-muted sm:flex" role="group" aria-label={t.nav.language}>
             {langs.map(({ l, short, long }) => (
-              <a key={l} href={href(l, path)} hrefLang={l} lang={l} aria-label={long} aria-current={l === locale ? "true" : undefined}
+              /* the name keeps the visible text first ("EN (English)"), so voice control can say what it sees */
+              <a key={l} href={href(l, path)} hrefLang={l} lang={l} aria-current={l === locale ? "true" : undefined}
                 className="grid h-10 min-w-10 place-items-center rounded px-2 aria-[current]:font-semibold aria-[current]:text-ink">
-                {short}
+                <span>{short}<span className="sr-only"> ({long})</span></span>
               </a>
             ))}
           </div>

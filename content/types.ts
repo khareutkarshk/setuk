@@ -265,7 +265,7 @@ export interface Pages {
     howLink: string;
     crumbs: string;
     root: string;
-    finder: { title: string; state: string; district: string; ac: string; allStates: string; allDistricts: string; allAcs: string; pickState: string; pickDistrict: string; reset: string };
+    finder: { title: string; state: string; district: string; ac: string; allStates: string; allDistricts: string; allAcs: string; pickState: string; pickDistrict: string; reset: string; hint: string; go: string };
     stats: { states: string; districts: string; acs: string; pcs: string; booths: string; files: string };
     /** Card eyebrows, and the hero kicker of each page */
     levels: Record<VoterListLevel, string>;
@@ -613,37 +613,12 @@ export interface DemoCopy {
   close: string;
 }
 
-/**
- * "Try it" on the homepage (components/home/try-it*.tsx): the visitor's own request, followed from
- * logged to closed, with the messages they would get. In the steps and messages {name}, {no} (the file
- * number) and {dept} are filled in; nothing typed leaves the page.
- */
-export interface TryItCopy {
-  kicker: string;
-  title: string;
-  sub: string;
-  name: { label: string; placeholder: string };
-  request: { label: string; samples: { t: string; dept: string }[] };
-  button: string;
-  again: string;
-  another: string;
-  privacy: string;
-  /** The panel's heading over the steps, with {no} */
-  file: string;
-  steps: TitledItem[];
-  /** When each step happens, beside it */
-  when: string[];
-  phone: { title: string; from: string; messages: [string, string, string] };
-  /** The name the finished example shows before anyone types */
-  sample: string;
-  /** Announced when the journey ends */
-  done: string;
-}
-
 export interface Dictionary {
   meta: { title: string; description: string };
   brand: { name: string; line: string };
   skip: string;
+  /** The 404 page: a missing address, in the site's frame, with the way back */
+  notFound: { title: string; body: string; home: string; contact: string };
   chapters: string[];
   nav: { labels: Record<NavKey, string>; byRole: string; products: string; demo: string; menu: string; close: string; language: string; chapters: string; toDark: string; toLight: string };
   hero: { eyebrow: string; titleA: string; titleB: string; sub: string; primary: string; secondary: string };
@@ -676,7 +651,6 @@ export interface Dictionary {
   faq: { eyebrow: string; title: string; more: string; items: QA[] };
   cta: { title: string; body: string; primary: string; secondary: string };
   demo: DemoCopy;
-  tryIt: TryItCopy;
   footer: {
     company: string;
     guides: string;

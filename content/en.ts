@@ -8,6 +8,7 @@ export const en: Dictionary = {
   },
   brand: { name: "Setuk", line: "ERP for responsible politicians" },
   skip: "Skip to content",
+  notFound: { title: "This page isn't here.", body: "The address may be mistyped, or the page has moved. Start from the homepage, or tell us what you were looking for.", home: "Go to the homepage", contact: "Contact us" },
   chapters: ["Welcome", "Who we serve", "The problem", "With Setuk", "Products", "Discuss", "Design", "Train", "Run"],
   nav: {
     labels: { home: "Home", how: "How we work", engagements: "Engagements", about: "About", articles: "Articles", faqs: "FAQs", contact: "Contact" },
@@ -227,44 +228,6 @@ export const en: Dictionary = {
     sentBody: "We'll write back within two business days to fix a time for your demo.",
     done: "Done",
     close: "Close"
-  },
-  tryIt: {
-    kicker: "Try it",
-    title: "Send a request. Watch it get done.",
-    sub: "Type your name, pick a request, and see how a Setuk office handles it, step by step, with the messages you would get.",
-    name: { label: "Your name", placeholder: "For example, Ramesh Kumar" },
-    request: {
-      label: "Your request",
-      samples: [
-        { t: "Repair the road in my ward", dept: "Public Works Department" },
-        { t: "A bed at the district hospital", dept: "Health Department" },
-        { t: "My pension hasn't arrived", dept: "Social Welfare Department" },
-        { t: "Correct my ration card", dept: "Food and Civil Supplies" }
-      ]
-    },
-    button: "Send my request",
-    again: "Play again",
-    another: "Try another",
-    privacy: "Nothing you type leaves this page.",
-    file: "File {no}",
-    steps: [
-      { t: "Logged as file {no}", d: "Your request gets a file number the moment it arrives." },
-      { t: "Sent to the {dept}", d: "The staff member in charge takes it on, with a date to answer by." },
-      { t: "Followed up", d: "The office chases the department until there is an answer." },
-      { t: "Closed", d: "Done, and kept on record against your name." }
-    ],
-    when: ["Today, 10:02", "Today, 10:15", "Day 3", "Day 6"],
-    phone: {
-      title: "Messages",
-      from: "Setuk · Representative's office",
-      messages: [
-        "Namaste {name}, your request is logged as file {no}. We will keep you updated.",
-        "{name}, file {no} has been sent to the {dept}. We are following it up.",
-        "Good news, {name}: file {no} is closed. Thank you for your patience."
-      ]
-    },
-    sample: "Ramesh Kumar",
-    done: "File {no} closed. Three messages sent to {name}."
   },
   footer: {
     company: "Company",
@@ -753,7 +716,7 @@ export const en: Dictionary = {
       howLink: "What's in the file",
       crumbs: "Breadcrumb",
       root: "Voter list in Excel",
-      finder: { title: "Find a voter list", state: "State", district: "District", ac: "Assembly constituency", allStates: "All states", allDistricts: "All districts", allAcs: "All constituencies", pickState: "Choose a state first", pickDistrict: "Choose a district first", reset: "Start over" },
+      finder: { title: "Find a voter list", state: "State", district: "District", ac: "Assembly constituency", allStates: "All states", allDistricts: "All districts", allAcs: "All constituencies", pickState: "Choose a state first", pickDistrict: "Choose a district first", reset: "Start over", hint: "Picking with a mouse or touch opens that page. With the keyboard, choose, then press Show.", go: "Show" },
       stats: { states: "States", districts: "Districts", acs: "Assembly seats", pcs: "Lok Sabha seats", booths: "Polling booths", files: "Excel sheets" },
       levels: { state: "State", district: "District", ac: "Assembly constituency", pc: "Lok Sabha constituency", districts: "All districts", acs: "All assembly constituencies", pcs: "All Lok Sabha seats" },
       tabs: { label: "Lists in {name}", districts: "Districts", acs: "Assembly constituencies", pcs: "Lok Sabha seats" },

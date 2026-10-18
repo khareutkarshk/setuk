@@ -65,12 +65,13 @@ export function VoterListMapHost({ c, states, totals, children }: { c: Pages["vo
         <h3 className="font-display-tight mt-1 text-[22px] leading-tight lg:mt-2 lg:text-[clamp(26px,2.6vw,34px)]">{on ? on.name : c.all}</h3>
         <dl className="mt-3 grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:mt-6 lg:grid-cols-1">
           {([[c.districts, shown.districts, I.MapTrifold], [c.acs, shown.acs, I.UsersThree], [c.booths, shown.booths, I.HouseLine]] as const).map(([label, v, Ico]) => (
-            <div key={label} className="flex items-center gap-4 bg-surface px-3 py-2.5 lg:px-5 lg:py-4">
-              <span className="hidden size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent lg:grid"><Ico size={19} aria-hidden /></span>
-              <span className="flex min-w-0 flex-1 flex-col-reverse">
-                <dt className="text-[12px] leading-snug text-muted lg:text-[14px]">{label}</dt>
-                <dd className="font-display-tight text-[19px] leading-tight tabular-nums lg:text-[28px]">{fmt(v * t)}</dd>
-              </span>
+            /* dt and dd sit straight in the row (a <dl> allows nothing else); the icon hangs in the dt */
+            <div key={label} className="relative flex min-w-0 flex-col-reverse justify-center bg-surface px-3 py-2.5 lg:py-4 lg:pr-5 lg:pl-19">
+              <dt className="text-[12px] leading-snug text-muted lg:text-[14px]">
+                <span className="absolute top-1/2 left-5 hidden size-10 -translate-y-1/2 place-items-center rounded-xl bg-accent-soft text-accent lg:grid"><Ico size={19} aria-hidden /></span>
+                {label}
+              </dt>
+              <dd className="font-display-tight text-[19px] leading-tight tabular-nums lg:text-[28px]">{fmt(v * t)}</dd>
             </div>
           ))}
         </dl>

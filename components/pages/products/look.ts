@@ -1,6 +1,7 @@
 import type { Dictionary, ProductKey } from "@/content/types";
 import type { PatternKind } from "@/components/site/pattern";
 import * as I from "@/components/icons";
+import { PRODUCT_MENU_ICON } from "@/components/site/menu-icons";
 
 /**
  * What makes each product page its own, besides its copy: the pattern behind its hero, the icon it
@@ -16,14 +17,14 @@ type Look = { pattern: PatternKind; icon: I.Icon; modules: I.Icon[]; features: I
 export const PRODUCT_LOOK: Record<ProductKey, Look> = {
   office: {
     pattern: "sadan",
-    icon: I.Briefcase,
+    icon: PRODUCT_MENU_ICON.office,
     // letters, appointments, visitors, calendar, PNR, citizens, WhatsApp, reports; events, LADs, photos
     modules: [I.EnvelopeSimple, I.CalendarCheck, I.DoorOpen, I.CalendarDots, I.Train, I.UsersThree, I.WhatsappLogo, I.ChartLineUp, I.FlagBanner, I.CurrencyInr, I.Camera],
     features: [I.EnvelopeSimple, I.CalendarCheck, I.CalendarDots, I.UsersThree]
   },
   election: {
     pattern: "kolam",
-    icon: I.FlagBanner,
+    icon: PRODUCT_MENU_ICON.election,
     // booths, voter list, karyakartas, surveys; influential voters
     modules: [I.HouseLine, I.Table, I.UserList, I.ClipboardText, I.Star],
     features: [I.HouseLine, I.Table, I.UserList, I.ClipboardText]

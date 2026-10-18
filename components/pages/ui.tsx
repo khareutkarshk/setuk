@@ -41,7 +41,7 @@ export function PageHero({ children, className = "", routes = true, pattern = "s
  * Kicker, title and lead, the way every homepage section opens. `inverse` for the ink band.
  * The kicker is optional: the role pages keep to about one in three sections, so the label stays a signal.
  */
-export function SectionHead({ kicker, title, id, lead, inverse = false, className = "" }: { kicker?: string; title: ReactNode; id?: string; lead?: ReactNode; inverse?: boolean; className?: string }) {
+export function SectionHead({ kicker, title, id, lead, inverse = false, className = "" }: { kicker?: ReactNode; title: ReactNode; id?: string; lead?: ReactNode; inverse?: boolean; className?: string }) {
   return (
     <div className={className}>
       {kicker && <Kicker className={`mb-3 ${inverse ? "text-leaf-inverse" : "text-leaf"}`} ornament={inverse ? "text-accent-soft" : "text-accent"}>{kicker}</Kicker>}

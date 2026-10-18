@@ -6,10 +6,13 @@ import type { Dictionary, SceneLabels } from "@/content/types";
 import { CornerPattern, Mandala } from "@/components/site/pattern";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { clamp01, createScrollProgress, smooth } from "@/lib/sadan/progress";
-import { scrollTarget, scrollToY } from "@/lib/smooth-scroll";
+import { glide, scrollTarget, scrollToY } from "@/lib/smooth-scroll";
 import type { SadanHandle } from "@/lib/sadan/engine";
 import poster from "@/assets/loksabha.jpg";
 import styles from "./story.module.css";
+
+/** How long the first-load splash may stay up before it lifts by itself */
+const SPLASH_MS = 1600;
 
 interface Props {
   chapters: string[];
@@ -42,10 +45,13 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
   const [active, setActive] = useState(0);
   const [railVisible, setRailVisible] = useState(false);
   const [ready, setReady] = useState(false);
-  /* "loading" keeps the splash up; "failed" drops it and falls back to the photo */
+  /* "loading" keeps the splash up, briefly; "waiting" drops it and shows the photo while the chamber
+     still loads (it fades in when ready); "failed" keeps the photo for good */
   const [percent, setPercent] = useState(0);
   const targetRef = useRef(0.04);
-  const [boot, setBoot] = useState<"loading" | "done" | "failed">("loading");
+  const [boot, setBoot] = useState<"loading" | "waiting" | "done" | "failed">("loading");
+  const splashUp = useRef(true);
+  useEffect(() => { splashUp.current = boot === "loading"; }, [boot]);
   /* Bumped to rebuild the chamber after the browser drops the WebGL context (at most twice) */
   const [epoch, setEpoch] = useState(0);
 
@@ -127,7 +133,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       if (i >= steps.length - 1 || f < 0.005 || f > 0.995) return;
       if (!fits(steps[i]) || !fits(steps[i + 1])) return;
       const to = f > (dir < 0 ? 0.7 : 0.3) ? i + 1 : i;
-      scrollToY(progress.centre(to), { duration: 0.6 + 0.6 * (to === i ? f : 1 - f) });
+      scrollToY(progress.centre(to), { duration: 1 + 1.1 * (to === i ? f : 1 - f), easing: glide });
     };
     const onScroll = () => {
       schedule();
@@ -141,7 +147,8 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
        move itself, then the trackpad's momentum tail, until the wheel goes quiet or a fresh swipe starts
        (its deltas jump up where a tail only decays). Past the last chapter, or before the first, the page
        scrolls on as usual, and so do chapters too tall for the reading area, as with the snap. */
-    const PAGE_S = 0.9, QUIET_MS = 180;
+    /* PAGE_S: one chapter's move, long enough to watch the camera travel between stops */
+    const PAGE_S = 2.1, QUIET_MS = 180;
     let paging = false, gesture = false, lastWheel = 0, lastMag = 0, pageEnd = 0;
     const pageTarget = (dy: number) => {
       const n = steps.length, y = scrollY, end = progress.centre(n - 1), d = Math.sign(dy);
@@ -166,7 +173,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       e.preventDefault(); e.stopPropagation();
       pinCh = null; paging = gesture = true; clearTimeout(settle); clearTimeout(pageEnd);
       const done = () => { if (!paging) return; paging = false; clearTimeout(pageEnd); };
-      scrollToY(progress.centre(to), { immediate: reduced, duration: PAGE_S, onComplete: done });
+      scrollToY(progress.centre(to), { immediate: reduced, duration: PAGE_S, easing: glide, onComplete: done });
       pageEnd = window.setTimeout(done, PAGE_S * 1000 + 300); /* in case the move is cut short and never completes */
     };
 
@@ -239,7 +246,8 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
       shown += (Math.max(target, Math.min(shown + 0.0006, creep)) - shown) * 0.08;
       if (target >= 1 && shown > 0.995) shown = 1;
       setPercent(Math.floor(shown * 100));
-      if (shown < 1) raf = requestAnimationFrame(animate);
+      /* the count is only drawn on the splash: stop once it has gone */
+      if (shown < 1 && splashUp.current) raf = requestAnimationFrame(animate);
     };
     if (epoch === 0) raf = requestAnimationFrame(animate);
 
@@ -282,13 +290,17 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
         if (!ac.signal.aborted) setBoot("failed");
       });
 
-    /* Never trap the visitor behind the splash on a slow or stuck load; compact screens give up sooner
-       (the photo shows in the band and the chamber still fades in when it is ready) */
-    const compact = matchMedia("(orientation: portrait), (max-height: 559.98px), (max-width: 767.98px)").matches;
-    const timeout = setTimeout(() => setBoot((b) => (b === "loading" ? "failed" : b)), compact ? 6000 : 15000);
+    /* The splash is a brief greeting, never a wall: it lifts after SPLASH_MS or at the visitor's first
+       key, click, touch or wheel, whichever comes first. The page under it is readable from the start;
+       the photo stands in and the chamber fades in over it when it is ready, on every device. */
+    const lift = () => setBoot((b) => (b === "loading" ? "waiting" : b));
+    const timeout = setTimeout(lift, SPLASH_MS);
+    const liftOn = ["keydown", "pointerdown", "wheel", "touchstart"] as const;
+    liftOn.forEach((e) => addEventListener(e, lift, { once: true, passive: true }));
 
     return () => {
       clearTimeout(timeout);
+      liftOn.forEach((e) => removeEventListener(e, lift));
       clearTimeout(rebuild);
       cancelAnimationFrame(raf);
       ac.abort();
@@ -305,7 +317,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
 
   const go = (i: number) => {
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    scrollToY(progressRef.current?.centre(i) ?? 0, { immediate: reduce, duration: 1.4 });
+    scrollToY(progressRef.current?.centre(i) ?? 0, { immediate: reduce, duration: 2.2, easing: glide });
   };
 
   return (
@@ -325,7 +337,8 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
         </p>
       </div>
 
-      <div className={styles.splash} data-hidden={boot === "loading" ? undefined : ""} role="status" aria-live="polite">
+      {/* decorative: the page beneath is readable at once, so assistive tech skips the splash */}
+      <div className={styles.splash} data-hidden={boot === "loading" ? undefined : ""} aria-hidden="true">
         <CornerPattern kind="sadan" fx={0} fy={0} radius={460} cell={36} className="inset-0 text-accent opacity-[0.09]" />
         <CornerPattern kind="sadan" fx={100} fy={100} radius={460} cell={36} className="inset-0 text-accent opacity-[0.09]" />
         <div className={styles.splashEmblem}>
@@ -336,7 +349,7 @@ export function StoryController({ chapters, railLabel, labels, ariaLabel, brand,
         <p className={`${styles.splashName} text-ink`}>{brand.name}</p>
         <p className={`${styles.splashLine} text-muted`}>{brand.line}</p>
         <p className={`${styles.splashPercent} tnum text-ink`}>{percent}<span className="text-muted">%</span></p>
-        <span className={styles.splashBar} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent}>
+        <span className={styles.splashBar}>
           <span style={{ transform: `scaleX(${percent / 100})` }} />
         </span>
         <p className={`${styles.splashStatus} text-muted`}>{labels.loading}</p>

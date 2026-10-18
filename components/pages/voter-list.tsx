@@ -249,7 +249,7 @@ function ListTabs({ locale, p, lists, level }: { locale: Locale; p: Copy; lists:
           <li key={x.key}>
             <Link href={href(locale, routes.voterListArea(x.slugs))} aria-current={x.on ? "page" : undefined}
               className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-[14px] font-semibold whitespace-nowrap text-muted transition-colors hover:text-ink aria-[current]:bg-accent aria-[current]:text-accent-ink">
-              {x.t}<span className="font-mono text-[12px] font-normal opacity-75">{count(x.n)}</span>
+              {x.t}<span className="font-mono text-[12px] font-normal">{count(x.n)}</span>
             </Link>
           </li>
         ))}
@@ -276,11 +276,11 @@ function Detail({ locale, view, d, p, englishOnly }: { locale: Locale; view: Vot
           {englishOnly && <p className="mb-10 flex max-w-[68ch] items-center gap-2 rounded-xl bg-accent-soft px-4 py-3 text-[15px]"><I.Info className="shrink-0 text-accent" aria-hidden />{englishOnly}</p>}
           <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
             <div lang={lang}>
-              <SectionHead kicker={p.detail.kicker} title={d.title} id="about-title" />
+              <SectionHead kicker={p.detail.kicker && <span lang={locale}>{p.detail.kicker}</span>} title={d.title} id="about-title" />
               <div className="mt-6 space-y-4 text-[17px] leading-relaxed text-muted">
                 {d.summary.map((x) => <p key={x} className="max-w-[62ch]">{x}</p>)}
               </div>
-              <h3 className="mt-12 flex items-center gap-2 text-[17px] font-semibold"><I.ListChecks className="text-accent" aria-hidden />{p.detail.includes}</h3>
+              <h3 className="mt-12 flex items-center gap-2 text-[17px] font-semibold"><I.ListChecks className="text-accent" aria-hidden /><span lang={locale}>{p.detail.includes}</span></h3>
               <ul className="mt-5 space-y-3">
                 {d.includes.map((x) => (
                   <li key={x} className="flex gap-3 text-[16px] leading-snug">
@@ -454,8 +454,9 @@ function Article({ blocks, lang }: { blocks: CopyBlock[]; lang?: string }) {
 
 /**
  * The index at the foot of every page: each state's districts, assembly constituencies and Lok
- * Sabha seats, every one a link, and each list linking to its own page. Within a state it is open;
- * on the landing page each state folds, so the page stays short while every link is in it.
+ * Sabha seats, every one a link, and each list linking to its own page. Within a state it is open.
+ * On the landing page each state folds to its three lists only: every area link there (over 5,000)
+ * made the page 3 MB and 19,000 elements, and each list page carries its own areas anyway.
  */
 function ListIndex({ locale, p, index }: { locale: Locale; p: Copy; index: StateIndex[] }) {
   if (!index.length) return null;
@@ -489,6 +490,18 @@ function ListIndex({ locale, p, index }: { locale: Locale; p: Copy; index: State
       ))}
     </div>
   );
+  /* the landing page: a state's lists, not their areas */
+  const lists = (s: StateIndex) => (
+    <ul className="flex flex-wrap gap-x-6 gap-y-1">
+      {groups(s).map((g) => (
+        <li key={g.key}>
+          <Link href={at(g.all)} className="inline-flex min-h-9 items-center gap-1.5 text-[14px] font-semibold text-accent">
+            {g.t} <span className="font-mono text-[13px] font-normal text-muted">{count(g.items.length)}</span><I.ArrowRight size={14} aria-hidden />
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <section aria-labelledby="vl-index-title" className="border-t border-line bg-surface">
@@ -513,7 +526,7 @@ function ListIndex({ locale, p, index }: { locale: Locale; p: Copy; index: State
                     <Link href={at(s.state.slugs)} className="mb-5 inline-flex min-h-9 items-center gap-1.5 text-[15px] font-semibold text-accent">
                       <span lang={lang}>{s.state.name}</span><I.ArrowRight size={14} aria-hidden />
                     </Link>
-                    {body(s)}
+                    {lists(s)}
                   </div>
                 </details>
               </li>

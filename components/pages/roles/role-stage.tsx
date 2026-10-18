@@ -16,9 +16,10 @@ import type { RoleWindow, Stop } from "./look";
  * first stop, and each step lights as the unseen pointer reaches it. The kernel pauses a figure out
  * of view and gives way to a real hand, so each step also has a deadline a little past the lap's
  * own pace; the case always reaches its close, in step with the figure whenever the figure is moving.
- * The figure loops on its own after that: at each rest its highlight turns leaf (`data-closed`,
- * globals.css), and while it walks its own read-out ("ward 07") stands down so it never contradicts
- * the card; a real pointer brings it back and takes the leaf away.
+ * The figure then rests (Hairline stops the tour after one lap, so nothing beside the text moves without
+ * end, WCAG 2.2.2): at rest its highlight turns leaf (`data-closed`, globals.css), and while it walks its
+ * own read-out ("ward 07") stands down so it never contradicts the card; a real pointer brings it back
+ * and takes the leaf away.
  */
 
 /** null: the case as written; -1: the lap has set off; 0 to 3: the step reached, 3 closing it */

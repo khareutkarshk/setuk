@@ -24,7 +24,7 @@
   --accent: #1747a6;
   --accent-ink: #f7f9ff;
   --accent-soft: #e2e9f7;
-  --leaf: #1f7a43;
+  --leaf: #1b6e3c; /* a shade under the logo green: 4.5:1 for small labels on the tinted bands too */
   --leaf-ink: #f3fbf6;
   --leaf-soft: #e2f2e8;
   /* leaf on the inverse (ink) sections, which flip with the theme */
@@ -128,6 +128,10 @@
   }
   ::selection { background: color-mix(in srgb, var(--accent) 22%, transparent); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  /* The ring is drawn outside the control, over its surface: on the blue and the ink surfaces the accent
+     ring vanished (1:1 and about 2:1), so there it takes the surface's light colour */
+  .bg-accent :focus-visible { outline-color: var(--accent-ink); }
+  .inverse :focus-visible { outline-color: var(--accent-soft); }
 
   /* Hindi: Devanagari face, taller line-height for matras, no negative tracking */
   html[lang="hi"] body { font-family: var(--font-deva); }
@@ -138,6 +142,9 @@
   /* English passages inside Hindi pages (articles, policies) keep the Latin type */
   html[lang="hi"] [lang="en"] { font-family: var(--font-sans); }
 }
+
+/* English pages don't load Anek (app/(en)/layout.tsx): their Devanagari ornaments use the system's face */
+html:not([lang="hi"]) { --font-anek: "Noto Sans Devanagari", "Kohinoor Devanagari", "Nirmala UI", "Mangal"; }
 
 /* Hindi: Devanagari in display type too (Geist has none), and no tracking on labels set in capitals for Latin */
 html[lang="hi"] { --font-display: var(--font-geist), var(--font-anek), ui-sans-serif, system-ui, sans-serif; }
@@ -191,14 +198,14 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
   .pat-fade { -webkit-mask-image: radial-gradient(circle var(--fr, 240px) at var(--fx, 100%) var(--fy, 0%), #000 0%, transparent 100%); mask-image: radial-gradient(circle var(--fr, 240px) at var(--fx, 100%) var(--fy, 0%), #000 0%, transparent 100%); }
 }
 
-/* Load-in for hero items */
+/* Load-in for hero items: they settle into place but are visible from the first paint. Starting them at
+   opacity 0 held back the page's main text (LCP) until the animation, and on slow phones the scripts, had run. */
 @utility rise {
-  opacity: 0;
   transform: translateY(14px);
   animation: rise 1s var(--ease-out) forwards;
   animation-delay: calc(var(--i, 0) * 90ms + 100ms);
 }
-@keyframes rise { to { opacity: 1; transform: none; } }
+@keyframes rise { to { transform: none; } }
 
 /* Inner pages: sections ease in as they enter, on the browser's scroll timeline (no script). Browsers
    without scroll-driven animations, and reduced motion, show everything at rest. */
@@ -513,18 +520,10 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
 
-/* "Try it" on the homepage: the phone's bezel is hardware, so it stays dark: ink by day, and by night a
-   step above the page round a dark screen, never a pale frame. Each message lands on it as it arrives */
-.ti-phone { background: var(--ink); }
-:root[data-theme="dark"] .ti-phone { background: var(--surface-2); }
-.ti-msg { animation: ti-msg 0.5s var(--ease-out) both; transform-origin: 0 0; }
-@keyframes ti-msg { from { opacity: 0; translate: 0 10px; scale: 0.96; } }
-
 /* Product hero screens (components/pages/products/screens.tsx, screen-play.tsx). At rest, and without
    script or with reduced motion, a screen shows how its story ends: .play-from hidden, .play-to shown.
-   With script and motion it loops: data-play runs the story from the start, each moment at --at, with
-   a cursor doing what a staff member would; data-rewind then fades it back to the start, and it plays
-   again. ScreenPlay pauses the loop while the screen is out of view. */
+   With script and motion it plays once, when it comes into view: data-play runs the story from the
+   start, each moment at --at, with a cursor doing what a staff member would, and it rests at the end. */
 .play-from { opacity: 0; }
 .play-cursor { display: none; }
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
@@ -542,11 +541,6 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
   /* a booth fills: its colour comes back from "not yet" */
   [data-play] .play-booth::after { animation: play-out 0.5s var(--ease-out) var(--at, 0s) both; }
   [data-play] .play-lit { animation: play-lit 1s ease-out var(--at, 0s) 3; }
-  /* the rewind: everything that changed eases back to how the story starts */
-  [data-rewind] .play-to, [data-rewind] .play-pop { animation: play-out 0.5s var(--ease-out) both; }
-  [data-rewind] .play-from { animation: play-back 0.5s var(--ease-out) both; }
-  [data-rewind] .play-bar { animation: play-bar 0.5s var(--ease-out) both reverse; }
-  [data-rewind] .play-booth::after { animation: play-back 0.5s var(--ease-out) both; }
 
   /* the cursor: its tip sits at its box's top left, and a ring spreads from it on the click */
   .play-cursor { position: absolute; z-index: 2; display: block; width: 22px; height: 22px; pointer-events: none; opacity: 0; }
@@ -556,7 +550,6 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
   [data-play] .play-cursor::after { animation: cursor-click var(--cursor-time, 2.2s) ease-out both; }
 }
 @keyframes play-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes play-back { from { opacity: 0; } to { opacity: 1; } }
 @keyframes play-in { from { opacity: 0; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
 @keyframes play-pop { from { opacity: 0; translate: 0 14px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
 @keyframes play-bar { from { scale: 0 1; } to { scale: 1 1; } }

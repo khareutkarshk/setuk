@@ -93,12 +93,13 @@ export function OrderHost({ copy, labels, chat }: { copy: OrderCopy; labels: Ord
             {order.stats.map(([key, value]) => {
               const Icon = ICONS[key];
               return (
-                <div key={key} className="flex items-center gap-3 rounded-xl bg-surface px-3 py-2.5">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"><Icon size={18} aria-hidden /></span>
-                  <span className="flex min-w-0 flex-col-reverse">
-                    <dt className="text-[12px] leading-snug text-muted">{labels.stats[key]}</dt>
-                    <dd className="text-[17px] leading-tight font-semibold tabular-nums">{value}</dd>
-                  </span>
+                /* dt and dd sit straight in the row (a <dl> allows nothing else); the icon hangs in the dt */
+                <div key={key} className="relative flex min-w-0 flex-col-reverse justify-center rounded-xl bg-surface py-2.5 pr-3 pl-15">
+                  <dt className="text-[12px] leading-snug text-muted">
+                    <span className="absolute top-1/2 left-3 grid size-9 -translate-y-1/2 place-items-center rounded-xl bg-accent-soft text-accent"><Icon size={18} aria-hidden /></span>
+                    {labels.stats[key]}
+                  </dt>
+                  <dd className="text-[17px] leading-tight font-semibold tabular-nums">{value}</dd>
                 </div>
               );
             })}

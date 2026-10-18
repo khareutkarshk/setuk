@@ -114,12 +114,13 @@ export function EngagementsPage({ locale }: { locale: Locale }) {
           <SectionHead kicker={p.pricing.kicker} title={p.pricing.title} id="pricing-title" lead={p.pricing.body} inverse />
           <dl className="grid gap-x-10 gap-y-8 self-center sm:grid-cols-2">
             {p.pricing.items.map((x, i) => (
-              <div key={x.t} className={`reveal ${TICK} flex gap-4 border-bg/15`}>
-                <IconTile icon={PRICING_ICONS[i]} className="h-12! w-12! rounded-[14px]!" />
-                <div>
-                  <dt className="text-[17px] font-semibold">{x.t}</dt>
-                  <dd className="mt-1 text-[15px] leading-snug text-bg/65">{x.d}</dd>
-                </div>
+              /* dt and dd sit straight in the row (a <dl> allows nothing else); the icon hangs in the dt */
+              <div key={x.t} className={`reveal ${TICK} pl-16 border-bg/15`}>
+                <dt className="text-[17px] font-semibold">
+                  <IconTile icon={PRICING_ICONS[i]} className="absolute! top-5 left-0 h-12! w-12! rounded-[14px]!" />
+                  {x.t}
+                </dt>
+                <dd className="mt-1 text-[15px] leading-snug text-bg/65">{x.d}</dd>
               </div>
             ))}
           </dl>

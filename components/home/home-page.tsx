@@ -1,7 +1,6 @@
 import { ViewTransition } from "react";
 import { getDictionary, type Locale } from "@/content";
 import { site } from "@/content/site";
-import { TryIt } from "./try-it";
 import { HeroChapter, HowChapters, ProblemChapter, ProductsChapter, ServeChapter, SolutionChapter } from "./story/chapters";
 import { StoryController } from "./story/story-controller";
 import { Cta, Engagements, Faq, Trust } from "./sections";
@@ -55,7 +54,6 @@ export function HomePage({ locale }: { locale: Locale }) {
           <ProductsChapter t={t} locale={locale} />
           <HowChapters t={t} />
         </StoryController>
-        <TryIt t={t} />
         <Engagements t={t} locale={locale} />
         <Trust t={t} locale={locale} />
         <Faq t={t} locale={locale} />

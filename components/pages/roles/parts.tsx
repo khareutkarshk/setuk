@@ -78,7 +78,8 @@ function ModuleTile({ m, n, soon, wide, className, pattern }: { m: RoleModule; n
     <div className={`relative flex flex-col p-6 md:p-7 ${m.img ? "flex-1" : ""}`}>
       {m.soon && <span className="mb-4 inline-flex h-7 w-fit items-center gap-1.5 rounded-full border border-dashed border-accent/50 px-3 text-[13px] font-medium text-accent"><I.Clock aria-hidden />{soon}</span>}
       <h3 className="font-display-tight text-[22px] leading-tight">{m.t}</h3>
-      <p className="mt-2 max-w-[46ch] text-[15px] leading-relaxed text-muted">{m.d}</p>
+      {/* ink at 75%, not text-muted: the tiles' deeper tint left muted text at 3.9:1 */}
+      <p className="mt-2 max-w-[46ch] text-[15px] leading-relaxed text-ink/75">{m.d}</p>
     </div>
   );
   if (m.img) {
@@ -174,12 +175,13 @@ export function Team({ title, sub, rows }: { title: string; sub: string; rows: T
         {rows.map((x, i) => {
           const Ico = TEAM_ICONS[i % TEAM_ICONS.length];
           return (
-            <div key={x.t} className="reveal flex gap-4">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-line bg-surface text-accent"><Ico size={20} aria-hidden /></span>
-              <div>
-                <dt className="text-[17px] font-semibold">{x.t}</dt>
-                <dd className="mt-1 text-[15px] leading-snug text-muted">{x.d}</dd>
-              </div>
+            /* dt and dd sit straight in the row (a <dl> allows nothing else); the icon hangs in the dt */
+            <div key={x.t} className="reveal relative pl-15">
+              <dt className="text-[17px] font-semibold">
+                <span className="absolute top-0 left-0 grid h-11 w-11 place-items-center rounded-xl border border-line bg-surface text-accent"><Ico size={20} aria-hidden /></span>
+                {x.t}
+              </dt>
+              <dd className="mt-1 text-[15px] leading-snug text-muted">{x.d}</dd>
             </div>
           );
         })}

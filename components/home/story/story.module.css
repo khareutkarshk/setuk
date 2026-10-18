@@ -24,13 +24,19 @@
 /* The photo shows whenever the chamber isn't on screen: it could not start, or its context was lost */
 .stage[data-boot="loading"] .poster { opacity: 0; }
 
-/* First-load splash: covers the viewport until the chamber is ready */
+/* First-load splash: a brief greeting over the viewport (SPLASH_MS in the controller), never a wait for the chamber */
 .splash {
   position: fixed; inset: 0; z-index: 100; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px;
   background: radial-gradient(70% 60% at 50% 42%, var(--accent-soft), var(--bg) 70%);
   transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), visibility 0s linear 0s;
+  /* It never blocks the page: clicks pass through, and it fades out by itself on the compositor, so it
+     lifts on time even while the main thread is busy starting the chamber (the controller's timer can't) */
+  pointer-events: none;
+  animation: splashOut 0.8s var(--ease-out) 1.6s forwards;
 }
+/* opacity only, so the compositor can run it on its own */
+@keyframes splashOut { to { opacity: 0; } }
 .splash[data-hidden] { opacity: 0; transform: scale(1.03); visibility: hidden; pointer-events: none; transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), visibility 0s linear 0.8s; }
 .splashEmblem { position: relative; width: min(300px, 70vw, 38vh); aspect-ratio: 1; display: grid; place-items: center; }
 .splashLotus { position: absolute; inset: -18%; width: 136%; height: 136%; opacity: 0.4; animation: lotusIn 1.6s var(--ease-out) both; }
@@ -69,7 +75,7 @@
   background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 95%, transparent) 0%, color-mix(in srgb, var(--bg) 75%, transparent) 32%, transparent 64%);
 }
 .loading { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); color: #f3eee8cc; font-size: 13px; display: flex; gap: 10px; align-items: center; transition: opacity 0.6s; }
-.stage[data-ready] .loading { opacity: 0; }
+.stage[data-ready] .loading, .stage[data-boot="failed"] .loading { opacity: 0; }
 .spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #f3eee844; border-top-color: #f3eee8; animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -84,8 +90,11 @@
 /* The hero: centred beside the proof strip; short screens reserve room under the header and above the strip */
 .heroInner { flex-direction: column; justify-content: center; }
 @media (max-height: 800px) { .heroInner { padding-top: calc(var(--header-h) + 24px); padding-bottom: 168px; } }
-/* How we work as plain cards, for compact layouts and no-JS (classic pins one card instead) */
-.howInline { display: none; }
+/* How we work as plain cards, for compact layouts and no-JS. Classic pins one card instead (aria-hidden,
+   it is a visual duplicate), so there the cards stay in the accessibility tree but off screen */
+@media (scripting: enabled) and (orientation: landscape) and (min-width: 768px) and (min-height: 560px) {
+  .howInline { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 
 .card {
   position: relative; overflow: hidden;
@@ -231,8 +240,8 @@
   .howPin .slides { margin-top: 8px; }
   .howPin .slide > :not(:first-child) { display: none; }
   .howInline { display: flex; }
-  /* the pinned header already says which step this is */
-  .howInline .eyebrow { display: none; }
+  /* the pinned header already shows which step this is; screen readers get it here (the pin is aria-hidden) */
+  .howInline .eyebrow { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
 @supports (height: 1svh) {
   @media (orientation: portrait), (max-height: 559.98px), (max-width: 767.98px) { .story { --gap: clamp(20px, 5svh, 48px); } }

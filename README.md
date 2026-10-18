@@ -22,12 +22,15 @@ pnpm lint
 | `/contact` | `app/(en)/contact/page.tsx` | Channels and the contact form |
 | `/for-mps`, `/for-mlas`, `/for-mayors`, `/for-consultants` | `app/(en)/for-*/page.tsx` | The role pages under "By role" in the header (see below) |
 | `/legal`, `/legal/[slug]` | `app/(en)/legal/...` | Policy hub and each policy |
+| `/office-management-software`, `/election-management-software` | `app/(en)/*-management-software/page.tsx` | The product pages under "Products" in the header |
+| `/voter-list-excel/...` | `app/(en)/voter-list-excel/[[...slug]]/page.tsx` | Voter lists by state, district and constituency; static on first visit, then cached (see AGENTS.md) |
 | `/hi/...` | `app/(hi)/hi/...` | The same pages in Hindi |
 | `/sitemap.xml` | `app/sitemap.ts` | Every page in both languages |
+| any unknown address | `app/global-not-found.tsx`, and `not-found.tsx` in the article, policy and voter-list segments | The 404 page in the site's frame (`components/pages/not-found.tsx`), copy in `notFound` |
 
 Inner pages share `components/pages/page-shell.tsx` (header, closing call to action, footer) and are server components; their client islands are small: the process rail on How we work (GSAP ScrollTrigger, loaded on demand, which also lights the first-three-weeks calendar), the product heroes' story (`products/screen-play.tsx`), the voter list landing's map panel, the About before/after slider, the article contents list, the article reader tools (share, copy link, "Was this helpful?", newsletter; `components/pages/article-engage.tsx`), the topic filter, the FAQ search and the contact form. Their copy is in `pages` in both dictionaries. Articles and policies are long-form text in `content/articles.ts` and `content/legal.ts` (generated once from setuk.org, now edited by hand), rendered by `components/pages/prose.tsx`; they are English only, so `/hi` shows them with Hindi navigation and a note. Pictures are Setuk's own illustrations from setuk.org, in `assets/media/` and listed in `content/media.ts`.
 
-The contact form has no backend yet: sending opens the visitor's email app with the message filled in (to contact@setuk.org). Wire it to a form endpoint before launch if replies should not depend on a mail app. The article newsletter sign-up works the same way, and "Was this helpful?" answers are kept only in the reader's browser; both are marked in `article-engage.tsx` where a list provider or analytics call would go.
+The contact form and the request-a-demo dialog have no backend yet: each validates, then shows its thank-you without sending anything (the `TODO` in `onSubmit`, `contact-form.tsx` and `demo-dialog.tsx`). Neither form has an `action`, so without script (or before hydration) the contact form submits by GET and puts the visitor's details in the URL; wiring it to a server action with `method="post"` fixes both. The article newsletter sign-up opens the visitor's email app, and "Was this helpful?" answers are kept only in the reader's browser; both are marked in `article-engage.tsx` where a list provider or analytics call would go.
 
 `next.config.ts` redirects setuk.org's old addresses: each guide's root URL to `/articles/<slug>`, `/features` to `/how-we-work#modules` and `/roadmap` to `/how-we-work#roadmap`.
 
@@ -43,7 +46,7 @@ Moving between the two locales is a full page load, which is expected with separ
 For MPs, For MLAs, For Mayors and For consultants (`components/pages/roles/`, copy in `pages.roles` in both dictionaries) share one family of sections and differ in five ways, set in `components/pages/roles/look.ts`:
 
 - **The hero figure**: an isometric line drawing that answers the pointer, drawn on the kernel of `@lucasmarkes/hairline`. MPs: the Lok Sabha benches; MLAs: a constituency map with booths; Mayors: a city cut into wards; consultants: a turntable of client offices. The kernel (`public/hairline/v1/kernel.js`, unchanged) and each figure (`public/hairline/v1/<name>.js`) load after hydration through `components/site/hairline.tsx`, which themes them with the `--hairline-*` variables in `globals.css`, shows the figure's read-out in the page's language and plays its tour once. Write or change a figure only with the hairline-create skill in `.agents/skills/hairline-create`, and check it with that skill's `look.mjs`; never edit the kernel.
-- **The hero** (`role-hero.tsx`, `role-stage.tsx`): each role has its own composition and window. MPs: the promise centred over a dark dome; MLAs: a kolam circle running off the page; Mayors: a wide civic window (a jharokha) under the promise; consultants: a pool of waves, picture first. Beside the figure a case card plays one real case in four steps (`case` in each role's copy), the office pages' Flow example in short: the hero passes its own `stops` to the figure's tour (`look.ts`), steps one to three light as the unseen pointer reaches each stop, and the fourth when the figure returns to rest, where its rest highlight turns leaf. The card is always readable: before the lap and under reduced motion it shows the case closed. "Play again" replays the lap, and "See every step" jumps to the Flow section (`#flow`). After changing a figure, check its stops still land where `look.ts` says.
+- **The hero** (`role-hero.tsx`, `role-stage.tsx`): each role has its own composition and window. MPs: the promise centred over a dark dome; MLAs: a kolam circle running off the page; Mayors: a wide civic window (a jharokha) under the promise; consultants: a pool of waves, picture first. Beside the figure a case card plays one real case in four steps (`case` in each role's copy), the office pages' Flow example in short: the hero passes its own `stops` to the figure's tour (`look.ts`), steps one to three light as the unseen pointer reaches each stop, and the fourth when the figure returns to rest, where its rest highlight turns leaf. The card is always readable: before the lap and under reduced motion it shows the case closed. "See every step" jumps to the Flow section (`#flow`). The lap plays once, when the card is half in view, and the figure then rests (`hairline.tsx` stops the tour after one lap). After changing a figure, check its stops still land where `look.ts` says.
 - **The pattern** (sadan, kolam, jaali, lehar) in the hero window and the sections, and the role's word in Devanagari, set large and faint behind the figure.
 - **One section of its own** (`own.tsx`): an MP's offices feeding one record, an assembly seat from the office out to its booths, complaints landing ward by ward. The consultants page (`consultants-page.tsx`) is a partnership page with its own sections; partner terms are agreed per partner and never published there.
 - **Its copy and modules**, taken from the live modules on How we work; anything still being built is badged "In progress".
@@ -86,17 +89,18 @@ public/sadan/v1/tex/             PBR textures (full set and lite/), cached as im
 assets/loksabha.jpg              Poster and fallback image (next/image, blur placeholder)
 ```
 
-**Rendering.** Every section is a server component. Only four client islands ship JavaScript:
+**Rendering.** Every section is a server component. Only three client islands ship JavaScript:
 - the header;
 - the proof counters;
-- the story controller;
-- "Try it", the visitor's own request followed from logged to closed (`components/home/try-it-journey.tsx`), about 8 KB gzipped.
+- the story controller.
 
 The page is fully readable without JavaScript.
 
 **The 3D chamber.** `lib/sadan/engine.ts` does not depend on any framework. The story controller loads it with a dynamic `import()` after hydration, so Three.js (about 155 KB gzipped) is never part of first-load JS. The engine takes a canvas, a stage element and a progress getter. It returns a handle with `dispose()`, which removes listeners and frees GPU memory, so React StrictMode double mounts and route changes don't leak WebGL contexts. An `AbortSignal` cancels a load that is still in progress.
 
 Until the engine is ready, and permanently on devices without WebGL, the Lok Sabha photo is shown instead.
+
+**The splash.** A brief greeting, never a wait for the chamber: it is `aria-hidden`, lets clicks through, lifts after 1.6 s (`SPLASH_MS`) or at the first key, click, touch or wheel, and also fades itself out in CSS on the compositor, so it lifts on time while the main thread is busy starting the chamber. The page under it is readable from the first paint; the photo stands in until the chamber fades in, on every device.
 
 **Chapters and camera stops.** These are paired by index:
 - the cards are in `chapters.tsx`;
@@ -156,7 +160,7 @@ In `band` and `side`:
 - the canvas is only the band, so the camera centres each stop in it and widens the lens for narrow bands. A stop can carry a compact framing (`c: { p, t, fov }` in `STOPS`);
 - in-scene text keeps a minimum size on screen (band labels about 11 px, badge captions about 8 px, the Setuk tag about 10 px); the four problem badges regroup into a 2x2 grid;
 - the header slides away while reading down through the story and returns on any scroll up (`html[data-hide-header]`);
-- the splash gives up after 6 s instead of 15 s; the photo shows until the chamber is ready.
+- the photo shows until the chamber is ready.
 
 Rotating or resizing across layouts keeps the reader at the same point of the story. Without JavaScript the splash is hidden, the photo stands in for the chamber and every card is readable.
 
@@ -170,7 +174,7 @@ URL options:
 **Type.** The fonts are self-hosted with `next/font`; there are no requests to Google:
 - **Geist** for display and body text;
 - **Geist Mono** for chapter numbers and figures;
-- **Anek Devanagari** for Hindi. It is preloaded only on `/hi`. On `/` it loads only if Devanagari glyphs render, thanks to `unicode-range`.
+- **Anek Devanagari** for Hindi, declared only in the Hindi layout and not preloaded (the bundler shares font CSS between the two layouts, so a preload would reach English pages too). English pages never load it: their few Devanagari glyphs are faint `aria-hidden` ornaments set in the system's Devanagari font (`--font-anek` in `globals.css`).
 
 **Patterns.** The cards and sections use Indian patterns, drawn as CSS masks over `currentColor` so they take the theme colour in light and dark mode. The classes are in `globals.css` and the components are in `components/site/pattern.tsx`:
 - **jaali**: interlocking circles, carried over from option 2;
@@ -188,13 +192,30 @@ Each story card hangs a temple border from its top edge, has its own corner patt
 - the CTA: the jaali with सेतु;
 - the footer: a temple border.
 
-**Icons.** Phosphor icons are imported one module at a time through `components/icons.ts`, from `@phosphor-icons/react/dist/ssr/*`. The package isn't in Next's `optimizePackageImports` list, so importing from the package root would bundle every icon.
+**Icons.** Phosphor icons are imported one module at a time through `components/icons.ts`, from `@phosphor-icons/react/dist/ssr/*`. The package isn't in Next's `optimizePackageImports` list, so importing from the package root would bundle every icon. Each icon carries all six weights, so a client component should import only the icons it draws: the header's menu icons live in `components/site/menu-icons.ts` (the product and role looks read them from there), because importing a look object pulled every module icon into every page.
+
+## Performance and accessibility
+
+The site aims at WCAG 2.1 AA, which is what the 50 accessibility checkpoints of GIGW 3.0 (the Guidelines for Indian Government Websites) require. Rules that keep it there:
+
+- **Nothing hides the page.** The homepage splash is `aria-hidden`, lets clicks through and lifts within about 2 s (see The splash); hero items (`rise`) slide in but are visible from the first paint, since starting them at opacity 0 delayed the main text (LCP).
+- **Fonts.** English pages load only Geist (about 50 KB); see Type.
+- **Motion.** Anything that moves beside the text plays once or on request (the product screens, the role figures' tour); loops longer than 5 s need a pause control (WCAG 2.2.2). Everything shows its end state with reduced motion.
+- **Focus.** The global ring is the accent; on blue (`bg-accent`) and ink (`.inverse`) surfaces it switches to the surface's light colour (`globals.css`). Check any new coloured surface for a visible ring.
+- **Screen readers.** Visual duplicates are `aria-hidden` and their content stays in the tree: on the homepage How we work's pinned card is hidden from assistive tech, and the four step cards are visually hidden in the classic layout rather than `display: none`. Live regions only for real status messages (never a counter). `<dl>` rows hold only `<dt>` and `<dd>`; put an icon inside the `<dt>`.
+- **Contrast.** Small text keeps 4.5:1 on every surface, including the tinted bands: avoid fading `text-muted` with `/70` or `opacity-75`. `--leaf` is a shade darker than the logo green for that reason.
+- **Forms and pickers.** A `<select>` never navigates on keyboard changes (the voter-list finder waits for Enter or Show; mouse and touch picks open at once, as its hint says).
+- **Caching and headers.** `/sadan/` and `/hairline/` are versioned and cached as immutable; `next.config.ts` also sets baseline security headers (`nosniff`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`) and drops `X-Powered-By`. HSTS is left to the host; a Content-Security-Policy needs the inline theme script hashed first.
+
+Check a change with a production build: Lighthouse (mobile and desktop) and axe-core with the WCAG 2.1 A/AA tags. Headless Chrome renders WebGL in software, so test the homepage with `?q=low` and judge its blocking time on a real phone.
 
 ## Before launch
 
 - Replace the proof figures in `content/site.ts`. They are illustrative and labelled as such on the page.
 - Confirm the engagement packages (`engage.pkgs`) and the "30 lakh+" local body figure.
-- Get a native editor to review the Hindi copy in `content/hi.ts`.
+- Get a native editor to review the Hindi copy in `content/hi.ts` (including the newer `notFound` and voter-list finder `hint`/`go` strings).
+- Connect the contact form and the demo dialog to a backend (see above).
+- Still open from the accessibility audit: the homepage story's focus ring on the two product links (2.47:1), single arrow-key scrolls in the story being snapped back, a 186 KB non-square favicon (`app/icon.png`), a Content-Security-Policy, and the GIGW content pages (help, an HTML sitemap, an accessibility statement, print styles, copyright and hyperlinking policies, a notice on links that leave the site).
 - Move menu links from `https://setuk.org/...` to internal paths as those pages are migrated (`content/site.ts`).
 - The wall, desk, laptop and phone screens show labelled sample data with illustrative names.
 - The training call is drawn in a generic video-call layout (no Google Meet branding).

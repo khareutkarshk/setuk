@@ -143,8 +143,14 @@ export function Hairline({ name, label, hint, nouns, tour, onTour, controlsRef, 
         watch?.disconnect();
         lap?.stop();
         heard.current?.(-1);
-        // the kernel's tour walks round for ever, rests a beat at each null, and gives way to a real pointer
-        lap = HL.tour(stage, stops, (i) => heard.current?.(i));
+        // the kernel's tour walks round for ever, rests a beat at each null, and gives way to a real pointer;
+        // stopped after one lap, so nothing beside the page's text moves without end (WCAG 2.2.2). A real
+        // pointer still moves the figure, and restart() walks it again
+        const one = HL.tour(stage, stops, (i) => {
+          heard.current?.(i);
+          if (i === stops.length - 1) setTimeout(() => one.stop());
+        });
+        lap = one;
       };
       if (wanted) { play(); return; }
       watch = new IntersectionObserver(([e]) => {

@@ -34,10 +34,15 @@ export function scrollTarget(): number {
   return lenis ? lenis.targetScroll : scrollY;
 }
 
+/** A glide for moves between story chapters: a sine ease-in-out, which gathers speed and settles with
+    the gentlest acceleration of the usual curves. Lenis's default (an exponential ease-out) covers most
+    of the way in the first instant and reads as a jump */
+export const glide = (t: number) => (1 - Math.cos(Math.PI * t)) / 2;
+
 /** Scroll the page to `y`: eased through Lenis when it runs, otherwise natively. `onComplete` runs on
-    arrival (natively, at once for an immediate jump, else after `duration`) */
-export function scrollToY(y: number, { immediate = false, duration = 1, onComplete }: { immediate?: boolean; duration?: number; onComplete?: () => void } = {}) {
-  if (lenis) lenis.scrollTo(y, { immediate, duration, force: true, onComplete: onComplete && (() => onComplete()) });
+    arrival (natively, at once for an immediate jump, else after `duration`). `easing` defaults to Lenis's own */
+export function scrollToY(y: number, { immediate = false, duration = 1, easing, onComplete }: { immediate?: boolean; duration?: number; easing?: (t: number) => number; onComplete?: () => void } = {}) {
+  if (lenis) lenis.scrollTo(y, { immediate, duration, ...(easing ? { easing } : {}), force: true, onComplete: onComplete && (() => onComplete()) });
   else {
     scrollTo({ top: y, behavior: immediate ? "instant" : "smooth" });
     if (onComplete) { if (immediate) onComplete(); else setTimeout(onComplete, duration * 1000); }

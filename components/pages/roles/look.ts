@@ -1,6 +1,7 @@
 import type { Dictionary, RoleKey } from "@/content/types";
 import type { PatternKind } from "@/components/site/pattern";
 import * as I from "@/components/icons";
+import { ROLE_MENU_ICON } from "@/components/site/menu-icons";
 
 /**
  * What makes each role page its own, besides its copy: the hero's line figure (public/hairline/v1),
@@ -31,22 +32,22 @@ type Look = { figure: string; window: RoleWindow; stops: Stop[]; pattern: Patter
 
 export const ROLE_LOOK: Record<RoleKey, Look> = {
   mps: {
-    figure: "benches", window: "dome", stops: [[111, 122], [271, 134], [180, 155], null], pattern: "sadan", icon: I.Bank,
+    figure: "benches", window: "dome", stops: [[111, 122], [271, 134], [180, 155], null], pattern: "sadan", icon: ROLE_MENU_ICON.mps,
     // many registers, two cities, no owner, no single view
     problems: [I.Stack, I.ArrowsLeftRight, I.HourglassMedium, I.MagnifyingGlass]
   },
   mlas: {
-    figure: "booths", window: "circle", stops: [[124, 212], [200, 145], [124, 212], null], pattern: "kolam", icon: I.MapTrifold,
+    figure: "booths", window: "circle", stops: [[124, 212], [200, 145], [124, 212], null], pattern: "kolam", icon: ROLE_MENU_ICON.mlas,
     // every direction, teams across villages, letters that go quiet, work without a record
     problems: [I.ChatsCircle, I.UsersThree, I.EnvelopeSimple, I.Notebook]
   },
   mayors: {
-    figure: "wards", window: "jharokha", stops: [[136, 195], [179, 153], [136, 195], null], pattern: "jaali", icon: I.Buildings,
+    figure: "wards", window: "jharokha", stops: [[136, 195], [179, 153], [136, 195], null], pattern: "jaali", icon: ROLE_MENU_ICON.mayors,
     // every channel, many departments, public works, a crowded calendar
     problems: [I.Phone, I.ShareNetwork, I.Barricade, I.CalendarDots]
   },
   consultants: {
-    figure: "portfolio", window: "pool", stops: [[125, 172], [205, 250], [300, 205], null], pattern: "lehar", icon: I.Handshake,
+    figure: "portfolio", window: "pool", stops: [[125, 172], [205, 250], [300, 205], null], pattern: "lehar", icon: ROLE_MENU_ICON.consultants,
     // every client different, the handover, advice on paper, setup that grows
     problems: [I.Strategy, I.DoorOpen, I.ClipboardText, I.UserGear]
   }

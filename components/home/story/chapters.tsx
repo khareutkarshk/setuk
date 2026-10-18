@@ -264,7 +264,7 @@ export function HowChapters({ t }: { t: Dictionary }) {
   const steps = t.how.steps;
   return (
     <div className={styles.howGroup} data-how={5}>
-      <div className={styles.howPin} data-pin>
+      <div className={styles.howPin} data-pin aria-hidden="true">
         <Card
           n={6}
           ornament="lotus"

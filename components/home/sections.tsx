@@ -25,7 +25,9 @@ function Title({ children, className = "" }: { children: ReactNode; className?: 
 const LOOKS = [
   { card: "border-line bg-surface text-ink", soft: "text-muted", key: "text-accent", hi: "border-accent bg-accent text-accent-ink", cta: "bg-accent text-accent-ink hover:brightness-110" },
   { card: "inverse border-ink bg-ink text-bg", soft: "text-bg/70", key: "text-accent-soft", hi: "border-accent bg-accent text-accent-ink", cta: "bg-accent text-accent-ink hover:brightness-110" },
-  { card: "border-accent bg-accent text-accent-ink", soft: "text-accent-ink/75", key: "text-accent-ink", hi: "border-accent-ink bg-accent-ink text-accent", cta: "bg-accent-ink text-accent hover:brightness-95" }
+  /* on the blue card the secondary text stays near full strength and the corner pattern fainter, so small
+     copy keeps 4.5:1 where it crosses the pattern */
+  { card: "border-accent bg-accent text-accent-ink", soft: "text-accent-ink/90", key: "text-accent-ink", hi: "border-accent-ink bg-accent-ink text-accent", cta: "bg-accent-ink text-accent hover:brightness-95", corner: "opacity-[.05]" }
 ];
 
 export function Engagements({ t, locale }: { t: Dictionary; locale: Locale }) {
@@ -52,7 +54,7 @@ export function Engagements({ t, locale }: { t: Dictionary; locale: Locale }) {
               <article key={p.t} style={vars} className={`${engage.card} relative flex flex-col overflow-hidden rounded-[28px] border shadow-[0_-18px_60px_-34px_rgb(0_0_0/.45)] ${look.card}`}>
                 <Pattern kind="temple" className={`absolute inset-x-0 top-0 -scale-y-100 opacity-70 ${look.key}`} />
                 <Pattern kind="jaali" className="absolute inset-0 opacity-[.05]" />
-                <CornerPattern kind="kolam" fx={0} fy={100} radius={320} className={`inset-0 opacity-[.1] ${look.key}`} />
+                <CornerPattern kind="kolam" fx={0} fy={100} radius={320} className={`inset-0 ${"corner" in look ? look.corner : "opacity-[.1]"} ${look.key}`} />
                 {/* header: number, the recommendation, and where this card sits in the stack */}
                 <div className="relative flex min-h-[64px] flex-wrap items-center justify-between gap-3 border-b border-current/10 px-6 pt-5 pb-3 font-mono text-[12px] tracking-[.18em] uppercase sm:px-9">
                   <p className="flex flex-wrap items-center gap-3">
