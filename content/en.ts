@@ -241,6 +241,7 @@ export const en: Dictionary = {
     legal: "Legal",
     address: "H.No. 413, Nehru Nagar, Patliputra, Phulwari, Patna 800013, Bihar",
     rights: "Setuk Private Limited. All rights reserved.",
+    top: "Back to top",
     model: "3D chamber is an illustrative model, not to scale.",
     voterList: "Voter List Excel",
     guideItems: [

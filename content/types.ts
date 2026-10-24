@@ -660,6 +660,8 @@ export interface Dictionary {
     legal: string;
     address: string;
     rights: string;
+    /** The bottom row's link back to the top of the page */
+    top: string;
     model: string;
     voterList: string;
     /** Short labels for the articles, by slug */

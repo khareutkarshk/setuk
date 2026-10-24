@@ -6,6 +6,7 @@
 export { ArrowDown } from "@phosphor-icons/react/dist/ssr/ArrowDown";
 export { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
 export { ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+export { ArrowUp } from "@phosphor-icons/react/dist/ssr/ArrowUp";
 export { ArrowUpRight } from "@phosphor-icons/react/dist/ssr/ArrowUpRight";
 export { ArrowsLeftRight } from "@phosphor-icons/react/dist/ssr/ArrowsLeftRight";
 export { Bank } from "@phosphor-icons/react/dist/ssr/Bank";
