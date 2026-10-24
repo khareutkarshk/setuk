@@ -1,7 +1,9 @@
 /* Engagements: the packages stack as they scroll. Each card pins under the header a little lower than
    the one before, and the next slides up over it; one card fills the view at a time. The covered card
    recedes (scaled and dimmed) on the next card's view timeline where scroll-driven animations exist.
-   Short or narrow screens get a plain list, so no card ever hides another's copy. */
+   On phones the cards stack too: EngageFit measures each card (--card-h), and one taller than the screen
+   pins with its foot in view, so the next card covers it only once it has been read through. Without
+   script, and on short wide screens, the stack stays a plain list. */
 
 .stack { display: grid; gap: 16px; }
 
@@ -19,6 +21,27 @@
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .card {
+        animation: recede linear both;
+        animation-timeline: var(--next);
+        animation-range: entry 0% entry 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .stack[data-fit] { gap: 0; padding-bottom: 4vh; }
+  .stack[data-fit] .card {
+    position: sticky;
+    top: min(calc(var(--header-h) + 16px + var(--i) * 12px), calc(100svh - var(--card-h, 0px) - 16px));
+    transform-origin: 50% 0;
+    view-timeline-name: var(--self);
+  }
+  .stack[data-fit] .card + .card { margin-top: 24vh; }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .stack[data-fit] .card {
         animation: recede linear both;
         animation-timeline: var(--next);
         animation-range: entry 0% entry 100%;

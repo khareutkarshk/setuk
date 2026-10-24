@@ -9,6 +9,7 @@ import { Kicker } from "@/components/site/kicker";
 import { AshokaChakra, CornerPattern, Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
 import engage from "./engage.module.css";
+import { EngageFit } from "./engage-fit";
 
 /* Sections after the scroll story. All server-rendered; the FAQ uses <details>, so no JS.
    Each section carries its own Indian pattern (components/site/pattern.tsx): a toran over
@@ -48,6 +49,7 @@ export function Engagements({ t, locale }: { t: Dictionary; locale: Locale }) {
           <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted">{t.engage.body}</p>
         </div>
         <div className={`${engage.stack} mt-12`} style={scope}>
+          <EngageFit />
           {pkgs.map((p, i) => {
             const look = LOOKS[i % LOOKS.length], pick = i === 1;
             const vars = { "--i": i, "--self": `--eng-${i}`, "--next": i < n - 1 ? `--eng-${i + 1}` : "none" } as CSSProperties;
