@@ -34,14 +34,15 @@ Put values with a colon in double quotes. The build stops with the file name if 
 ### Smaller heading
 
 A paragraph. Lines next to each other join into one paragraph; a blank line starts the next.
-Inside text: **bold**, [a page on the site](/how-we-work), [another article](/articles/file-name),
+Inside text: **bold**, *italics*, `code or a number to type`, ==a highlight==, [a page on the site](/how-we-work), [another article](/articles/file-name),
 [an outside page](https://example.gov.in) and a citation marker.[^source]
 
 > A quote.
 > — Who said it (optional last line, starting with — or --)
 
 > [!NOTE]
-> A callout. Use NOTE, TIP or WARNING; a title can follow on the first line: > [!TIP] Short title
+> A callout. Use NOTE (blue), TIP (green), IMPORTANT (ink), WARNING (amber) or CAUTION (red);
+> a title can follow on the first line: > [!TIP] Short title
 
 - A bullet
 - Another bullet
@@ -53,6 +54,10 @@ Inside text: **bold**, [a page on the site](/how-we-work), [another article](/ar
 1. **First step** What to do. Each step needs a bold title.
 2. **Second step** And so on.
 :::
+
+---
+
+(a line of three or more dashes on its own is a divider between sections)
 
 | Column | Column |
 | --- | --- |
@@ -73,4 +78,4 @@ are numbered in the order their `[^id]:` lines are listed, so put those together
 `[^id]` in the text needs one. Videos are YouTube only and load from youtube-nocookie.com.
 
 Pictures use keys from `content/media.ts`; to add a new one, put the `.webp` in `assets/media/`
-and add it there. `_italics_` shows as typed. Articles are English only.
+and add it there. `_italics_` shows as typed; use `*italics*`. Articles are English only.

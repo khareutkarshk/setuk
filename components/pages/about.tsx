@@ -2,6 +2,7 @@ import Image, { type StaticImageData } from "next/image";
 import { getDictionary, type Locale } from "@/content";
 import { Kicker } from "@/components/site/kicker";
 import { SetukMark } from "@/components/site/setuk-mark";
+import { StartupIndiaBadge } from "@/components/site/trust-seals";
 import { CornerPattern, Lotus } from "@/components/site/pattern";
 import { BeforeAfter } from "./before-after";
 import { Band, Figure, H1, Lead, PageHero, Panel, SectionHead, TICK, Wrap } from "./ui";
@@ -35,6 +36,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <Kicker className="rise text-leaf">{t.nav.labels.about}</Kicker>
         <H1 className="rise mt-4 max-w-[920px] [--i:1]">{p.title}</H1>
         <Lead className="rise mt-6 [--i:2]">{p.sub}</Lead>
+        <StartupIndiaBadge seals={t.seals} className="rise mt-6 [--i:2]" />
         <div className="grid items-end gap-8 pt-12 md:pt-16 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
           <Figure img="warRoom" alt={p.heroAlt} priority sizes="(min-width: 1024px) 800px, 100vw" className="rise [--i:3]" />
           <dl className="rise grid gap-6 [--i:4] sm:grid-cols-3 lg:grid-cols-1">

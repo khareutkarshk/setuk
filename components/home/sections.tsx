@@ -4,6 +4,7 @@ import type { Dictionary, Locale } from "@/content";
 import { site } from "@/content/site";
 import * as I from "@/components/icons";
 import { SetukMark } from "@/components/site/setuk-mark";
+import { TrustSeals } from "@/components/site/trust-seals";
 import { Kicker } from "@/components/site/kicker";
 import { AshokaChakra, CornerPattern, Pattern } from "@/components/site/pattern";
 import { href, routes } from "@/lib/paths";
@@ -11,7 +12,7 @@ import engage from "./engage.module.css";
 
 /* Sections after the scroll story. All server-rendered; the FAQ uses <details>, so no JS.
    Each section carries its own Indian pattern (components/site/pattern.tsx): a toran over
-   Engagements (whose package cards stack as they scroll, engage.module.css), a jaali screen behind Data and trust, block-print buti in the FAQ panel and
+   Engagements (whose package cards stack as they scroll, engage.module.css; what's included on the left, the package and its button on the right), a jaali screen behind Data and trust, block-print buti in the FAQ panel and
    the jaali with सेतुक on the closing call to action. */
 
 const bigJaali = { "--s": "64px", "--r": "45px", "--w": "1.6px" } as CSSProperties;
@@ -69,39 +70,39 @@ export function Engagements({ t, locale }: { t: Dictionary; locale: Locale }) {
                     <span className="tnum">{pad(i + 1)} / {pad(n)}</span>
                   </p>
                 </div>
-                <div className="relative grid flex-1 gap-8 p-6 sm:p-9 md:grid-cols-[1fr_1.15fr] md:gap-10">
+                <div className="relative grid flex-1 gap-8 p-6 sm:p-10 md:grid-cols-[1.15fr_1fr] md:gap-12 lg:p-12">
                   <div className="relative flex flex-col">
                     {/* the package number as a Devanagari watermark, like the story cards */}
-                    <span aria-hidden="true" className={`font-deva pointer-events-none absolute -bottom-2 right-0 select-none text-[120px] leading-none font-bold opacity-[.07] max-md:hidden ${look.key}`}>{pad(i + 1).replace(/\d/g, (d) => "०१२३४५६७८९"[Number(d)])}</span>
-                    <h3 className="font-display-tight text-balance text-[clamp(32px,4vw,52px)] leading-[1.04]">{p.t}</h3>
-                    <p className={`mt-5 max-w-[42ch] text-[17px] leading-relaxed ${look.soft}`}>
+                    <span aria-hidden="true" className={`font-deva pointer-events-none absolute -bottom-2 left-0 select-none text-[120px] leading-none font-bold opacity-[.07] max-md:hidden ${look.key}`}>{pad(i + 1).replace(/\d/g, (d) => "०१२३४५६७८९"[Number(d)])}</span>
+                    <h3 className="font-display-tight text-balance text-[clamp(36px,4.6vw,60px)] leading-[1.04]">{p.t}</h3>
+                    <p className={`mt-5 max-w-[42ch] text-[19px] leading-relaxed ${look.soft}`}>
                       <b className="font-semibold">{t.engage.forLabel}:</b> {p.for}
                     </p>
                     {/* terms: price and trial, each with its icon */}
-                    <ul className="mt-7 max-w-[360px] divide-y divide-current/10 border-y border-current/10 text-[15px]">
+                    <ul className="mt-7 max-w-[400px] divide-y divide-current/10 border-y border-current/10 text-[16px]">
                       {([[I.CurrencyInr, t.engage.price], [I.HourglassMedium, t.engage.trial]] as const).map(([Ico, label]) => (
-                        <li key={label} className="flex items-center gap-3 py-3">
-                          <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[10px] bg-current/[.06] ${look.key}`}><Ico size={16} aria-hidden /></span>
+                        <li key={label} className="flex items-center gap-3 py-3.5">
+                          <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-current/[.06] ${look.key}`}><Ico size={18} aria-hidden /></span>
                           <span>{label}</span>
                         </li>
                       ))}
                     </ul>
-                    <div className="mt-auto pt-8">
-                      <Link href={href(locale, routes.contact)} data-demo="" aria-haspopup="dialog" className={`press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full px-6 text-[15px] font-semibold ${look.cta}`}>
+                    <div className="mt-auto flex pt-8 md:justify-end">
+                      <Link href={href(locale, routes.contact)} data-demo="" aria-haspopup="dialog" className={`press inline-flex h-14 items-center gap-2.5 whitespace-nowrap rounded-full px-8 text-[17px] font-semibold ${look.cta}`}>
                         {t.engage.cta}
                         <I.ArrowRight weight="bold" aria-hidden />
                       </Link>
                     </div>
                   </div>
-                  {/* what's included, framed like a screen with corner marks */}
-                  <div className="relative flex items-center rounded-3xl border border-current/12 bg-current/[.03] p-5 sm:p-7">
+                  {/* what's included, framed like a screen with corner marks: first on wide screens, after the package on phones */}
+                  <div className="relative flex items-center rounded-3xl border border-current/12 bg-current/[.03] p-5 sm:p-8 md:order-first">
                     <Pattern kind="buti" className="absolute inset-0 rounded-3xl opacity-[.06]" />
                     {["top-3 left-3 border-t border-l", "top-3 right-3 border-t border-r", "bottom-3 left-3 border-b border-l", "bottom-3 right-3 border-b border-r"].map((c) => (
                       <span key={c} aria-hidden="true" className={`absolute h-4 w-4 border-current/40 ${c} ${look.key}`} />
                     ))}
-                    <ul className="relative grid w-full gap-2.5 sm:grid-cols-2">
+                    <ul className="relative grid w-full gap-3 sm:grid-cols-2">
                       {p.inc.map((x, k) => (
-                        <li key={x} className={`flex items-center gap-2.5 rounded-2xl border px-4 py-3.5 text-[15px] leading-snug ${k === 0 ? look.hi : "border-current/12 bg-current/[.04]"} ${k === 0 && p.inc.length % 2 ? "sm:col-span-2" : ""}`}>
+                        <li key={x} className={`flex items-center gap-3 rounded-2xl border px-4 py-4 text-[16px] leading-snug ${k === 0 ? look.hi : "border-current/12 bg-current/[.04]"} ${k === 0 && p.inc.length % 2 ? "sm:col-span-2" : ""}`}>
                           <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-leaf text-leaf-ink"><I.Check size={12} weight="bold" aria-hidden /></span>
                           <span>{x}</span>
                         </li>
@@ -158,6 +159,10 @@ export function Trust({ t, locale }: { t: Dictionary; locale: Locale }) {
             );
           })}
         </ul>
+        {/* SSL, GDPR, the DPDP Act and Startup India, under both columns */}
+        <div className="border-t border-bg/15 pt-8 lg:col-span-2">
+          <TrustSeals seals={t.seals} ink />
+        </div>
       </div>
     </section>
   );

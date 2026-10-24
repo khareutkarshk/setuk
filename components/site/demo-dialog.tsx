@@ -9,7 +9,7 @@ import { Pattern } from "@/components/site/pattern";
 import { SetukMark } from "@/components/site/setuk-mark";
 import { watchLenis } from "@/lib/smooth-scroll";
 
-type Field = "name" | "email" | "consent";
+type Field = "name" | "phone";
 type Direct = { href: string; label: string };
 
 /**
@@ -18,8 +18,9 @@ type Direct = { href: string; label: string };
  * opens this instead. data-demo="0".."3" preselects a role (the role pages pass theirs).
  *
  * Laid out like a note to the office: the brand side says what happens after you send it, the paper
- * side is the slip itself. On phones it rises as a sheet. There is no form backend yet, so until the
- * API is connected in onSubmit a request shows its thank-you but goes nowhere.
+ * side is the slip itself. On phones it rises as a sheet. Only the name and a mobile number are asked
+ * for; the rest is optional, and the send button stays in view at the slip's foot. There is no form
+ * backend yet, so until the API is connected in onSubmit a request shows its thank-you but goes nowhere.
  *
  * A native <dialog>: Escape, the backdrop and the close button all play the exit through `hide`
  * (data-closing keeps it in the top layer while it fades, in every browser), focus goes to the title
@@ -85,8 +86,7 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
     const d = new FormData(form);
     const e: Partial<Record<Field, string>> = {};
     if (!String(d.get("name") ?? "").trim()) e.name = c.errors.name;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(d.get("email") ?? "").trim())) e.email = c.errors.email;
-    if (!d.get("consent")) e.consent = c.errors.consent;
+    if (!mobile(String(d.get("phone") ?? ""))) e.phone = c.errors.phone;
     return e;
   };
 
@@ -98,7 +98,7 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
     setTouched(true);
     const first = (Object.keys(e) as Field[])[0];
     if (first) { form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus(); return; }
-    /* TODO: send new FormData(form) (name, role, office, staff, email, phone, note) to the API here */
+    /* TODO: send new FormData(form) (name, phone, role, staff, note) to the API here */
     /* sent: the next request starts on a clean slip */
     form.reset();
     setSent(true);
@@ -155,7 +155,7 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
             </button>
           </div>
 
-          <form ref={formRef} noValidate onSubmit={onSubmit} onInput={onInput} hidden={sent} className="px-6 pt-6 pb-7 sm:px-8 sm:pt-7">
+          <form ref={formRef} noValidate onSubmit={onSubmit} onInput={onInput} hidden={sent} className="px-6 pt-6 sm:px-8 sm:pt-7">
             <fieldset>
               <legend className={label}>{c.role} {opt}</legend>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -176,17 +176,9 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
                 {err("name")}
               </div>
               <div>
-                <label htmlFor={`${id}-o`} className={label}>{c.office} {opt}</label>
-                <input id={`${id}-o`} name="office" autoComplete="organization" className={`${input} h-12 border-line`} />
-              </div>
-              <div>
-                <label htmlFor={`${id}-e`} className={label}>{c.email}</label>
-                <input id={`${id}-e`} name="email" type="email" inputMode="email" autoComplete="email" aria-invalid={!!errors.email} aria-describedby={desc("email")} className={`${input} h-12 ${border("email")}`} />
-                {err("email")}
-              </div>
-              <div>
-                <label htmlFor={`${id}-p`} className={label}>{c.phone} {opt}</label>
-                <input id={`${id}-p`} name="phone" type="tel" inputMode="tel" autoComplete="tel" className={`${input} h-12 border-line`} />
+                <label htmlFor={`${id}-p`} className={label}>{c.phone}</label>
+                <input id={`${id}-p`} name="phone" type="tel" inputMode="tel" autoComplete="tel" aria-invalid={!!errors.phone} aria-describedby={desc("phone")} className={`${input} h-12 ${border("phone")}`} />
+                {err("phone")}
               </div>
             </div>
 
@@ -205,20 +197,16 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
 
             <div className="mt-6">
               <label htmlFor={`${id}-m`} className={label}>{c.note} {opt}</label>
-              <textarea id={`${id}-m`} name="note" rows={3} placeholder={c.noteHint} className={`${input} min-h-[96px] resize-y border-line py-3`} />
+              <textarea id={`${id}-m`} name="note" rows={2} placeholder={c.noteHint} className={`${input} min-h-[72px] resize-y border-line py-3`} />
             </div>
 
-            <div className="mt-5">
-              <label className="flex cursor-pointer items-start gap-3 text-[15px]">
-                <input type="checkbox" name="consent" aria-invalid={!!errors.consent} aria-describedby={desc("consent")} className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded accent-[var(--accent)]" />
-                <span>{c.consent} <Link href={privacyHref} className="font-medium text-accent underline underline-offset-2">{c.privacy}</Link></span>
-              </label>
-              {err("consent")}
+            {/* the foot of the slip stays in view, so the button is never below the fold */}
+            <div className="sticky bottom-0 z-10 -mx-6 mt-6 border-t border-dashed border-line bg-bg/95 px-6 pt-4 pb-5 backdrop-blur-sm sm:-mx-8 sm:px-8">
+              <p className="text-[13px] leading-snug text-muted">{c.consent} <Link href={privacyHref} className="font-medium text-accent underline underline-offset-2">{c.privacy}</Link></p>
+              <button type="submit" className="press mt-3 inline-flex h-12 w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110 sm:w-auto">
+                {c.submit}<I.ArrowRight weight="bold" aria-hidden />
+              </button>
             </div>
-
-            <button type="submit" className="press mt-7 inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
-              {c.submit}<I.ArrowRight weight="bold" aria-hidden />
-            </button>
           </form>
 
           {sent && (
@@ -243,6 +231,12 @@ export function DemoHost({ c, privacyHref, whatsapp, phone }: { c: DemoCopy; pri
       </div>
     </dialog>
   );
+}
+
+/** An Indian mobile number: ten digits from 6 to 9, with or without +91 or a leading 0, spaces and dashes allowed */
+function mobile(x: string) {
+  const d = x.replace(/[\s()-]/g, "").replace(/^(\+?91|0)(?=\d{10}$)/, "");
+  return /^[6-9]\d{9}$/.test(d);
 }
 
 /** What happens after you send it, and the numbers to call instead: the brand side's lower half */

@@ -5,6 +5,7 @@ import { media } from "@/content/media";
 import type { QA, RoleChallenges, RoleModule, TitledItem } from "@/content/types";
 import * as I from "@/components/icons";
 import { CornerPattern, Pattern } from "@/components/site/pattern";
+import { TrustSeals } from "@/components/site/trust-seals";
 import { href, routes } from "@/lib/paths";
 import { Faqs } from "../faq-list";
 import { deva, H2, IconTile, Lead, Panel, SectionHead, TextLink, Wrap } from "../ui";
@@ -226,6 +227,7 @@ export function SetupAndTrust({ locale }: { locale: Locale }) {
               );
             })}
           </dl>
+          <TrustSeals seals={t.seals} className="mt-8 sm:grid-cols-2" />
           <TextLink href={href(locale, routes.legalDoc("privacy"))} className="mt-6">{c.trust.link}</TextLink>
         </div>
       </Wrap>

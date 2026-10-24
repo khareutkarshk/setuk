@@ -4,6 +4,7 @@ import type { Dictionary, Locale } from "@/content";
 import * as I from "@/components/icons";
 import type { Icon } from "@/components/icons";
 import { CornerPattern, Lotus, Pattern, type PatternKind } from "@/components/site/pattern";
+import { StartupIndiaBadge } from "@/components/site/trust-seals";
 import { href, routes } from "@/lib/paths";
 import { PRODUCT_KEYS } from "@/components/pages/products/look";
 import { ProofStrip } from "./proof-strip";
@@ -85,6 +86,7 @@ export function HeroChapter({ t, locale }: { t: Dictionary; locale: Locale }) {
               <I.ArrowDown aria-hidden />
             </a>
           </div>
+          <StartupIndiaBadge seals={t.seals} className="rise mt-6" style={stagger(4)} />
         </div>
         {/* Proof strip [placeholder figures, see content/site.ts] */}
         <div className={`${styles.heroProof} rise mt-8 max-w-[880px] md:absolute md:right-20 md:bottom-8 md:left-8 md:mt-0 lg:left-[max(32px,calc((100vw-1280px)/2+32px))]`} style={stagger(5)}>

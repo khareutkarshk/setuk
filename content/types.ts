@@ -64,9 +64,9 @@ export interface QA {
 }
 
 /** Long-form text (articles and legal documents), kept as structured blocks */
-export type CalloutKind = "note" | "tip" | "warning";
+export type CalloutKind = "note" | "tip" | "important" | "warning" | "caution";
 
-/** Text in blocks may carry inline [links](/path or https://…), **bold** and [^id] citations */
+/** Text in blocks may carry inline [links](/path or https://…), **bold**, *italics*, `code`, ==highlights== and [^id] citations */
 export type ArticleBlock =
   | { t: "h2" | "h3" | "p"; x: string }
   | { t: "quote"; x: string; by?: string }
@@ -76,7 +76,8 @@ export type ArticleBlock =
   | { t: "table"; rows: string[][] }
   | { t: "img"; img: MediaKey; alt: string }
   | { t: "video"; youtube: string; title: string }
-  | { t: "refs"; items: { id: string; x: string }[] };
+  | { t: "refs"; items: { id: string; x: string }[] }
+  | { t: "hr" };
 
 /** An article. English only for now; /hi shows it with Hindi navigation and a note */
 export interface Article {
@@ -130,7 +131,7 @@ export interface Pages {
       tellUs: string;
       newsletter: { kicker: string; title: string; body: string; label: string; placeholder: string; submit: string; note: string; error: string; sentTitle: string; sentBody: string; again: string };
     };
-    prose: { note: string; tip: string; warning: string; video: string; cite: string; back: string; external: string };
+    prose: { note: string; tip: string; important: string; warning: string; caution: string; video: string; cite: string; back: string; external: string };
     read: string;
     allArticles: string;
     demoTitle: string;
@@ -502,7 +503,8 @@ export interface Roles {
     eg: string;
     soon: string;
     /** The hero card's buttons: play the case again, and jump to the Flow section that tells it in full */
-    hero: { more: string };
+    /** `pause` and `play` label the hero figure's motion control */
+    hero: { more: string; pause: string; play: string };
     setup: { title: string; sub: string; link: string };
     trust: { title: string; items: TitledItem[]; link: string };
     allFaqs: string;
@@ -590,9 +592,7 @@ export interface DemoCopy {
   to: string;
   toValue: string;
   name: string;
-  email: string;
   phone: string;
-  office: string;
   optional: string;
   role: string;
   /** In the order of the role pages (MPs, MLAs, mayors, consultants), then the rest */
@@ -601,10 +601,11 @@ export interface DemoCopy {
   staffs: string[];
   note: string;
   noteHint: string;
+  /** The line over the button: sending it agrees to be contacted, then the privacy link */
   consent: string;
   privacy: string;
   submit: string;
-  errors: { name: string; email: string; consent: string };
+  errors: { name: string; phone: string };
   /** The email's subject, before the sender's name */
   subject: string;
   sentTitle: string;
@@ -648,6 +649,8 @@ export interface Dictionary {
     pkgs: Package[];
   };
   trust: { eyebrow: string; title: string; body: string; items: TitledItem[]; legal: string; dpa: string };
+  /** Trust seals (components/site/trust-seals.tsx): SSL, GDPR, the DPDP Act, Startup India, in that order */
+  seals: { label: string; items: TitledItem[] };
   faq: { eyebrow: string; title: string; more: string; items: QA[] };
   cta: { title: string; body: string; primary: string; secondary: string };
   demo: DemoCopy;

@@ -5,6 +5,7 @@ import { media } from "@/content/media";
 import type { ProductKey } from "@/content/types";
 import * as I from "@/components/icons";
 import { CornerPattern, Pattern } from "@/components/site/pattern";
+import { TrustSeals } from "@/components/site/trust-seals";
 import { href, routes } from "@/lib/paths";
 import { Faqs } from "../faq-list";
 import { Band, Figure, IconTile, Lead, PageHero, PrimaryLink, SectionHead, TextLink, TICK, Wrap } from "../ui";
@@ -232,6 +233,7 @@ export function ProductPage({ product, locale }: { product: ProductKey; locale: 
               </li>
             ))}
           </ul>
+          <TrustSeals seals={t.seals} className="sm:grid-cols-2 lg:col-span-2 lg:grid-cols-4" />
         </div>
       </Band>
 

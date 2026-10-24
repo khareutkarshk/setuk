@@ -169,6 +169,15 @@ export const en: Dictionary = {
     legal: "Read the policies",
     dpa: "Data Processing Agreement for organisations, governed by Indian law."
   },
+  seals: {
+    label: "Security and compliance",
+    items: [
+      { t: "SSL secured", d: "Encrypted between you and us" },
+      { t: "GDPR", d: "Privacy-first data practices" },
+      { t: "DPDP Act, 2023", d: "Built for India's data law" },
+      { t: "Startup India", d: "DPIIT-recognised startup" }
+    ]
+  },
   faq: {
     eyebrow: "FAQs",
     title: "Questions offices ask us.",
@@ -197,7 +206,7 @@ export const en: Dictionary = {
     title: "See Setuk run on your own office's work.",
     body: "We'll walk you through it with your letters, appointments and requests, then show you how setup would go.",
     steps: [
-      { t: "We write back within two business days", d: "To fix a time that suits your office." },
+      { t: "We call you within two business days", d: "To fix a time that suits your office." },
       { t: "A walkthrough on your kind of work", d: "Letters, appointments and citizen requests, as your staff would see them." },
       { t: "A setup plan and a quote", d: "Priced by offices, staff and modules. Ask for a trial if you'd like one." }
     ],
@@ -205,9 +214,7 @@ export const en: Dictionary = {
     to: "To",
     toValue: "The Setuk team, Patna",
     name: "Full name",
-    email: "Work email",
-    phone: "Phone",
-    office: "Office or organisation",
+    phone: "Mobile number",
     optional: "optional",
     role: "You are",
     roles: ["MP", "MLA", "Mayor or councillor", "Consultant", "Party team", "Aspirant"],
@@ -215,17 +222,16 @@ export const en: Dictionary = {
     staffs: ["Just me", "2 to 10", "11 to 30", "More than 30"],
     note: "Anything we should know?",
     noteHint: "The one or two things you'd most like to fix first.",
-    consent: "Setuk may contact me about this request.",
+    consent: "By sending this, you agree Setuk may contact you about it.",
     privacy: "Privacy policy",
     submit: "Request demo",
     errors: {
       name: "Enter your name.",
-      email: "Enter a valid email address, like name@office.in.",
-      consent: "Tick this so we can reply to you."
+      phone: "Enter a 10-digit mobile number, like 98765 43210."
     },
     subject: "Demo request",
     sentTitle: "Thank you. We've got your request.",
-    sentBody: "We'll write back within two business days to fix a time for your demo.",
+    sentBody: "We'll call you within two business days to fix a time for your demo.",
     done: "Done",
     close: "Close"
   },
@@ -291,7 +297,7 @@ export const en: Dictionary = {
           again: "Use a different address"
         }
       },
-      prose: { note: "Note", tip: "Tip", warning: "Watch out", video: "Video", cite: "Source {n}", back: "Back to the text", external: "(opens in a new tab)" },
+      prose: { note: "Note", tip: "Tip", important: "Important", warning: "Watch out", caution: "Caution", video: "Video", cite: "Source {n}", back: "Back to the text", external: "(opens in a new tab)" },
       read: "Read the guide",
       allArticles: "All articles",
       demoTitle: "See Setuk run on your own office's work.",
@@ -1047,7 +1053,7 @@ export const en: Dictionary = {
       common: {
         eg: "For example",
         soon: "In progress",
-        hero: { more: "See every step" },
+        hero: { more: "See every step", pause: "Pause the animation", play: "Play the animation" },
         setup: {
           title: "Set up with your office in two to three weeks.",
           sub: "We study how your office runs, configure Setuk around it, train each role, then stay on.",

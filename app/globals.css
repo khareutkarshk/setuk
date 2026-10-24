@@ -29,8 +29,15 @@
   --leaf-soft: #e2f2e8;
   /* leaf on the inverse (ink) sections, which flip with the theme */
   --leaf-inverse: #5fd08b;
-  /* form errors only */
+  /* form errors and the articles' Caution callouts */
   --danger: #b42318;
+  --danger-soft: #fdecea;
+  /* the articles' Watch out callouts */
+  --warn: #8a5300;
+  --warn-soft: #fcf1da;
+  /* buttons that open WhatsApp (the voter list's orders): WhatsApp's green, a shade deeper for 5:1 on white text */
+  --whatsapp: #15803d;
+  --whatsapp-ink: #ffffff;
   /* Brand mark: the original navy bridge with green and blue dots */
   --mark-arch: #15428c;
   --mark-dot-side: #2e8b4e;
@@ -59,6 +66,11 @@
   --leaf-soft: #11301f;
   --leaf-inverse: #1f7a43;
   --danger: #ff8a80;
+  --danger-soft: #3a1714;
+  --warn: #f2b84b;
+  --warn-soft: #332508;
+  --whatsapp: #25d366;
+  --whatsapp-ink: #04130a;
   --mark-arch: #eef2f8;
   --mark-dot-mid: #5b9bff;
   --shadow: #000;
@@ -81,6 +93,11 @@
   --color-leaf-mark: var(--mark-dot-side);
   --color-leaf-inverse: var(--leaf-inverse);
   --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-ink: var(--whatsapp-ink);
 
   /* Type sizes, written as text-[Npx] in the components, keep to one scale:
        meta 11 · 12 · 13   ui 14 · 15 · 16 (inputs stay 16, so iOS doesn't zoom)   body 17 · 19
@@ -303,7 +320,15 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
 .role-stage[data-window="dome"] .hairline-read[data-live] { color: var(--dome-hi); }
 .role-stage[data-window="dome"] .role-card-wrap { margin-top: 16px; }
 
-/* MLAs: the constituency on a kolam circle, the card over its lower edge */
+/* The pause button for the figure's laps (WCAG 2.2.2), in the stage's top corner, clear of every window */
+.role-pause {
+  position: absolute; top: 12px; right: 12px; z-index: 3; display: grid; place-items: center; width: 40px; height: 40px;
+  border-radius: 999px; border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 92%, transparent); color: var(--ink);
+  box-shadow: 0 8px 24px -16px color-mix(in srgb, var(--shadow) 50%, transparent); transition: border-color 0.2s, color 0.2s;
+}
+.role-pause:hover { border-color: var(--muted); color: var(--accent); }
+
+/* MLAs: the constituency on a kolam circle, the card over its lower edge (a wide oval from lg up) */
 .role-stage[data-window="circle"] .role-window { display: grid; place-items: center; aspect-ratio: 1; }
 .role-stage[data-window="circle"] .role-bg { border-radius: 999px; background: radial-gradient(circle at 50% 46%, var(--surface) 0%, var(--accent-soft) 72%); }
 .role-stage[data-window="circle"] .role-figure { width: 100%; }
@@ -339,9 +364,18 @@ html[data-hide-header] .site-header:not(:focus-within):not(:has([aria-expanded="
   .role-stage[data-window="dome"] .role-card-wrap { position: absolute; z-index: 2; left: 40px; bottom: 44px; width: 360px; margin: 0; }
   /* the larger chamber steps right of centre so its left benches clear the card */
   .role-stage[data-window="dome"] .role-figure { translate: 12% 0; }
-  /* the circle stands right and the card bridges back under the promise: text, map, case on a diagonal */
-  .role-stage[data-window="circle"] .role-window { width: 100%; margin-left: auto; }
-  .role-stage[data-window="circle"] .role-card-wrap { margin-top: -20%; margin-left: -22%; }
+  /* MLAs and consultants lie horizontal like the chamber: a wide oval, the figure right of centre (the
+     pool's left) and the card over the other side, so the plate never runs off the page */
+  .role-stage:is([data-window="circle"], [data-window="pool"]) .role-window { aspect-ratio: auto; padding: 24px 2% 32px; }
+  .role-stage:is([data-window="circle"], [data-window="pool"]) .role-bg { border-radius: 50%; }
+  .role-stage:is([data-window="circle"], [data-window="pool"]) .role-figure { max-width: 640px; }
+  .role-stage:is([data-window="circle"], [data-window="pool"]) .role-word { top: 7%; font-size: min(11cqi, 140px); }
+  .role-stage[data-window="circle"] .role-bg { background: radial-gradient(ellipse at 56% 48%, var(--surface) 0%, var(--accent-soft) 72%); }
+  .role-stage[data-window="circle"] .role-figure { translate: 16% 0; }
+  .role-stage[data-window="circle"] .role-card-wrap { position: absolute; z-index: 2; left: 40px; bottom: 32px; width: 360px; margin: 0; }
+  .role-stage[data-window="pool"] .role-figure { translate: -16% 0; }
+  .role-stage[data-window="pool"] .hairline-read { top: 18px; }
+  .role-stage[data-window="pool"] .role-card-wrap { position: absolute; z-index: 2; right: 40px; bottom: 32px; width: 360px; margin: 0; }
   .role-stage[data-window="jharokha"] .role-window { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); align-items: center; gap: 24px; padding: 32px 32px 24px; }
   .role-stage[data-window="jharokha"] .role-card-wrap { order: -1; }
 }
@@ -446,6 +480,9 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
 .prose-setuk a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); }
 .prose-setuk a:hover { text-decoration-color: currentColor; }
 .prose-setuk strong { color: var(--ink); font-weight: 600; }
+.prose-setuk code { font-family: var(--font-mono); font-size: 0.85em; padding: 0.1em 0.4em; border-radius: 6px; background: var(--surface-2); color: var(--ink); }
+.prose-setuk mark { background: color-mix(in srgb, var(--leaf) 22%, transparent); color: var(--ink); padding: 0.05em 0.25em; border-radius: 4px; }
+.prose-setuk hr { border: 0; height: 12px; margin-block: 2.6em; background: radial-gradient(circle, var(--accent) 2px, transparent 2.5px) center / 28px 12px repeat-x; width: 84px; margin-inline: auto; opacity: 0.6; }
 .prose-ext { display: inline; width: 0.8em; height: 0.8em; margin-left: 0.1em; vertical-align: 0.05em; }
 .prose-cite { font-size: 0.7em; line-height: 0; margin-left: 0.1em; }
 .prose-cite a { text-decoration: none; font-weight: 600; padding-inline: 0.15em; }
@@ -456,10 +493,16 @@ li[data-state="closed"] > .role-dot { border-color: var(--leaf); background: var
 .prose-quote figcaption::before { content: "— "; }
 .prose-callout { display: flex; gap: 14px; border-radius: 0.75rem; padding: 18px 20px; background: var(--accent-soft); font-size: 16px; line-height: 1.65; margin-block: 1.8em; }
 .prose-callout[data-kind="tip"] { background: var(--leaf-soft); }
-.prose-callout[data-kind="warning"] { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--ink); }
+.prose-callout[data-kind="important"] { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--ink); }
+.prose-callout[data-kind="warning"] { background: var(--warn-soft); border-left: 3px solid var(--warn); }
+.prose-callout[data-kind="caution"] { background: var(--danger-soft); border-left: 3px solid var(--danger); }
+.prose-callout[data-kind="note"] { border-left: 3px solid var(--accent); }
+.prose-callout[data-kind="tip"] { border-left: 3px solid var(--leaf); }
 .prose-callout-icon { flex: none; width: 24px; height: 24px; margin-top: 1px; color: var(--accent); }
 .prose-callout[data-kind="tip"] .prose-callout-icon { color: var(--leaf); }
-.prose-callout[data-kind="warning"] .prose-callout-icon { color: var(--ink); }
+.prose-callout[data-kind="important"] .prose-callout-icon { color: var(--ink); }
+.prose-callout[data-kind="warning"] .prose-callout-icon { color: var(--warn); }
+.prose-callout[data-kind="caution"] .prose-callout-icon { color: var(--danger); }
 .prose-setuk .prose-callout-title { font-weight: 600; color: var(--ink); }
 .prose-callout-title + p { margin-top: 0.25em; }
 .prose-setuk ol.prose-steps { list-style: none; padding-left: 0; counter-reset: none; margin-block: 1.8em; }

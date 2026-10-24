@@ -121,7 +121,7 @@ export function VoterListPage({ locale, view }: { locale: Locale; view: VoterLis
             <H1 className="rise mt-4 [--i:1]">{title}</H1>
             <Lead className="rise mt-5 [--i:2]">{lead}</Lead>
             <div className="rise mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 [--i:3]">
-              <a href={orderHref(view, level === "all" || isList ? undefined : area)} target="_blank" rel="noopener noreferrer" className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
+              <a href={orderHref(view, level === "all" || isList ? undefined : area)} target="_blank" rel="noopener noreferrer" className="press inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-whatsapp px-6 font-semibold text-whatsapp-ink hover:brightness-110">
                 <I.WhatsappLogo size={20} aria-hidden />{p.enquire}
               </a>
               <a href="#about" className="group inline-flex min-h-11 items-center gap-2 font-semibold text-accent">
@@ -348,7 +348,7 @@ function Detail({ locale, view, d, p, englishOnly }: { locale: Locale; view: Vot
           <div>
             <SectionHead kicker={p.order.kicker} title={p.order.title} id="order-title"
               lead={priced ? fill(p.order.body, { price: inr(priced.booths * view.ratePerBooth), rate: inr(view.ratePerBooth) }) : undefined} />
-            <a href={orderHref(view, priced)} target="_blank" rel="noopener noreferrer" className="press mt-8 inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 font-semibold text-accent-ink hover:brightness-110">
+            <a href={orderHref(view, priced)} target="_blank" rel="noopener noreferrer" className="press mt-8 inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-full bg-whatsapp px-6 font-semibold text-whatsapp-ink hover:brightness-110">
               <I.WhatsappLogo size={20} aria-hidden />{p.order.cta}
             </a>
           </div>

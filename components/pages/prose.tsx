@@ -24,7 +24,7 @@ export function headingIds(blocks: ArticleBlock[]) {
   return out;
 }
 
-const CALLOUT_ICON: Record<CalloutKind, typeof I.Info> = { note: I.Info, tip: I.Lightbulb, warning: I.WarningCircle };
+const CALLOUT_ICON: Record<CalloutKind, typeof I.Info> = { note: I.Info, tip: I.Lightbulb, important: I.Megaphone, warning: I.Warning, caution: I.WarningOctagon };
 
 type Ctx = { locale: Locale; labels: Labels; refs: Map<string, number>; cited: Set<string> };
 
@@ -36,7 +36,7 @@ function text(x: string, ctx: Ctx): ReactNode {
   const out: ReactNode[] = [];
   let last = 0;
   for (const m of x.matchAll(inline)) {
-    const [whole, id, bold, text, to] = m;
+    const [whole, id, bold, text, to, em, code, mark] = m;
     out.push(x.slice(last, m.index));
     const k = m.index;
     if (id) {
@@ -46,6 +46,9 @@ function text(x: string, ctx: Ctx): ReactNode {
       ctx.cited.add(id);
       out.push(<sup key={k} className="prose-cite"><a href={`#ref-${id}`} id={first ? `cite-${id}` : undefined} aria-label={ctx.labels.cite.replace("{n}", String(n))}>{n}</a></sup>);
     } else if (bold) out.push(<strong key={k}>{bold}</strong>);
+    else if (em) out.push(<em key={k}>{em}</em>);
+    else if (code) out.push(<code key={k}>{code}</code>);
+    else if (mark) out.push(<mark key={k}>{mark}</mark>);
     else if (to.startsWith("/")) out.push(<Link key={k} href={href(ctx.locale, to)}>{text}</Link>);
     else if (to.startsWith("#")) out.push(<a key={k} href={to}>{text}</a>);
     else {
@@ -153,6 +156,8 @@ export function Prose({ blocks, locale, labels, className = "" }: { blocks: Arti
               </div>
             );
           }
+          case "hr":
+            return <hr key={i} />;
           case "img":
             return (
               <figure key={i} className="illo">

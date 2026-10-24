@@ -1,8 +1,9 @@
 /* Markdown to article blocks. Only the subset Prose can draw: ## and ### headings, paragraphs,
-   > quotes (a last "> — Name" line credits them), > [!NOTE] / [!TIP] / [!WARNING] callouts,
-   - and 1. lists, ::: steps fences, | tables (first row is the header), ![alt](mediaKey) pictures,
-   @[title](YouTube URL) videos and [^id]: citations. Inside text, [links](...), **bold** and [^id]
-   markers stay as typed in the string; Prose draws them. Kept free of path aliases so tools can load it. */
+   > quotes (a last "> — Name" line credits them), > [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] /
+   [!CAUTION] callouts, - and 1. lists, ::: steps fences, | tables (first row is the header), ---
+   dividers, ![alt](mediaKey) pictures, @[title](YouTube URL) videos and [^id]: citations. Inside text,
+   [links](...), **bold**, *italics*, `code`, ==highlights== and [^id] markers stay as typed in the
+   string; Prose draws them. Kept free of path aliases so tools can load it. */
 import type { ArticleBlock, CalloutKind } from "../types";
 
 export type FrontMatter = Record<string, string | number>;
@@ -32,17 +33,18 @@ const img = /^!\[([^\]]*)\]\(\s*([^)\s]+)\s*\)$/;
 const video = /^@\[([^\]]+)\]\(\s*([^)\s]+)\s*\)$/;
 const note = /^\[\^([\w-]+)\]:\s+(.*)$/;
 const fence = /^:::\s*(\w*)\s*$/;
-const callout = /^\[!(note|tip|warning)\]\s*(.*)$/i;
+const callout = /^\[!(note|tip|important|warning|caution)\]\s*(.*)$/i;
+const rule = /^(?:-{3,}|\*{3,})$/;
 const credit = /^(?:—|--)\s*(.+)$/;
 const stepHead = /^\*\*(.+?)\*\*[.:]?\s*(.*)$/;
 const cells = (line: string) => line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
 const isRule = (line: string) => cells(line).every((c) => /^:?-{2,}:?$/.test(c));
 
-/** Inline markup Prose understands: [^id] citations, **bold** and [text](href) links */
-export const inline = /\[\^([\w-]+)\]|\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
+/** Inline markup Prose understands: [^id] citations, **bold**, [text](href) links, *italics*, `code` and ==highlights== */
+export const inline = /\[\^([\w-]+)\]|\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)\s]+)\)|\*(?!\s)([^*]+?)\*|`([^`]+)`|==(.+?)==/g;
 
 /** Text with the inline markup taken out, for descriptions and search snippets */
-export const plain = (x: string) => x.replace(inline, (_, _id, b, t) => b ?? t ?? "").replace(/\s+([.,;:])/g, "$1").trim();
+export const plain = (x: string) => x.replace(inline, (_, _id, b, t, _to, em, code, mark) => b ?? t ?? em ?? code ?? mark ?? "").replace(/\s+([.,;:])/g, "$1").trim();
 
 /** The video id from a youtube.com/watch, youtu.be, /embed or /shorts address */
 function youtubeId(url: string) {
@@ -79,6 +81,12 @@ export function parseMarkdown(body: string): { h1?: string; blocks: ArticleBlock
       i++;
       if (h[1].length === 1) { if (h1 === undefined) h1 = h[2]; else blocks.push({ t: "h2", x: h[2] }); }
       else blocks.push({ t: h[1].length === 2 ? "h2" : "h3", x: h[2] });
+      continue;
+    }
+
+    if (rule.test(line)) {
+      blocks.push({ t: "hr" });
+      i++;
       continue;
     }
 
@@ -166,7 +174,7 @@ export function parseMarkdown(body: string): { h1?: string; blocks: ArticleBlock
     }
 
     const parts = [lines[i++].trim()];
-    while (more((l) => !/^\s*(#{1,6}\s|>|\||!\[|@\[|:::|\[\^[\w-]+\]:)/.test(l) && !ul.test(l) && !ol.test(l))) parts.push(lines[i++].trim());
+    while (more((l) => !/^\s*(#{1,6}\s|>|\||!\[|@\[|:::|\[\^[\w-]+\]:)/.test(l) && !ul.test(l) && !ol.test(l) && !rule.test(l.trim()))) parts.push(lines[i++].trim());
     blocks.push({ t: "p", x: parts.join(" ") });
   }
 

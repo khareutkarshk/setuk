@@ -9,7 +9,7 @@ Most constituency offices are good at listening. Someone comes in with a problem
 
 Two weeks later, the same person comes back and asks what happened. Nobody remembers who wrote the letter, where the copy is, or whether anyone called the department. The citizen leaves feeling that their visit did nothing.
 
-A **grievance follow-up desk** fixes that gap. It is not a new department. It is one person (or a small rotation of people) whose job is to make sure every grievance has an owner, a next step and a date.
+A **grievance follow-up desk** fixes that gap. It is *not* a new department. It is one person (or a small rotation of people) whose job is to make sure every grievance has an owner, a next step and a date.
 
 This guide shows how to set one up, what to record, and how to keep it running. If you are still deciding how your office should keep its records, start with our guide to a [constituency office tracking system](/articles/constituency-office-tracking-system).
 
@@ -25,6 +25,10 @@ The desk has four jobs. Everything else is detail.
 > People forgive a slow answer. What they don't forgive is being forgotten.
 > — What we hear most often from the constituency offices we work with
 
+> A grievance is closed when the citizen hears back.
+> Not when the letter leaves the office, and not when the department says it has acted.
+> — The one rule every desk owner should be able to say from memory
+
 > [!NOTE]
 > A follow-up desk is about ownership, not software. A register can work for a small office. Software helps once the volume grows, or when the office has more than one location.
 
@@ -38,23 +42,29 @@ You don't need much to begin. Get these ready before the first day:
 4. A short set of categories, such as health, roads, water, revenue, police, pension and education.
 5. A fixed follow-up rhythm that everyone agrees on, for example every seven days.
 
+> [!IMPORTANT] One record, never two
+> If grievances are written in a register at the front desk *and* in a spreadsheet at the back, the two will disagree within a week. Pick one place and make it the only place.
+
 > [!TIP] Keep the category list short
 > Eight to ten categories are enough. If staff have to think about which category to choose, they will pick the wrong one or skip it.
 
 ## Setting Up the Desk, Step by Step
 
 ::: steps
-1. **Give every grievance a number.** Use a simple running number with the year, such as 2026-0412. Write it on the citizen's copy too, so when they call back they can quote it and anyone in the office can find the case.
+1. **Give every grievance a number.** Use a simple running number with the year, such as `2026-0412`. Write it on the citizen's copy too, so when they call back they can quote it and anyone in the office can find the case.
 2. **Record the same details every time.** Name, phone number, area or booth, category, a one-line summary of the problem, the date, and who in the office took it. Attach or file any papers the citizen brought.
 3. **Decide where it goes the same day.** The desk owner reads each new grievance and decides which department or officer it should go to. If the office can solve it directly (for example, a recommendation letter), mark it for that instead.
 4. **Send it with a reference.** Every letter or message to a department should carry the grievance number. When the department replies, the reply can be matched to the right case without guessing.
-5. **Set the next follow-up date.** No case should leave the desk without a date for the next check. This is the single most important habit.
+5. **Set the next follow-up date.** No case should leave the desk without a date for the next check. ==This is the single most important habit.==
 6. **Chase on the date, and note what you heard.** Call or write to the department on the follow-up date. Record what they said, even if it is "still pending", and set the next date.
 7. **Tell the citizen.** When there is an outcome, call or message the citizen. Record that they were told. Only then mark the case closed.
 :::
 
 > [!WARNING] Don't close cases when the letter is sent
 > Sending a letter is a step, not an outcome. Many offices count a grievance as "done" once it leaves the office. The citizen doesn't see it that way, and they will come back.
+
+> [!CAUTION] Keep citizens' details out of group chats
+> Don't forward a citizen's name, phone number or papers to personal WhatsApp groups to "speed things up". Share them only with the officer who needs them, through the office's own channel, and note that you did.
 
 ## What to Record for Each Grievance
 
@@ -70,6 +80,17 @@ A simple record makes the desk easy to run and easy to hand over. These are the 
 | Next follow-up date | Stops cases from being forgotten |
 | Status | Open, with department, resolved, or not possible |
 
+### Status words to use
+
+Agree on a few status words and use only those, so a report means the same thing every week:
+
+- `Open`: recorded, not yet sent anywhere.
+- `With department`: sent, with a follow-up date set.
+- `Resolved`: the problem was fixed **and** the citizen was told.
+- `Not possible`: the department can't act, and the citizen was told why.
+
+Avoid vague words such as *pending* or *in process*. They hide whether anyone has actually done anything.
+
 Citizens should also know that their details will be used only to follow up their grievance. If you keep records digitally, India's Digital Personal Data Protection Act, 2023 sets out how personal data should be handled.[^dpdp]
 
 ## Using Government Portals Alongside Your Desk
@@ -81,6 +102,8 @@ The video below shows how a grievance is lodged on the portal. It is a useful th
 @[How to lodge a grievance on CPGRAMS](https://www.youtube.com/watch?v=PGrX5muRwNk)
 
 Where a citizen needs information from a public authority, rather than a fix, a Right to Information application may be the better route.[^rti] For development work in the constituency, MLAs and MPs have their own local area development funds, and MPs' funds are tracked publicly under MPLADS.[^mplads]
+
+---
 
 ## Keeping the Desk Running
 

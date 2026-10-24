@@ -16,10 +16,11 @@ import type { RoleWindow, Stop } from "./look";
  * first stop, and each step lights as the unseen pointer reaches it. The kernel pauses a figure out
  * of view and gives way to a real hand, so each step also has a deadline a little past the lap's
  * own pace; the case always reaches its close, in step with the figure whenever the figure is moving.
- * The figure then rests (Hairline stops the tour after one lap, so nothing beside the text moves without
- * end, WCAG 2.2.2): at rest its highlight turns leaf (`data-closed`, globals.css), and while it walks its
- * own read-out ("ward 07") stands down so it never contradicts the card; a real pointer brings it back
- * and takes the leaf away.
+ * The figure then walks on, lap after lap (Hairline's `loop`), and each new lap plays the case again from
+ * its first step. Since that moves beside the text for more than 5 s, the window carries a pause button
+ * (WCAG 2.2.2); paused, the figure rests and the case stands closed. At rest between laps its highlight
+ * turns leaf (`data-closed`, globals.css), and while it walks its own read-out ("ward 07") stands down
+ * so it never contradicts the card; a real pointer brings it back and takes the leaf away.
  */
 
 /** null: the case as written; -1: the lap has set off; 0 to 3: the step reached, 3 closing it */
@@ -40,13 +41,19 @@ type Props = {
   kase: RoleCase;
   /** The Flow section's anchor and its link text, on the office pages */
   more?: { href: string; t: string };
+  /** The pause button's labels */
+  motion: { pause: string; play: string };
 };
 
-export function RoleStage({ window: kind, figure, stops, label, nouns, word, kase, more }: Props) {
+export function RoleStage({ window: kind, figure, stops, label, nouns, word, kase, more, motion }: Props) {
   // the figure's lap, round and round, and the card's one pass through the case
   const [lap, setLap] = useState<Step>(null);
   const [step, setStep] = useState<Step>(null);
   const [hand, setHand] = useState(false);
+  // the pause button shows only where the figure moves at all (not with reduced motion)
+  const [moves, setMoves] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
   const controls = useRef<HairlineControls | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const last = kase.steps.length - 1;
@@ -56,9 +63,11 @@ export function RoleStage({ window: kind, figure, stops, label, nouns, word, kas
   useEffect(() => {
     const el = cardRef.current;
     if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setMoves(true);
     const watch = new IntersectionObserver(([e]) => {
       if (!e?.isIntersecting) return;
       watch.disconnect();
+      if (pausedRef.current) return;
       setStep(-1);
       controls.current?.restart();
     }, { threshold: 0.5 });
@@ -75,7 +84,22 @@ export function RoleStage({ window: kind, figure, stops, label, nouns, word, kas
 
   const heard = (i: number) => {
     setLap(i);
-    setStep((s) => (s !== null && s < last && i === s + 1 ? i : s));
+    // the next step as the pointer reaches it; a new lap starts a closed case over
+    setStep((s) => (s !== null && s < last && i === s + 1 ? i : s !== null && s >= last && i === 0 ? 0 : s));
+  };
+
+  const toggle = () => {
+    const next = !paused;
+    pausedRef.current = next;
+    setPaused(next);
+    if (next) {
+      controls.current?.stop();
+      setLap(null);
+      setStep((s) => (s === null ? s : last));
+    } else {
+      setStep(-1);
+      controls.current?.restart();
+    }
   };
 
   const card = (
@@ -98,11 +122,17 @@ export function RoleStage({ window: kind, figure, stops, label, nouns, word, kas
         {/* a hero is tall, so the figure starts walking once a good part of it is in view, not most of it */}
         {/* a hand on the figure itself (not the card beside it) takes the stage from the case */}
         <div className="role-figure" onPointerEnter={() => setHand(true)} onPointerLeave={() => setHand(false)}>
-          <Hairline name={figure} label={label} nouns={nouns} tour={stops} onTour={heard} controlsRef={controls} threshold={0.35} />
+          <Hairline name={figure} label={label} nouns={nouns} tour={stops} onTour={heard} controlsRef={controls} loop threshold={0.35} />
         </div>
         {inside && card}
       </div>
       {!inside && card}
+      {/* the stage's top corner, clear of every window's shape, the figure's read-out and the card */}
+      {moves && (
+        <button type="button" onClick={toggle} aria-label={paused ? motion.play : motion.pause} title={paused ? motion.play : motion.pause} className="role-pause press">
+          {paused ? <I.Play size={16} weight="fill" aria-hidden /> : <I.Pause size={16} weight="fill" aria-hidden />}
+        </button>
+      )}
     </div>
   );
 }

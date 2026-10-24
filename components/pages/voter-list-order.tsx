@@ -117,7 +117,7 @@ export function OrderHost({ copy, labels, chat }: { copy: OrderCopy; labels: Ord
           </div>
 
           <a href={order.href} target="_blank" rel="noopener noreferrer"
-            className="press mt-6 flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[16px] font-semibold text-accent-ink hover:brightness-110">
+            className="press mt-6 flex min-h-12 items-center justify-center gap-2 rounded-full bg-whatsapp px-6 text-[16px] font-semibold text-whatsapp-ink hover:brightness-110">
             <I.WhatsappLogo size={20} aria-hidden />{copy.buy}<I.ArrowRight weight="bold" aria-hidden />
           </a>
           <p className="mt-3 text-center text-[13px] leading-snug text-muted">{copy.buyNote}</p>

@@ -12,19 +12,21 @@ import { useEffect, useRef, type RefObject } from "react";
  * name, so returning to a page mounts again without reloading anything. The page's palette comes
  * from the --hairline-* variables in globals.css. The figure writes a short read-out ("seat 3·12"),
  * which shows in the plate's corner in the page's language, and the hint (if any) shows until the
- * pointer arrives. Once the figure is mostly in view it walks its tour round and round, unless the reader
- * asked for less motion; the kernel's one frame loop only ticks figures on screen in a visible tab,
- * so a lap out of sight costs nothing. Without script the plate stays empty and the label still names it.
+ * pointer arrives. Once the figure is mostly in view it walks its tour once, or round and round with
+ * `loop` (the page then owes the reader a pause control, WCAG 2.2.2), unless the reader asked for less
+ * motion; the kernel's one frame loop only ticks figures on screen in a visible tab, so a lap out of
+ * sight costs nothing. Without script the plate stays empty and the label still names it.
  *
  * A page can give its own `tour` (the role heroes walk their case through it) and hear it with
  * `onTour`: -1 as the first lap sets off, then each stop's index as the unseen pointer reaches it,
  * the closing null's when the figure is back at rest, and round again from the first stop.
  * `controlsRef` hands back `restart`: the lap from its first stop now, even before the figure is in
- * view (a page whose card is seen first starts the figure with it).
+ * view (a page whose card is seen first starts the figure with it), and `stop`, which leaves the
+ * figure at rest until the next restart (the pause control).
  */
 
 type Stop = [number, number] | null;
-export type HairlineControls = { restart: () => void };
+export type HairlineControls = { restart: () => void; stop: () => void };
 type Handle = { set: (value: number) => void; destroy: () => void };
 type Definition = {
   name: string;
@@ -82,7 +84,7 @@ function load(name: string): Promise<Definition> {
   return p;
 }
 
-export function Hairline({ name, label, hint, nouns, tour, onTour, controlsRef, threshold = 0.6, className = "" }: {
+export function Hairline({ name, label, hint, nouns, tour, onTour, controlsRef, loop = false, threshold = 0.6, className = "" }: {
   name: string;
   /** What the figure shows, for screen readers */
   label: string;
@@ -94,6 +96,8 @@ export function Hairline({ name, label, hint, nouns, tour, onTour, controlsRef, 
   tour?: Stop[];
   onTour?: (step: number) => void;
   controlsRef?: RefObject<HairlineControls | null>;
+  /** Walk the tour round and round rather than once; give the reader a way to `stop` it */
+  loop?: boolean;
   /** How much of the figure must be in view before the lap plays */
   threshold?: number;
   className?: string;
@@ -114,7 +118,10 @@ export function Hairline({ name, label, hint, nouns, tour, onTour, controlsRef, 
     // a restart asked for before the figure has loaded plays as soon as it has
     let play: (() => void) | null = null;
     let wanted = false;
-    if (controlsRef) controlsRef.current = { restart: () => { if (play) play(); else wanted = true; } };
+    if (controlsRef) controlsRef.current = {
+      restart: () => { if (play) play(); else wanted = true; },
+      stop: () => { wanted = false; watch?.disconnect(); lap?.stop(); lap = null; }
+    };
 
     const show = (v: string | null) => {
       const live = !!v && v !== "rest";
@@ -144,11 +151,11 @@ export function Hairline({ name, label, hint, nouns, tour, onTour, controlsRef, 
         lap?.stop();
         heard.current?.(-1);
         // the kernel's tour walks round for ever, rests a beat at each null, and gives way to a real pointer;
-        // stopped after one lap, so nothing beside the page's text moves without end (WCAG 2.2.2). A real
-        // pointer still moves the figure, and restart() walks it again
+        // without `loop` it stops after one lap, so nothing beside the page's text moves without end
+        // (WCAG 2.2.2). A real pointer still moves the figure, and restart() walks it again
         const one = HL.tour(stage, stops, (i) => {
           heard.current?.(i);
-          if (i === stops.length - 1) setTimeout(() => one.stop());
+          if (!loop && i === stops.length - 1) setTimeout(() => one.stop());
         });
         lap = one;
       };
@@ -168,7 +175,7 @@ export function Hairline({ name, label, hint, nouns, tour, onTour, controlsRef, 
       stage.replaceChildren();
       stage.removeAttribute("data-ready");
     };
-  }, [name, hint, nouns, tour, controlsRef, threshold]);
+  }, [name, hint, nouns, tour, controlsRef, loop, threshold]);
 
   return (
     <div className={`relative ${className}`}>

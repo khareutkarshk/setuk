@@ -3,16 +3,18 @@ import type { RoleHead, RoleKey } from "@/content/types";
 import { Kicker } from "@/components/site/kicker";
 import { href, routes } from "@/lib/paths";
 import { Lead, PageHero, PrimaryLink, TextLink } from "../ui";
-import { ROLE_KEYS, ROLE_LOOK, type RoleWindow } from "./look";
+import { ROLE_KEYS, ROLE_LOOK } from "./look";
 import { RoleStage } from "./role-stage";
 
 /*
  * The role pages' hero. Each office is drawn in its own composition, so the four read as one family
  * with four faces before a word is read:
  *   dome      MPs          the promise centred over the chamber, as the Lok Sabha is symmetric
- *   circle    MLAs         the promise left, the constituency on a kolam circle running off the page
+ *   circle    MLAs         the promise across the top, the constituency on a wide kolam oval below
  *   jharokha  Mayors       the promise across the top, the city in a wide civic window below
- *   pool      Consultants  the turntable first, on its pool of waves, and the promise after it
+ *   pool      Consultants  the promise across the top, the turntable on a wide pool of waves below
+ * MPs, MLAs and consultants lie horizontal on wide screens: the figure stands right of centre and the
+ * case card sits over the window's left (the pool's right, where its next clients stack).
  * The picture and its case card are role-stage.tsx.
  */
 
@@ -39,12 +41,7 @@ function Body({ r, locale, anchor, demo, center = false, className = "" }: { r: 
   );
 }
 
-const SHELL: Record<RoleWindow, string> = {
-  dome: "pt-8 pb-16 md:pt-14 lg:pb-24",
-  circle: "grid gap-10 pt-8 pb-16 md:pt-14 lg:grid-cols-[minmax(0,9fr)_minmax(0,12fr)] lg:gap-6 lg:pb-24",
-  jharokha: "pt-8 pb-16 md:pt-14 lg:pb-24",
-  pool: "grid items-center gap-10 pt-8 pb-16 md:pt-14 lg:grid-cols-[minmax(0,12fr)_minmax(0,9fr)] lg:gap-10 lg:pb-24"
-};
+const SHELL = "pt-8 pb-16 md:pt-14 lg:pb-24";
 
 export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHead; locale: Locale; anchor: string }) {
   const look = ROLE_LOOK[role];
@@ -61,11 +58,12 @@ export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHe
       word={r.word}
       kase={r.case}
       more={role === "consultants" ? undefined : { href: "#flow", t: c.hero.more }}
+      motion={c.hero}
     />
   );
 
   return (
-    <PageHero routes={false} pattern={look.pattern} className={SHELL[look.window]}>
+    <PageHero routes={false} pattern={look.pattern} className={SHELL}>
       {look.window === "dome" && (
         <>
           <div className="mx-auto max-w-[880px] text-center">
@@ -75,22 +73,13 @@ export function RoleHero({ role, r, locale, anchor }: { role: RoleKey; r: RoleHe
           <div className="rise mt-12 [--i:3] md:mt-14">{stage}</div>
         </>
       )}
-      {look.window === "jharokha" && (
+      {look.window !== "dome" && (
         <>
           <div className="grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-14">
             <Head r={r} size="text-[clamp(34px,4.8vw,62px)]" />
             <Body r={r} locale={locale} anchor={anchor} demo={demo} className="lg:pb-1.5" />
           </div>
           <div className="rise mt-10 [--i:3] md:mt-14">{stage}</div>
-        </>
-      )}
-      {(look.window === "circle" || look.window === "pool") && (
-        <>
-          <div className={look.window === "circle" ? "lg:pt-[clamp(32px,6vw,88px)]" : ""}>
-            <Head r={r} />
-            <Body r={r} locale={locale} anchor={anchor} demo={demo} className="mt-5" />
-          </div>
-          <div className={`rise [--i:2] ${look.window === "pool" ? "lg:order-first" : ""}`}>{stage}</div>
         </>
       )}
     </PageHero>
